@@ -1,4 +1,4 @@
-"""端到端演示：三种任务的样例对话（文档 §22 实例）。
+"""端到端演示：三种任务的样例对话（文档 §41 实例）。
 
 用法:
     cd Cog-Sim && python -m simulator.run_sim --task bargain --turns 3
@@ -15,7 +15,7 @@ from simulator.profile.cognitive_profile import build_habit_card
 from simulator.simulator import UserSimulator
 from simulator.state.schema import BDIItem, CognitiveProfile, Emotion, UserState
 
-# ---- 三种任务的初始场景（文档 §22）----
+# ---- 三种任务的初始场景（文档 §41）----
 SCENARIOS = {
     "support": {
         "persona": (
@@ -107,12 +107,15 @@ def main():
     ap.add_argument("--task", choices=list(SCENARIOS), default="bargain")
     ap.add_argument("--turns", type=int, default=2)
     ap.add_argument("--model", default=None, help="默认 deepseek-flash")
+    ap.add_argument("--route-mode", choices=["deterministic", "bernoulli"],
+                    default="deterministic", help="Route 采样模式（文档 §17、§17.1）")
     ap.add_argument("--out", default=None, help="日志输出路径")
     args = ap.parse_args()
 
     sc = SCENARIOS[args.task]
-    sim = UserSimulator(build_state(sc), LLMClient(model=args.model))
-    print(f"===== 任务: {args.task} | 模型: {sim.llm.model} =====")
+    sim = UserSimulator(build_state(sc), LLMClient(model=args.model),
+                        route_mode=args.route_mode)
+    print(f"===== 任务: {args.task} | 模型: {sim.llm.model} | route_mode: {args.route_mode} =====")
     print(f"Persona: {sc['persona']}")
     print(f"Theta: eta_R={sc['profile'].eta_R}, tau_A={sc['profile'].tau_A}, tau_R={sc['profile'].tau_R}")
     print("初始状态:")
@@ -125,10 +128,18 @@ def main():
         print(f"[assistant] {agent_reply}")
         user_reply = sim.simulate_turn(agent_reply)
         log = sim.logs[-1]
-        print(f"  mode={log.mode}  route={log.route}  judgment={log.judgment}  "
-              f"p_C={log.p_central}  d_t={log.discrepancy}  support_q={log.support_quality}")
+        print(f"  mode={log.mode} ({log.mode_reason or '—'})")
+        if log.route:
+            print(f"  route={log.route}  judgment={log.judgment}  p_C={log.p_central}  "
+                  f"d_t={log.discrepancy}  rel={log.relevance}  arg={log.argument_strength}  "
+                  f"cue={log.cue_strength}  pressure={log.interaction_pressure}"
+                  f"{'  cues=' + str(log.dominant_cues) if log.dominant_cues else ''}")
+        elif log.interaction_pressure is not None:
+            print(f"  pressure={log.interaction_pressure}")
         if log.target:
             print(f"  target: {log.target}")
+        if log.relevant_state_ids:
+            print(f"  relevant_state: {log.relevant_state_ids}")
         print(f"  appraisal: GC={log.appraisal['goal_congruence']:.2f} "
               f"CP={log.appraisal['coping_potential']:.2f} FE={log.appraisal['future_expectancy']:.2f}")
         print(f"  emotion: {log.emotion_before['category']}({log.emotion_before['valence']:.2f},{log.emotion_before['arousal']:.2f})"
@@ -148,7 +159,7 @@ def main():
     out = args.out or Path(__file__).resolve().parent.parent / "runs" / f"{args.task}_log.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     sim.dump_logs(out)
-    print(f"===== 状态轨迹 =====")
+    print("===== 状态轨迹 =====")
     print(fmt_bdi(sim.state))
     print(f"Emotion: {sim.state.emotion}")
     print(f"\n日志已写入 {out}")

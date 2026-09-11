@@ -1,6 +1,9 @@
 # 环境配置（含 API key，勿提交）
 .env
 
+# Claude 本地配置（settings.local.json 含 API key 的权限规则，勿提交）
+.claude/
+
 # 设计文档工作区（不入库）
 shared_work_space/
 

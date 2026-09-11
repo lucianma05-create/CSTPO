@@ -1,4 +1,4 @@
-"""RJ Cognitive Contract（文档 §11）：(Route, Judgment) -> 更新约束。
+"""RJ Cognitive Contract（文档 §21-27）：(Route, Judgment) -> 更新约束。
 
 Contract 是给 LLM 的自然语言约束；LIMITS 是给确定性 Updater 的数值上限。
 两类约束分离：LLM 提出更新，程序决定更新是否合法（文档原则 3）。

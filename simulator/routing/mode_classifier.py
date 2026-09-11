@@ -1,28 +1,32 @@
-"""对话模式分类（文档 §6、§7）：Influence / Elicit / Social。
+"""对话模式分类（文档 §8、§9）：Influence / Elicit / Social，返回 mode + reason。
 
 优先级规则：Influence > Elicit > Social，即只要有明显认知干预意图就判 Influence。
 """
 from __future__ import annotations
 
-MODE_PROMPT = """Classify the function of the assistant's latest reply.
+MODE_PROMPT = """You are classifying the functional role of the assistant's latest reply
+in a multi-turn conversation.
+
+Choose exactly one label:
 
 Influence:
-The reply introduces information, interpretation, advice, persuasion,
-reframing, negotiation, recommendation, or a request intended to
-change the user's belief, preference, goal priority, or intention.
+The reply introduces information, evidence, interpretation, advice,
+reframing, persuasion, negotiation, recommendation, or an action proposal
+that may change the user's belief, goal priority, or intention.
 
 Elicit:
-The reply primarily asks the user to reveal an existing belief,
-concern, desire, reason, preference, experience, or intention,
-without proposing a new interpretation or direction.
+The reply mainly asks the user to reveal an existing belief, concern,
+desire, preference, reason, experience, or intention.
+It does not substantially propose a new interpretation or direction.
 
 Social:
 The reply mainly serves casual conversation, rapport, greeting,
-companionship, or conversational continuity.
+companionship, empathy, or conversational continuity, without attempting
+to change the user's core cognition.
 
-Priority rule: Influence > Elicit > Social.
-If a reply combines a question with a proposal or suggestion,
-classify it as Influence.
+Priority rule:
+If a reply both asks a question and introduces a substantive interpretation,
+recommendation, or persuasive direction, classify it as Influence.
 
 Recent conversation:
 {history}
@@ -30,10 +34,15 @@ Recent conversation:
 Assistant's latest reply:
 {reply}
 
-Return exactly one JSON object: {{"mode": "Influence"}}, {{"mode": "Elicit"}}, or {{"mode": "Social"}}."""
+Return JSON only:
+{{
+  "mode": "Influence | Elicit | Social",
+  "reason": "one short sentence"
+}}"""
 
 
-def classify_mode(llm, history, reply: str) -> str:
+def classify_mode(llm, history, reply: str) -> tuple[str, str | None]:
+    """返回 (mode, reason)。LLM 失败时退回规则式分类。"""
     hist_text = "\n".join(f"{m['role']}: {m['text']}" for m in history[-6:]) or "(none)"
     msgs = [{
         "role": "user",
@@ -43,10 +52,11 @@ def classify_mode(llm, history, reply: str) -> str:
         out = llm.chat_json(msgs, max_tok=100)
         mode = str(out.get("mode", "")).strip().lower()
         if mode in {"influence", "elicit", "social"}:
-            return mode
+            reason = str(out.get("reason", "")).strip() or None
+            return mode, reason
     except Exception as e:
         print(f"  [mode_classifier] LLM 失败，退回规则式分类: {e}")
-    return _fallback(reply)
+    return _fallback(reply), "keyword fallback"
 
 
 def _fallback(reply: str) -> str:

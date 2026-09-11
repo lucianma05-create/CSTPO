@@ -1,7 +1,9 @@
-"""Deterministic Updater（文档 §14）：LLM 输出不是最终状态。
+"""Deterministic Updater（文档 §31）：LLM 输出不是最终状态。
 
-程序执行 BDI_{t+1} = Apply(BDI_t, LLMUpdates, RJConstraints)，检查：
-强度范围、更新幅度、Judgment 方向、Peripheral 限制、Intention 支持、数量限制。
+程序执行 C_{t+1} = Apply(C_t, LLMUpdates, R_t, J_t)，检查：
+强度范围、更新幅度、Judgment 方向、Peripheral 限制、Intention 支持、数量限制，
+以及收紧后的两条：新增核心节点强度上限（所有 Route 一致）、
+冲突衰减计入 victim 本轮变化预算（不得绕过 RJ 限幅）。
 所有被约束的动作都会写进 notes，保证过程可审计。
 """
 from __future__ import annotations
@@ -16,13 +18,10 @@ from simulator.state.schema import (
     STRENGTH_MIN,
     UserState,
 )
+from simulator.utils import clamp
 
-INTENTION_EPSILON = 0.5   # 文档 §14 的 epsilon（文档未给具体值，取 0.5）
+INTENTION_EPSILON = 0.5   # 文档 §31 的 epsilon（文档未给具体值，取 0.5）
 SUPPORT_STRENGTH = 2.0    # “相关强 Belief/Desire”的强度门槛
-
-
-def _clamp(v: float, lo: float, hi: float) -> float:
-    return min(max(float(v), lo), hi)
 
 
 def constrained_apply(
@@ -44,7 +43,7 @@ def constrained_apply(
         if item is None:
             notes.append(f"跳过不存在节点 {item_id}")
             continue
-        new_s = _clamp(u.get("new_strength", item.strength), STRENGTH_MIN, STRENGTH_MAX)
+        new_s = clamp(u.get("new_strength", item.strength), STRENGTH_MIN, STRENGTH_MAX)
         if not item.active:
             # 已退役节点只允许被重新激活：强度需回升到阈值以上
             if new_s >= DEACTIVATE_THRESHOLD + 0.2:
@@ -56,17 +55,17 @@ def constrained_apply(
         delta = new_s - item.strength
         cap = limits[item.type]
 
-        # 幅度限制（文档 §14.2）
+        # 幅度限制（文档 §31）
         if abs(delta) > cap:
             new_s = item.strength + cap * (1 if delta > 0 else -1)
             notes.append(f"{item_id} 幅度 {delta:+.2f} 超限 {cap}，截断为 {new_s - item.strength:+.2f}")
 
-        # Judgment=Reject 方向限制（文档 §14.3）：被拒命题相关 core Belief 不允许正向更新
+        # Judgment=Reject 方向限制（文档 §31）：被拒命题相关 core Belief 不允许正向更新
         if judgment == "reject" and item.type == "belief" and item.id in related_belief_ids and new_s > item.strength:
             notes.append(f"{item_id} 与被拒命题相关，禁止正向更新（{new_s - item.strength:+.2f} -> 0）")
             new_s = item.strength
 
-        # Peripheral 核心限制（文档 §14.4）：核心 Desire 不允许大幅改变
+        # Peripheral 核心限制（文档 §31）：核心 Desire 不允许大幅改变
         if route == "peripheral" and item.type == "desire" and judgment != "accept" and new_s != item.strength:
             notes.append(f"Peripheral+{judgment} 不允许修改核心 Desire {item_id}")
             new_s = item.strength
@@ -85,7 +84,7 @@ def constrained_apply(
         if not content:
             notes.append("空内容节点，拒绝新增")
             continue
-        strength = _clamp(n.get("strength", 1.0), STRENGTH_MIN, STRENGTH_MAX)
+        strength = clamp(n.get("strength", 1.0), STRENGTH_MIN, STRENGTH_MAX)
         is_cue = bool(n.get("cue", False))
         is_core = bool(n.get("core", True))
         polarity = str(n.get("polarity", "approach")).strip().lower()
@@ -95,18 +94,21 @@ def constrained_apply(
             notes.append(f"非法 polarity {polarity!r}，默认 approach")
             polarity = "approach"
 
-        if route == "peripheral":
-            # Peripheral 路线下：核心节点受核心限制约束，cue 节点不受限（文档 §11.4）
-            cap = limits[type_] if (is_core and not is_cue) else STRENGTH_MAX
-            if cap == 0.0:
-                notes.append(f"Peripheral+{judgment} 禁止新增 {type_}（限制为 0），拒绝")
-                continue
-            if strength > cap:
-                notes.append(f"新增 {type_} 强度 {strength} 超限 {cap}，截断为 {cap}")
-                strength = cap
-        if judgment == "reject" and type_ == "intention" and strength > limits["intention"]:
-            notes.append(f"Reject 下新增 Intention 强度 {strength} 超限 {limits['intention']}，截断")
-            strength = limits["intention"]
+        # 新增节点强度受 RJ 幅度约束（§31 收紧）：
+        # 一律以本回合 limits[type_] 为强度上限，不因 core=False 而豁免
+        # （旧版 core=False/cue=True 即可绕过限幅，Central+Noncommit 下
+        #  曾插入 2.2 的强新信念）。唯一豁免：Peripheral+Accept 下的 cue 信念
+        # （文档 §25：trust / authority / social norm 等 cue 信念允许增强）。
+        # Reject 下新增 Intention 的上限由此一并覆盖（limits["intention"]）。
+        exempt_cue = (route == "peripheral" and judgment == "accept"
+                      and type_ == "belief" and is_cue)
+        cap = STRENGTH_MAX if exempt_cue else limits[type_]
+        if cap == 0.0:
+            notes.append(f"{route}+{judgment} 禁止新增 {type_}（限制为 0），拒绝")
+            continue
+        if strength > cap:
+            notes.append(f"新增 {type_} 强度 {strength} 超限 {cap}，截断为 {cap}")
+            strength = cap
 
         new_item = BDIItem(
             id=f"{type_[0].upper()}{_next_id(state, type_)}",
@@ -117,7 +119,7 @@ def constrained_apply(
             active=True,
             polarity=polarity,
         )
-        # 弱非核心节点直接以退役状态入库，不占用配额（文档 §3.1 保持状态紧凑）
+        # 弱非核心节点直接以退役状态入库，不占用配额（扩展规则，README 偏差第 6 条）
         if not is_core and strength < DEACTIVATE_THRESHOLD:
             new_item.active = False
             notes.append(f"新增 {new_item.id} [{type_}] strength={strength:.2f} 过弱，直接退役")
@@ -136,17 +138,37 @@ def constrained_apply(
         if type_ == "intention" and new_item in state.intentions:
             new_intention_ids.add(new_item.id)
 
-        # Belief 冲突衰减（文档 §3.1 未定义，扩展规则）：
+        # Belief 冲突衰减（扩展规则，§31 收紧）：
         # 新增 Belief 与已有 Belief 冲突时，已有 Belief 按新节点强度衰减，
-        # 避免状态同时强持有 P 和 ¬P。
+        # 避免状态同时强持有 P 和 ¬P。但该衰减是对 victim 的强度修改，
+        # 必须计入 victim 本轮总变化并受本回合 belief 限幅约束
+        # （旧版按新节点全强度扣减，Central+Noncommit 限幅 0.4 时
+        # 一轮仍可跌 2.5，等于绕过了 RJ 幅度约束）。
         if type_ == "belief" and new_item in state.beliefs:
-            for cid in [str(c) for c in n.get("conflicts_with", []) or []]:
+            conf_ids = [str(c) for c in n.get("conflicts_with", []) or []]
+            if not new_item.active and conf_ids:
+                # 新信念过弱已退役 = 用户几乎没接收该命题，不应产生冲突衰减压力
+                notes.append(f"新 Belief {new_item.id} 未激活（过弱退役），"
+                             f"对 {conf_ids} 不产生冲突衰减")
+                continue
+            for cid in conf_ids:
                 victim = state.find(cid)
-                if victim is not None and victim.type == "belief" and victim.active:
-                    victim.strength = _clamp(victim.strength - strength, STRENGTH_MIN, STRENGTH_MAX)
-                    notes.append(f"新 Belief {new_item.id} 与 {cid} 冲突，{cid} 衰减至 {victim.strength:.2f}")
+                if victim is None or victim.type != "belief" or not victim.active:
+                    continue
+                already = applied_deltas.get(victim.id, 0.0)
+                # |already - decay| <= limits["belief"] -> 剩余可衰减额度
+                budget = limits["belief"] + already   # already 可能为负
+                decay = min(strength, max(0.0, budget))
+                if decay <= 1e-9:
+                    notes.append(f"新 Belief {new_item.id} 与 {cid} 冲突，但 {cid} 本轮变化已达 "
+                                 f"belief 限幅 {limits['belief']}，暂不衰减")
+                    continue
+                victim.strength = clamp(victim.strength - decay, STRENGTH_MIN, STRENGTH_MAX)
+                applied_deltas[victim.id] = already - decay
+                notes.append(f"新 Belief {new_item.id} 与 {cid} 冲突，{cid} 按限幅 {limits['belief']} "
+                             f"衰减 {decay:.2f} → {victim.strength:.2f}")
 
-    # ---- 3. Intention 支持检查（文档 §14.5）----
+    # ---- 3. Intention 支持检查（文档 §31）----
     # |ΔI| > ε 时，必须有：当轮同方向 B/D 更新，或现存强 Belief/Desire 可解释。
     for item in state.intentions:
         # 新增 Intention 节点同样要检查：strength > ε 需有支持，否则截断。
@@ -168,9 +190,9 @@ def constrained_apply(
         if not (bd_same_direction or strong_bd):
             capped = item.strength - delta + INTENTION_EPSILON * (1 if delta > 0 else -1)
             notes.append(f"{item.id} 大额 Intention 变化 {delta:+.2f} 无 Belief/Desire 支持，截断到 {capped:.2f}")
-            item.strength = _clamp(capped, STRENGTH_MIN, STRENGTH_MAX)
+            item.strength = clamp(capped, STRENGTH_MIN, STRENGTH_MAX)
 
-    # ---- 4. 退役扫描（文档 §3.1）：非核心弱节点 deactivate ----
+    # ---- 4. 退役扫描（扩展规则）：非核心弱节点 deactivate ----
     for lst in (state.beliefs, state.desires, state.intentions):
         for it in lst:
             if it.active and not it.core and it.strength < DEACTIVATE_THRESHOLD:
@@ -189,7 +211,7 @@ def _next_id(state: UserState, type_: str) -> int:
 
 
 def _evict(state: UserState, type_: str, incoming: BDIItem) -> str:
-    """数量超限时淘汰一个节点（文档 §14.6），返回被淘汰的 id。
+    """数量超限时淘汰一个节点（文档 §31），返回被淘汰的 id。
 
     淘汰优先级：退役节点 > 非核心弱节点。
     若 incoming 比所有现存活跃节点都弱且非核心，则拒绝新增（返回 "incoming"）。

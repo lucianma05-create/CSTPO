@@ -1,6 +1,6 @@
 """对话结束信号（任务中立）：用户是否想结束本次对话。
 
-注意 user_done != task_done（见文档 §25 的 Simulator/TaskEvaluator 分离）：
+注意 user_done != task_done（见文档 §42 的 Simulator/TaskEvaluator 分离）：
 - 用户说"那就 85 成交"是任务完成，不代表对话结束；
 - 用户说"我不想聊了"是对话结束，不代表任务成功。
 本模块只判断前者口径的"对话闭合行为"（farewell / 离开 / 拒绝继续交谈）。

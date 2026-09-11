@@ -5,7 +5,7 @@
 买家是 BDI-E 模拟器，内部状态逐轮演化。
 
 终止条件：买家 user_done=True 或达到 --max-turns。
-成交与否由驱动层用简单规则粗判（模拟器不做任务判定，文档 §25）。
+成交与否由驱动层用简单规则粗判（模拟器不做任务判定，文档 §42）。
 
 用法:
     cd Cog-Sim && python -m simulator.demo_live_bargain --max-turns 8
@@ -122,7 +122,7 @@ def main():
     llm = LLMClient(model=args.model)
     buyer = UserSimulator(build_buyer(), llm)
     print(f"===== 讨价还价：卖家 = LLM agent（底价85），买家 = 认知模拟器（模型 {llm.model}）=====\n")
-    print(f"买家初始状态: B1 卖家最终可能接受80元(3.0) | D1 低价(3.8) D2 今天成交(3.1) | I1 坚持80(3.0)")
+    print("买家初始状态: B1 卖家最终可能接受80元(3.0) | D1 低价(3.8) D2 今天成交(3.1) | I1 坚持80(3.0)")
     print(f"买家习惯: eta_R={buyer.state.profile.eta_R} tau_A={buyer.state.profile.tau_A} tau_R={buyer.state.profile.tau_R}\n")
 
     # 卖家开场
@@ -161,7 +161,7 @@ def main():
     print(fmt_state_trace(buyer.logs[-1]))
     print(f"情绪: {buyer.state.emotion}")
     deal = rough_deal_check(buyer.state.history)
-    print(f"\n[驱动层粗判] 是否成交: {'✅ 是' if deal else '❌ 否'}（仅正则匹配买家话语，正式评估请用外部 Task Evaluator，文档 §25）")
+    print(f"\n[驱动层粗判] 是否成交: {'✅ 是' if deal else '❌ 否'}（仅正则匹配买家话语，正式评估请用外部 Task Evaluator，文档 §42）")
 
 
 if __name__ == "__main__":
