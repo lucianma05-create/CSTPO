@@ -2,17 +2,18 @@
 
 每轮 Influence：Route 特征提取(§14) -> Route 决策(§16、§17) ->
 Discrepancy(§19) -> Judgment(§20) -> Contract(§22-27) ->
-Engine 提案(§28-30) -> Deterministic Updater(§31) ->
-Appraisal(§32) -> Emotion(§33、§34) -> NLG(§37、§38)。
-Elicit / Social：BDI 冻结，只更新情绪并生成回复（§35、§36）。
+Engine 提案(§28-30，仅认知+plan) -> Deterministic Updater(§31) ->
+Appraisal 独立调用(§32，基于 C_{t+1} 与 Updater 审计) ->
+Emotion(§33、§34) -> NLG(§37、§38，基于 C_{t+1}, E_{t+1})。
+Elicit / Social：BDI 冻结，合并调用出 A 提案（§35、§36），后续同上。
 """
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from simulator.affect.appraisal import normalize_appraisal
-from simulator.affect.emotion import measure_bdi_change, update_emotion
+from simulator.affect.emotion_engine import (measure_bdi_change, normalize_appraisal,
+                                             propose_appraisal, update_emotion)
 from simulator.cognitive.cognitive_engine import propose_cognitive_update
 from simulator.cognitive.rj_contract import build_rj_contract
 from simulator.generation.conversation_end import classify_user_done
@@ -84,7 +85,7 @@ class UserSimulator:
             # 6) RJ Contract（§22-27）
             contract = build_rj_contract(route, judgment)
 
-            # 7) Cognitive Engine 提出候选更新（§28、§29、§30）
+            # 7) Cognitive Engine 提出候选更新（§28、§29、§30）：仅认知 + plan
             proposal = propose_cognitive_update(
                 self.llm, user, assistant_reply, contract, route, judgment
             )
@@ -98,7 +99,10 @@ class UserSimulator:
                           if (it := user.find(i)) is not None and it.type == "belief"]
             notes += constrained_apply(user, proposal, route, judgment, belief_ids)
             reaction_plan = proposal.get("reaction_plan")
-            appraisal_prop = proposal
+
+            # 8.5) 独立 Appraisal 调用（0912 拆分）：基于约束后的 C_{t+1} 与
+            #      Updater 审计评价本轮局势，CP/FE 不再锚定未生效的提案
+            appraisal_prop = propose_appraisal(self.llm, user, assistant_reply, notes)
         else:
             # Elicit：State Revelation（§35）；Social：Affective Interaction（§36），BDI 均不变
             proposal = respond_without_bdi_change(self.llm, user, assistant_reply, mode)
@@ -112,13 +116,10 @@ class UserSimulator:
                     notes.append(f"Elicit 揭示已有节点: {revealed}")
 
         # 9) Appraisal（§32）：钳制提议值；GC 用 desire_assessment + 更新后 BDI
-        #    按 §32.1 公式重算（user 此刻已是 Updater 约束后的状态）
+        #    按 §32.1 公式重算（user 此刻已是 Updater 约束后的状态；
+        #    Influence 的提案来自独立 A 调用，Elicit/Social 来自合并调用）
         appraisal, a_notes = normalize_appraisal(appraisal_prop, user)
         notes += a_notes
-        # 审计提示：CP/FE 仍由 LLM 在 Updater 约束前提议，
-        # 若本回合存在被约束的更新，其数值基于的局势与实际状态变化可能不一致
-        if mode == "influence" and any(k in n for n in notes for k in ("截断", "禁止", "拒绝")):
-            notes.append("审计提示：CP/FE 基于 Updater 约束前的提案，本回合存在被约束的更新")
 
         # 10) Emotion 更新（§33、§34）：Appraisal 定 valence 目标，§34 公式定 arousal 目标
         delta_bdi = measure_bdi_change(bdi_before, user.bdi_dict())
@@ -130,13 +131,16 @@ class UserSimulator:
         notes += e_notes
         self.prev_gc = appraisal.goal_congruence
 
-        # 11) 自然语言生成（§37、§38）
-        if mode == "influence":
-            user_reply = generate_utterance(self.llm, user, reaction_plan)
-        else:
-            user_reply = proposal.get("utterance", "").strip()
-            if not user_reply:
-                user_reply = generate_utterance(self.llm, user, reaction_plan)
+        # 11) 自然语言生成（§37、§38）：三模式统一两步生成——
+        #     A/E 程序算完后，基于 (C_{t+1}, E_{t+1}) + reaction_plan 单独生成话语；
+        #     合并调用不再产出 utterance（消除文本只能看到 E_t 的滞后），
+        #     NLG 显式传入 agent 本轮回复（保证回应针对本轮）
+        user_reply = generate_utterance(
+            self.llm, user, reaction_plan,
+            emotion=next_emotion,
+            assistant_reply=assistant_reply,
+            revealed=(proposal.get("revealed_items") or []) if mode == "elicit" else None,
+        )
 
         # 12) 对话结束信号（任务中立）：用户是否想结束本次对话
         user_done, done_reason = classify_user_done(self.llm, user, user_reply)

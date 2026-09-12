@@ -31,11 +31,11 @@ a_t -> Mode(§8,§9) -> [Influence]
        归一化 p_C；弱信号回退 §17.2)
     -> Discrepancy(§18,§19: stance_distance + relevant_current_state)
     -> Judgment(§20: tau 阈值)
-    -> Contract(§22-27) -> Engine 提案(§28-30, 显式 route/judgment)
-    -> Deterministic Updater(§31) -> Appraisal(§32) -> Emotion(§33 v̂ 公式,
-       §34 arousal 公式) -> NLG(§37,§38)
-Elicit/Social: BDI 冻结（§35,§36），只更新情绪并生成回复
-    （Elicit 记录 revealed_items）。
+    -> Contract(§22-27) -> Engine 提案(§28-30, 显式 route/judgment, 仅认知+plan)
+    -> Deterministic Updater(§31) -> Appraisal 独立调用(§32, 基于 C_{t+1}+审计)
+    -> Emotion(§33 v̂ 公式, §34 arousal 公式) -> NLG(§37,§38)
+Elicit/Social: BDI 冻结（§35,§36），合并调用出 A 提案+plan（Elicit 记录
+    revealed_items），随后 Emotion -> NLG 与 Influence 相同。
 ```
 
 ## 对话终止（user_done，任务中立）
@@ -59,7 +59,7 @@ Elicit/Social: BDI 冻结（§35,§36），只更新情绪并生成回复
 | routing | `simulator/routing/discrepancy.py` | 立场距离 + relevant_current_state（§18,§19） |
 | routing | `simulator/routing/judgment_controller.py` | d_t + τ 阈值 -> Accept/Noncommit/Reject（§20） |
 | cognitive | `simulator/cognitive/rj_contract.py` `simulator/cognitive/cognitive_engine.py` | RJ 六种合约（§22-27）；认知更新提案（§28-30） |
-| affect | `simulator/affect/appraisal.py` `simulator/affect/emotion.py` | 钳制 + §32.1 GC 公式重算（desire_assessment）；v̂=(GC+CP+FE)/3、r̂=γ1·\|ΔC\|+γ2·\|ΔGC\|+γ3·压力（§34）+ 惯性 + category 按 (v,r) 校验 |
+| affect | `simulator/affect/emotion_engine.py` | EUE（Emotion Update Engine）：独立 A 调用（Influence，基于 C_{t+1}+Updater 审计）+ §32.1 GC 公式重算；v̂=(GC+CP+FE)/3、r̂=γ1·\|ΔC\|+γ2·\|ΔGC\|+γ3·压力（§34）+ 惯性 + category 按 (v,r) 校验 |
 | generation | `simulator/generation/user_response.py` `simulator/generation/conversation_end.py` | reaction_plan → utterance（§37,§38）；user_done 分类 |
 
 ## 0911 对齐说明
@@ -90,10 +90,14 @@ Elicit/Social: BDI 冻结（§35,§36），只更新情绪并生成回复
    只衡量对即时回应的需求，与说服力/话题重要性/用户情绪解耦）。
    第一版 γ=(0.6, 0.25, 0.5)（文档未给具体值）。原"Engine 提议 r_hat"方案已移除。
 3. §31 的 ε 文档未给值，取 0.5；"相关强 Belief/Desire" 强度门槛取 2.0。
-4. Elicit/Social 分支用一次合并调用产出 appraisal+emotion+utterance
-   （文档 §39 伪代码对该分支的 appraisal 来源未定义）。2026-09-11 修复：
-   合并调用增加 Assistant's latest reply 输入（旧版看不到 agent 本轮消息，
-   Elicit 下用户答非所问，Social 下不回应告别等消息）。
+4. Elicit/Social 分支的 appraisal 来源（原文档 §39 伪代码未定义，已收敛入
+   实验文档0912 §7.1/§8.2/§8.3）：合并调用产出 appraisal + desire_assessment
+   + interaction_pressure + emotion_proposal + reaction_plan + revealed_items，
+   不产出话语。2026-09-11 修复：合并调用增加 Assistant's latest reply 输入
+   （旧版看不到 agent 本轮消息，Elicit 下用户答非所问）。2026-09-12 三模式
+   统一两步生成——u 由统一 NLG 基于 (C_{t+1}, E_{t+1}, a_t, plan) 生成
+   （消除合并调用中文本只能看到 E_t 的滞后）；NLG 显式传入 agent 本轮回复
+   原文（此前 Influence 的 NLG 也只靠 reaction_plan 转述，现在三模式一致）。
 5. 对话终止：文档未定义；按 §42 原则实现为任务中立的 user_done 分类
    （每轮多一次 ~100 token 的小调用，LLM 失败时退回规则关键词匹配）。
 6. BDI 节点扩展（评审 0910 文档时发现的问题，已修复）：
@@ -116,6 +120,11 @@ Elicit/Social: BDI 冻结（§35,§36），只更新情绪并生成回复
    `GC = Σs_i·rel_i·gc_i / Σs_i·rel_i` 重算，ActiveGoals 取 TopK(s_i·rel_i)
    （§4，K=2），权重用 Updater 约束**后**的 Desire 强度（同时修复提案被截断时
    GC 与实际状态脱节的时点问题）；标注缺失/非法时退回 LLM 提议的 GC 值。
+   2026-09-12 拆分：Influence 的 appraisal/emotion 提案改由**独立 Appraisal
+   调用**基于约束后 C_{t+1} 与 Updater 审计产出（Engine 不再输出，消除 CP/FE
+   锚定未生效提案的错位，原"审计提示"随之移除）；Elicit/Social 由合并调用
+   产出（偏差 #4）。已收敛入实验文档0912 §6.2/§7.1。2026-09-12 起
+   appraisal.py 与 emotion.py 合并为 `affect/emotion_engine.py`（EUE）。
    CP/FE 仍走 LLM 提议（文档未给公式）。
 8. Emotion 的 category 一致性校验（0910 §16「category 根据 (v,r) 选择」，2026-09-11 实施）：
    LLM 提议的 category 与程序最终 (v,r) 矛盾时（焦虑带正效价、anger 低唤醒等），

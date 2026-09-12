@@ -1,8 +1,9 @@
 """自然语言生成（文档 §37、§38）。
 
-Influence：Cognitive Engine 先给 reaction_plan，再单独生成 utterance（认知与语言分离）。
-Elicit / Social：BDI 不变，一次轻量调用完成 appraisal + emotion_proposal +
-reaction_plan + utterance（并记录 Elicit 的 revealed_items，文档 §35）。
+三模式统一两步生成：先由 Engine（Influence）或合并调用（Elicit / Social）产出
+appraisal + emotion_proposal + reaction_plan（Elicit 另记录 revealed_items），
+程序算完 A/E 后，由统一 NLG 调用基于 (C_{t+1}, E_{t+1}) + reaction_plan
+单独生成 utterance（认知-评价-语言分离；消除合并调用中文本只能看到 E_t 的滞后）。
 """
 from __future__ import annotations
 
@@ -17,15 +18,18 @@ NLG_USER = """Persona:
 Updated internal state (JSON):
 {state_json}
 
-Current emotion:
+Current emotion (updated this turn):
 {emotion}
 
 Recent conversation:
 {history}
 
+Assistant's latest reply:
+{assistant_reply}
+
 Reaction plan for this reply:
 {reaction_plan}
-
+{reveal_block}
 Rules:
 - Do not explain the user's full internal state.
 - A real user usually reveals only part of what they think.
@@ -38,15 +42,32 @@ Rules:
 Output ONLY the user's next utterance text, no quotes, no JSON."""
 
 
-def generate_utterance(llm, state, reaction_plan: str | None) -> str:
+def generate_utterance(llm, state, reaction_plan: str | None, emotion=None,
+                       assistant_reply: str | None = None,
+                       revealed: list | None = None) -> str:
+    """生成用户下一轮话语（文档 §37、§38），三模式统一的两步生成入口。
+
+    - emotion：本轮更新后的 Emotion（E_{t+1}），保证话语基调与最终状态一致
+      （不传则用 state.emotion）。
+    - assistant_reply：agent 本轮回复原文，话语须回应它（不传则仅靠 plan）。
+    - revealed：Elicit 的 revealed_items（将被揭示的已有节点 id），话语自然
+      揭示其中部分内容。
+    """
+    emo = emotion if emotion is not None else state.emotion
+    reveal_block = ""
+    if revealed:
+        reveal_block = ("\nState revelation (Elicit): naturally reveal part of the "
+                        f"content of these existing nodes: {revealed}\n")
     msgs = [
         {"role": "system", "content": NLG_SYSTEM},
         {"role": "user", "content": NLG_USER.format(
             persona=state.persona,
             state_json=str(state.bdi_dict()),
-            emotion=f"valence={state.emotion.valence:.2f}, arousal={state.emotion.arousal:.2f}, category={state.emotion.category}",
+            emotion=f"valence={emo.valence:.2f}, arousal={emo.arousal:.2f}, category={emo.category}",
             history="\n".join(f"{m['role']}: {m['text']}" for m in state.history[-8:]),
+            assistant_reply=assistant_reply or "(not available)",
             reaction_plan=reaction_plan or "(react naturally)",
+            reveal_block=reveal_block,
         )},
     ]
     text = llm.chat(msgs, max_tok=300, json_mode=False)
@@ -74,10 +95,15 @@ Dialogue mode: {mode}
 
 Rules:
 - In this mode the user's BDI does NOT change (state revelation only).
-- In Elicit mode: answer the assistant's question naturally, revealing part of the
-  existing state. List which existing B/D/I ids were revealed in "revealed_items".
+- In Elicit mode: decide which existing B/D/I ids the user would reveal in this
+  turn's answer, and list them in "revealed_items".
 - In Social mode: keep it light; only mild emotion change is allowed.
-- The utterance must not mention belief/desire/intention/appraisal/route/judgment terms.
+- Do NOT generate the utterance here — a separate NLG step will produce the reply
+  from your appraisal, emotion proposal, and reaction plan.
+- "reaction_plan": describe what the user will SAY in this turn, so the separate
+  NLG step can follow it (Elicit: which question to answer, which existing nodes
+  to partially reveal; Social: stay light, no substantive state).
+- The future utterance must not mention belief/desire/intention/appraisal/route/judgment terms.
 - Do not become more cooperative simply because the assistant has a goal.
 
 Return exactly one JSON object:
@@ -88,8 +114,7 @@ Return exactly one JSON object:
   ],
   "interaction_pressure": "low | medium | high",
   "emotion_proposal": {{"category": "neutral"}},
-  "reaction_plan": "brief plan",
-  "utterance": "the user's next message",
+  "reaction_plan": "brief plan for the next utterance",
   "revealed_items": ["D2"]
 }}
 
@@ -118,10 +143,11 @@ category must be one of: neutral, sadness, anxiety, frustration, interest, hope,
 
 
 def respond_without_bdi_change(llm, state, reply: str, mode: str) -> dict:
-    """Elicit / Social 分支：BDI 冻结，只更新情绪并生成回复。
+    """Elicit / Social 分支：BDI 冻结，产出 appraisal + emotion 提案 + 反应计划。
 
-    reply 必须传入：该分支不重算认知，但 appraisal 与话语仍需以
+    reply 必须传入：该分支不重算认知，但 appraisal 与反应计划仍需以
     agent 本轮实际说了什么为依据（否则生成会答非所问）。
+    话语不在此生成——统一由两步 NLG 基于 (C_{t+1}, E_{t+1}) 产出。
     """
     msgs = [
         {"role": "user", "content": RESPOND_USER.format(
@@ -136,5 +162,4 @@ def respond_without_bdi_change(llm, state, reply: str, mode: str) -> dict:
     out = llm.chat_json(msgs, max_tok=800)
     out.setdefault("reaction_plan", None)
     out.setdefault("revealed_items", [])
-    out.setdefault("utterance", "")
     return out

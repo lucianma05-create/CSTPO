@@ -1,8 +1,10 @@
 """Cognitive Engine（文档 §28、§29、§30）：主 LLM 调用，提出候选 BDI 更新 +
-appraisal + emotion_proposal + reaction_plan。
+reaction_plan（认知-语言分离，§37）。
 
 输入显式包含 Route 与 Judgment（文档 §28），LLM 输出只是"提案"，
 最终状态由 Deterministic Updater 施加约束后得到（文档 §31）。
+appraisal / emotion 提案已拆出为独立调用（affect/appraisal.py 的
+propose_appraisal），基于约束后的 C_{t+1} 与 Updater 审计产出。
 """
 from __future__ import annotations
 
@@ -36,10 +38,10 @@ Important rules:
    belief or desire.
 5. Do not optimize for the assistant's task objective.
 6. The user's cognition is task-neutral.
-7. The final user utterance should sound natural and should reveal only
-   part of the internal state.
-8. Never explicitly mention BDI, processing route, judgment category,
-   appraisal variables, or cognitive transition labels in the utterance.
+7. The reaction plan should describe a natural next utterance that reveals
+   only part of the internal state.
+8. Never mention BDI, processing route, judgment category, appraisal
+   variables, or cognitive transition labels in the reaction plan.
 9. Follow the provided cognitive transition contract strictly."""
 
 ENGINE_USER = """Persona:
@@ -79,13 +81,7 @@ Propose the user's cognitive update as exactly one JSON object:
     {{"type": "desire", "content": "user first-person statement", "strength": 1.2,
       "core": true, "polarity": "avoid", "reason": "brief reason"}}
   ],
-  "reaction_plan": "Acknowledge the evidence but remain cautious because spending concerns remain.",
-  "appraisal": {{"goal_congruence": 0.0, "coping_potential": 0.0, "future_expectancy": 0.0}},
-  "desire_assessment": [
-    {{"id": "D1", "relevance": 0.8, "gc": -0.3}},
-    {{"id": "D2", "relevance": 0.5, "gc": 0.4}}
-  ],
-  "emotion_proposal": {{"category": "neutral"}}
+  "reaction_plan": "Acknowledge the evidence but remain cautious because spending concerns remain."
 }}
 
 Notes:
@@ -95,21 +91,9 @@ Notes:
   its importance, feasibility or relevance. An intention changes when its supporting
   beliefs or desires change; if a supporting belief clearly moved, do not leave the
   intention untouched. The example above only illustrates the format.
-- strength is in [0, 4]. Appraisal values are in [-1, 1].
-  (emotion_proposal only takes a category — the program derives valence and arousal.)
-- Appraisal values must reflect THIS turn's situation relative to the user's desires —
-  do not copy the example numbers. goal_congruence: how favorable the situation is to the
-  user's important desires now; coping_potential: whether the user feels able to act;
-  future_expectancy: whether an acceptable outcome seems achievable.
-- "desire_assessment": assess each ACTIVE desire against THIS turn's situation
-  (the assistant's latest reply and its consequences). Only include desires with
-  relevance > 0. "relevance" in [0, 1] = how directly the situation concerns that
-  desire. "gc" in [-1, 1] = whether the situation promotes (+) or hinders (-) that
-  desire from the user's perspective. This is about the situation's favorability,
-  NOT about whether the desire strength should change.
-- The program may recompute goal_congruence from desire_assessment; still fill in
-  appraisal.goal_congruence with your best estimate as a fallback.
-- category must be one of: neutral, sadness, anxiety, frustration, interest, hope, relief, satisfaction, anger.
+- strength is in [0, 4].
+- Do NOT output appraisal, desire_assessment, or emotion_proposal here — a separate
+  appraisal step handles them after the constraints are applied.
 - "cue": true ONLY for a peripheral-cue belief about trust, popularity, authority,
   familiarity, or social norm. Issue-relevant beliefs about the matter under
   discussion are NOT cue beliefs — mark them "cue": false even if the reply
