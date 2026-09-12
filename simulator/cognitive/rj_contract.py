@@ -17,50 +17,39 @@ LIMITS = {
 
 CONTRACTS = {
     ("central", "accept"): """The user carefully considers the substantive argument and accepts it.
-
-Core beliefs directly addressed by the argument may change substantially.
-Related desires may change moderately if the new belief changes their
-importance, feasibility, or relevance.
-Intentions may change when supported by the resulting beliefs and desires.
-
-Do not modify unrelated beliefs, desires, or intentions.""",
+- Core beliefs directly addressed may change substantially.
+- Related desires may change moderately if the new belief changes their importance, feasibility, or relevance.
+- Intentions may change when supported by the resulting beliefs and desires.
+- Do not modify unrelated beliefs, desires, or intentions.""",
 
     ("central", "noncommit"): """The user carefully considers the argument but remains undecided.
-
-A directly relevant belief may loosen slightly, but should not reverse.
-Core desires should remain stable.
-Intentions may only change slightly.
-Do not create a strong new commitment this turn.""",
+- A directly relevant belief may loosen slightly, but should not reverse.
+- Core desires should remain stable.
+- Intentions may only change slightly.
+- Do not create a strong new commitment this turn.""",
 
     ("central", "reject"): """The user carefully evaluates the argument and rejects it.
-
-Do not move the user's core belief toward the rejected claim.
-Existing beliefs may remain stable or strengthen.
-A counter-belief may be added only when supported by the user's reasoning.
-A target intention may weaken.""",
+- Do not move the user's core belief toward the rejected claim.
+- Existing beliefs may remain stable or strengthen.
+- A counter-belief may be added only when supported by the user's reasoning.
+- A target intention may weaken.""",
 
     ("peripheral", "accept"): """The user's positive reaction is mainly driven by a peripheral cue
 rather than deep evaluation of the core argument.
-
-A cue-related belief such as trust, popularity, authority, familiarity,
-or social norm may strengthen.
-Core issue beliefs should remain mostly stable.
-Core desires should not substantially change.
-A short-term intention may increase moderately.""",
+- A cue-related belief (trust, popularity, authority, familiarity, social norm) may strengthen.
+- Core issue beliefs should remain mostly stable.
+- Core desires should not substantially change.
+- A short-term intention may increase moderately.""",
 
     ("peripheral", "noncommit"): """The user barely processes the reply through peripheral cues and stays uncommitted.
-
-Beliefs may move only slightly.
-Desires do not change.
-Intentions may change only slightly.
-Main changes should be in appraisal and emotion.""",
+- Beliefs may move only slightly.
+- Desires do not change.
+- Intentions may change only slightly.""",
 
     ("peripheral", "reject"): """The user rejects the reply mainly via a peripheral cue.
-
-Trust / cue beliefs may weaken.
-Core issue beliefs and desires stay basically unchanged.
-A target intention may weaken.
-Frustration and arousal may rise.""",
+- Trust / cue beliefs may weaken.
+- Core issue beliefs and desires stay basically unchanged.
+- A target intention may weaken.""",
 }
 
 

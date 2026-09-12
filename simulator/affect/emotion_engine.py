@@ -132,6 +132,16 @@ def normalize_appraisal(proposal: dict, state: UserState | None = None) -> tuple
     return appraisal, notes
 
 
+# 共享 Prompt 片段（EUE 为规范所有者；SRR/ERR 合并调用复用，见 user_response.py）
+CATEGORY_LIST = "neutral, sadness, anxiety, frustration, interest, hope, relief, satisfaction, anger"
+
+DESIRE_ASSESSMENT_DEF = """"desire_assessment": assess each ACTIVE desire against THIS turn's
+situation (the assistant's latest reply and its consequences). Only include
+desires with relevance > 0. "relevance" in [0, 1] = how directly the situation
+concerns that desire. "gc" in [-1, 1] = whether the situation promotes (+) or
+hinders (-) that desire from the user's perspective. This is about the
+situation's favorability, NOT about whether the desire strength should change."""
+
 APPRAISAL_USER = """Persona:
 {persona}
 
@@ -154,27 +164,22 @@ Appraise THIS turn's situation relative to the user's UPDATED state, and return
 exactly one JSON object:
 {{
   "appraisal": {{"goal_congruence": 0.0, "coping_potential": 0.0, "future_expectancy": 0.0}},
-  "desire_assessment": [
-    {{"id": "D1", "relevance": 0.8, "gc": -0.3}}
-  ],
+  "desire_assessment": [{{"id": "D1", "relevance": 0.8, "gc": -0.3}}],
   "emotion_proposal": {{"category": "neutral"}}
 }}
 
-Notes:
-- Appraisal values are in [-1, 1]. goal_congruence: how favorable the situation is
-  to the user's important desires NOW (given the updated state); coping_potential:
-  whether the user feels able to act on the situation; future_expectancy: whether
-  an acceptable outcome seems achievable.
-- "desire_assessment": assess each ACTIVE desire against THIS turn's situation
-  (the assistant's latest reply and its consequences). Only include desires with
-  relevance > 0. "relevance" in [0, 1] = how directly the situation concerns that
-  desire. "gc" in [-1, 1] = whether the situation promotes (+) or hinders (-) that
-  desire from the user's perspective. This is about the situation's favorability,
-  NOT about whether the desire strength should change.
-- The program may recompute goal_congruence from desire_assessment; still fill in
-  appraisal.goal_congruence with your best estimate as a fallback.
-- (emotion_proposal only takes a category — the program derives valence and arousal.)
-- category must be one of: neutral, sadness, anxiety, frustration, interest, hope, relief, satisfaction, anger.
+Operational definitions:
+- Appraisal values are in [-1, 1].
+- goal_congruence: how favorable the situation is to the user's important
+  desires NOW (given the updated state). Judge only the USER's own desires —
+  never the assistant's task objective.
+- coping_potential: whether the user feels able to act on the situation.
+- future_expectancy: whether an acceptable outcome seems achievable.
+- {desire_assessment_def}
+- The program may recompute goal_congruence from desire_assessment; still fill
+  in appraisal.goal_congruence with your best estimate as a fallback.
+- (emotion_proposal only takes a category — the program derives valence and
+  arousal. category must be one of: {category_list}.)
 - Only output the JSON object."""
 
 
@@ -191,9 +196,11 @@ def propose_appraisal(llm, state, reply: str, updater_notes: list[str]) -> dict:
             persona=state.persona,
             state_json=str(state.bdi_dict()),
             emotion=f"valence={state.emotion.valence:.2f}, arousal={state.emotion.arousal:.2f}, category={state.emotion.category}",
-            history="\n".join(f"{m['role']}: {m['text']}" for m in state.history[-8:]),
+            history="\n".join(f"{m['role']}: {m['text']}" for m in state.history[-4:]),
             reply=reply,
             cog_changes=cog_changes,
+            desire_assessment_def=DESIRE_ASSESSMENT_DEF,
+            category_list=CATEGORY_LIST,
         )},
     ]
     return llm.chat_json(msgs, max_tok=600)

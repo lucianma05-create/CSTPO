@@ -18,6 +18,8 @@ python -m simulator.demo_live_bargain --max-turns 8      # LLM 卖家 vs 认知�
   可用 `--model deepseek-v4-pro` 切换。
 - Route 采样模式（文档 §17、§17.1）：默认 `deterministic`（p_C>=0.5 取 Central，
   可复现），`--route-mode bernoulli` 保留随机性（训练 rollout 用）。
+- `--no-debug`：production/rollout 模式——不请求纯审计字段（ATC/CED 的 reason、
+  TRIE 的 dominant_cues），不打印 [trace] 链路追踪，节省 completion token。
 - 日志：写入 `runs/<task>_log.jsonl`，含每轮 mode(+reason) / route 三特征 /
   p_C / judgment / target / relevant_state / BDI 前后快照 / appraisal / emotion /
   reaction_plan / updater 约束审计。
@@ -31,9 +33,9 @@ a_t -> Mode(§8,§9) -> [Influence]
        归一化 p_C；弱信号回退 §17.2)
     -> Discrepancy(§18,§19: stance_distance + relevant_current_state)
     -> Judgment(§20: tau 阈值)
-    -> Contract(§22-27) -> Engine 提案(§28-30, 显式 route/judgment, 仅认知+plan)
+    -> Contract(§22-27) -> Engine 提案(§28-30, 显式 p_t+route/judgment, 仅认知+plan)
     -> Deterministic Updater(§31) -> Appraisal 独立调用(§32, 基于 C_{t+1}+审计)
-    -> Emotion(§33 v̂ 公式, §34 arousal 公式) -> NLG(§37,§38)
+    -> Emotion(§33 v̂ 公式, §34 arousal 公式) -> NLG(§37,§38, 显式 q_t)
 Elicit/Social: BDI 冻结（§35,§36），合并调用出 A 提案+plan（Elicit 记录
     revealed_items），随后 Emotion -> NLG 与 Influence 相同。
 ```
@@ -134,3 +136,10 @@ Elicit/Social: BDI 冻结（§35,§36），合并调用出 A 提案+plan（Elici
    （2026-09-11），arousal 由 §34 公式计算（2026-09-12），LLM 提议的
    valence/arousal 字段均已删除。
 9. `evaluation/` 四个模块（文档 §40）与 §44 实验验证暂未实现，属下一阶段。
+10. 0912 第二轮收敛（Prompt 审计）：p_t 显式传入 Engine、q_t 显式传入 NLG；
+    纯审计字段（reason/dominant_cues）改为 `--no-debug` 可选（默认 debug=True，
+    行为不变）；bargain 默认 profile tau_R 0.85→0.80——原配置下 d_t 离散
+    {0.2,0.5,0.8} 的最大值 0.8 < tau_R，Reject 永远不可达（配置问题，非公式
+    问题；修正后 bargain 的 Reject 可达）。EUE category 消融结论：维持方案 A
+    （LLM 提案 + (v,r) 校验），方案 B（程序主导）在 support 场景丢失场景语义
+    （anxiety 被推导为 frustration）且无 token 收益，已否决。

@@ -9,12 +9,13 @@ from __future__ import annotations
 
 from simulator.profile.cognitive_profile import map_level
 
-DISCREPANCY_PROMPT = """You are estimating the stance distance between an assistant's target
-proposition and the user's current cognitive state.
+DISCREPANCY_PROMPT = """Estimate the stance distance between the assistant's target proposition
+and the user's current cognitive state.
 
-This is NOT semantic text similarity.
-Judge how far the target proposition is from what the user currently
-believes, wants, or intends regarding the same issue.
+This is NOT semantic text similarity. Judge how far the proposition is from
+what the user currently believes, wants, or intends on the same issue.
+Example: "small donations matter" vs "small donations do not matter" share
+the topic but have HIGH stance distance.
 
 Assistant's target proposition:
 {target}
@@ -22,29 +23,21 @@ Assistant's target proposition:
 Current user state (beliefs / desires / intentions):
 {state_text}
 
-Definitions:
-
-low:
-The proposition is already broadly compatible with the user's current position.
-
-medium:
-The proposition differs meaningfully from the user's current position,
-but does not directly overturn a strong existing belief or intention.
-
-high:
-The proposition directly conflicts with a strong existing belief,
-goal priority, or intention.
+low — the proposition is broadly compatible with the user's current position.
+medium — it differs meaningfully but does not directly overturn a strong
+existing belief or intention.
+high — it directly conflicts with a strong existing belief, goal priority,
+or intention.
 
 Return exactly one JSON object:
 {{
-  "target_proposition": "the target proposition restated briefly",
   "relevant_current_state": ["B1", "D2", "I1"],
-  "stance_distance": "low | medium | high",
-  "reason": "one short sentence"
+  "stance_distance": "low | medium | high"
 }}
 
 "relevant_current_state" lists the ids of existing beliefs, desires, or
-intentions most related to this proposition (may be [])."""
+intentions most related to this proposition (may be []). Use ONLY ids that
+appear in the current user state above — do not invent new ids."""
 
 
 def estimate_discrepancy(llm, state, target: str | None) -> dict:

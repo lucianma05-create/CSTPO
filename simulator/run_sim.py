@@ -56,7 +56,7 @@ SCENARIOS = {
             "你是一个想买二手自行车的学生，预算有限，但明天开学要用车，"
             "所以比较着急。你砍价比较直接。"
         ),
-        "profile": CognitiveProfile(eta_R=0.75, tau_A=0.45, tau_R=0.85),
+        "profile": CognitiveProfile(eta_R=0.75, tau_A=0.45, tau_R=0.80),
         "beliefs": [BDIItem("B1", "belief", "卖家最终可能接受80元", 3.0)],
         "desires": [
             BDIItem("D1", "desire", "希望价格尽可能低", 3.8),
@@ -109,12 +109,14 @@ def main():
     ap.add_argument("--model", default=None, help="默认 deepseek-flash")
     ap.add_argument("--route-mode", choices=["deterministic", "bernoulli"],
                     default="deterministic", help="Route 采样模式（文档 §17、§17.1）")
+    ap.add_argument("--no-debug", action="store_true",
+                    help="production 模式：不请求纯审计字段（reason/dominant_cues），不打印链路追踪")
     ap.add_argument("--out", default=None, help="日志输出路径")
     args = ap.parse_args()
 
     sc = SCENARIOS[args.task]
     sim = UserSimulator(build_state(sc), LLMClient(model=args.model),
-                        route_mode=args.route_mode)
+                        route_mode=args.route_mode, debug=not args.no_debug)
     print(f"===== 任务: {args.task} | 模型: {sim.llm.model} | route_mode: {args.route_mode} =====")
     print(f"Persona: {sc['persona']}")
     print(f"Theta: eta_R={sc['profile'].eta_R}, tau_A={sc['profile'].tau_A}, tau_R={sc['profile'].tau_R}")
@@ -148,6 +150,8 @@ def main():
             print(f"  reaction_plan: {log.reaction_plan}")
         for n in log.update_notes:
             print(f"  [updater] {n}")
+        if sim.debug:
+            print(f"  [trace] {sim.chain_trace(log)}")
         print(f"[user] {user_reply}")
         if log.user_done:
             print(f"  user_done=True ({log.done_reason})")

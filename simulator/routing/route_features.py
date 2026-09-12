@@ -9,11 +9,18 @@ from __future__ import annotations
 
 from simulator.profile.cognitive_profile import map_level
 
-FEATURES_PROMPT = """You are analyzing the assistant's latest influential reply.
+# 交互压力操作定义（TRIE 为规范所有者；SRR/ERR 合并调用复用，见 user_response.py）
+INTERACTION_PRESSURE_DEF = """how much the reply demands the user's immediate response.
+Judge ONLY the demand on immediate response — not persuasiveness, topic
+importance, or how the user might feel. high = presses for an answer or
+commitment right now (deadline, ultimatum, confrontation, repeated push, a
+question that cannot be deferred). medium = an ordinary question or mild
+suggestion with room to defer (no deadline). low = chitchat, plain
+information, casual remarks (the user could stay silent without consequence)."""
 
-Your task is NOT to predict whether the user will accept the message.
-Evaluate only how much material the reply provides for central versus
-peripheral processing.
+FEATURES_PROMPT = """You are extracting semantic features from the assistant's latest reply.
+You do NOT predict whether the user will accept it — only what processing
+material the reply provides.
 
 Current user state (beliefs / desires / intentions):
 {state_text}
@@ -21,36 +28,20 @@ Current user state (beliefs / desires / intentions):
 Assistant's latest reply:
 {reply}
 
-Definitions:
+Operational definitions:
 
-Relevance:
-How directly the reply concerns the user's currently important beliefs,
-desires, intentions, constraints, or decisions.
+Relevance — how directly the reply concerns the user's currently important
+beliefs, desires, intentions, constraints, or decisions.
 
-ArgumentStrength:
-How much substantive issue-relevant reasoning the reply contains.
-Strong arguments include direct evidence, causal explanation, concrete
-consequences, feasibility information, or verifiable facts.
-Do not count authority, popularity, emotional wording, or confidence
-as substantive argument strength.
+ArgumentStrength — how much substantive issue-relevant reasoning the reply
+contains (direct evidence, causal explanation, concrete consequences,
+feasibility, verifiable facts). Authority, popularity, emotional wording,
+and confidence do NOT count as argument strength.
 
-CueStrength:
-How strongly the reply relies on peripheral cues such as authority,
-social proof, familiarity, liking, emotional appeal, confidence,
-prestige, or source image.
+CueStrength — how strongly the reply relies on peripheral cues: authority,
+social proof, familiarity, liking, emotional appeal, confidence, prestige.
 
-InteractionPressure:
-How much this reply pushes the user to respond or decide immediately.
-Judge ONLY the demand the reply places on the user's immediate response.
-Do not confuse it with persuasiveness, topic importance, or how the user
-might feel about the content.
-- high: presses for an answer or commitment right now — a deadline, ultimatum,
-  confrontation, repeated push, or a question that cannot reasonably be deferred
-  (e.g. "deal now or I walk", "are you in or not?").
-- medium: invites a response or nudges toward a decision, but leaves room to defer —
-  an ordinary question to answer or a mild suggestion, with no deadline or ultimatum.
-- low: low-stakes and open-ended — chitchat, plain information, casual remarks;
-  the user could stay silent or reply at leisure without consequence.
+InteractionPressure — {pressure_def}
 
 Use only: low, medium, high
 
@@ -60,19 +51,24 @@ Return exactly one JSON object:
   "argument_strength": "low | medium | high",
   "cue_strength": "low | medium | high",
   "interaction_pressure": "low | medium | high",
-  "dominant_cues": ["authority", "social_proof"],
+  {cues_field}
   "target_proposition": "the main proposition or action direction the assistant is trying to advance"
 }}
 
-If no peripheral cue is present, set "dominant_cues" to [].
 If the reply advances no clear proposition, set "target_proposition" to null."""
 
+CUES_SCHEMA = '"dominant_cues": ["authority", "social_proof"],\n  '
 
-def extract_route_features(llm, state, reply: str) -> dict:
+
+def extract_route_features(llm, state, reply: str, debug: bool = True) -> dict:
+    """dominant_cues 为纯审计字段：debug=False 时不请求（§5 审计，不影响
+    Route 计算——Route 只依赖三个等级特征）。"""
     try:
         out = llm.chat_json(
             [{"role": "user", "content": FEATURES_PROMPT.format(
-                state_text=state.summary_text(), reply=reply)}],
+                state_text=state.summary_text(), reply=reply,
+                pressure_def=INTERACTION_PRESSURE_DEF,
+                cues_field=CUES_SCHEMA if debug else "")}],
             max_tok=300,
         )
     except Exception as e:

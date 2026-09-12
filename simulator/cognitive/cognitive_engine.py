@@ -11,8 +11,8 @@ from __future__ import annotations
 ENGINE_SYSTEM = """You are simulating one user in a multi-turn conversation.
 
 Your task is not to help the assistant succeed.
-Your task is to simulate how this specific user's cognition and emotion
-would realistically change after the assistant's latest reply.
+Your task is to simulate how this specific user's cognition would realistically
+change after the assistant's latest reply.
 
 The user's cognitive state contains:
 
@@ -25,9 +25,6 @@ what outcomes the user wants to achieve or avoid.
 Intentions:
 concrete actions the user is currently inclined or committed to take.
 
-Emotion:
-the user's short-term affective state.
-
 Important rules:
 
 1. Preserve continuity with the current cognitive state.
@@ -38,11 +35,9 @@ Important rules:
    belief or desire.
 5. Do not optimize for the assistant's task objective.
 6. The user's cognition is task-neutral.
-7. The reaction plan should describe a natural next utterance that reveals
-   only part of the internal state.
-8. Never mention BDI, processing route, judgment category, appraisal
-   variables, or cognitive transition labels in the reaction plan.
-9. Follow the provided cognitive transition contract strictly."""
+7. The reaction plan must not mention BDI, processing route, judgment
+   category, or cognitive transition labels.
+8. Follow the provided cognitive transition contract strictly."""
 
 ENGINE_USER = """Persona:
 {persona}
@@ -62,7 +57,9 @@ Recent conversation:
 Assistant's latest reply:
 {reply}
 
-Dialogue mode: Influence
+Target proposition (semantic anchor for this turn's influence):
+{target}
+
 Processing route: {route}
 Judgment: {judgment}
 Cognitive transition contract for this turn:
@@ -86,30 +83,36 @@ Propose the user's cognitive update as exactly one JSON object:
 
 Notes:
 - "operation" is always "update" for existing items; new items go to "new_items".
-- Beliefs, desires AND intentions may all be updated — output the ones that actually
-  change this turn, within the contract limits. A desire changes when the reply alters
-  its importance, feasibility or relevance. An intention changes when its supporting
-  beliefs or desires change; if a supporting belief clearly moved, do not leave the
-  intention untouched. The example above only illustrates the format.
-- strength is in [0, 4].
+- All substantive updates must relate to the target proposition or its direct
+  consequences. Do NOT re-extract or replace the target proposition. Unrelated
+  beliefs, desires, and intentions stay unchanged. The target may concern
+  beliefs, desires, or intentions.
+- Output only the items that actually change this turn, within the contract.
+  A desire changes when the reply alters its importance, feasibility or relevance.
+  An intention changes when its supporting beliefs or desires change; if a
+  supporting belief clearly moved, do not leave the intention untouched.
+  The example above only illustrates the format.
+- strength is in [0, 4]. "reaction_plan" is one short sentence (5-15 words).
 - Do NOT output appraisal, desire_assessment, or emotion_proposal here — a separate
   appraisal step handles them after the constraints are applied.
 - "cue": true ONLY for a peripheral-cue belief about trust, popularity, authority,
-  familiarity, or social norm. Issue-relevant beliefs about the matter under
-  discussion are NOT cue beliefs — mark them "cue": false even if the reply
-  mentions popularity or authority.
-- "core": true for beliefs/desires/intentions central to the user's current
-  situation; use "core": false only for clearly peripheral details.
-- "polarity" applies to desires and intentions only: "approach" = wants to achieve / to do it,
-  "avoid" = wants to avoid / not to do it. Omit it for beliefs.
-- "conflicts_with" applies to new beliefs: list the ids of existing beliefs that the new belief
-  directly contradicts (e.g. "the seller may accept 80" vs "the seller will not go below 85").
-  The program will weaken the conflicting belief accordingly, so only mark real contradictions.
+  familiarity, or social norm. Issue-relevant beliefs are NOT cue beliefs — mark
+  them "cue": false even if the reply mentions popularity or authority.
+- "core": true for items central to the user's current situation; use "core": false
+  only for clearly peripheral details.
+- "polarity" applies to desires and intentions only: "approach" = wants to achieve /
+  to do it, "avoid" = wants to avoid / not to do it. Omit it for beliefs.
+- "conflicts_with" applies to new beliefs: list the ids of existing beliefs that the
+  new belief directly contradicts. The program will weaken the conflicting belief
+  accordingly, so only mark real contradictions.
 - Only output the JSON object."""
 
 
 def propose_cognitive_update(llm, state, reply: str, contract: str,
-                             route: str, judgment: str) -> dict:
+                             route: str, judgment: str,
+                             target: str | None = None) -> dict:
+    """Engine 提案（§6.2）。target 为 TRIE 提取的 p_t（语义锚点，不得重提）；
+    约束仍由 Updater 执行（I_t 由 Updater 消费，见 simulator.py）。"""
     msgs = [
         {"role": "system", "content": ENGINE_SYSTEM},
         {"role": "user", "content": ENGINE_USER.format(
@@ -117,8 +120,9 @@ def propose_cognitive_update(llm, state, reply: str, contract: str,
             habit_card=state.habit_card,
             state_json=str(state.bdi_dict()),
             emotion=f"valence={state.emotion.valence:.2f}, arousal={state.emotion.arousal:.2f}, category={state.emotion.category}",
-            history="\n".join(f"{m['role']}: {m['text']}" for m in state.history[-8:]),
+            history="\n".join(f"{m['role']}: {m['text']}" for m in state.history[-6:]),
             reply=reply,
+            target=target or "(none — no explicit target proposition)",
             route=route,
             judgment=judgment,
             contract=contract,

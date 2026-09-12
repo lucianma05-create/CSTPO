@@ -47,7 +47,11 @@ def _extract_json(text: str):
 
 
 class LLMClient:
-    """极薄封装：chat 返回纯文本，chat_json 返回解析后的 dict。"""
+    """极薄封装：chat 返回纯文本，chat_json 返回解析后的 dict。
+
+    自动累计 API usage（prompt/completion tokens），供成本审计
+    （Prompt 审计 0912）与后续 evaluation 使用；不影响任何行为。
+    """
 
     def __init__(self, model: str | None = None):
         env = _load_env()
@@ -61,6 +65,14 @@ class LLMClient:
             max_retries=2,
         )
         self.model = model or env.get("MODEL", MODEL_FLASH)
+        self.calls = 0
+        self.prompt_tokens = 0
+        self.completion_tokens = 0
+
+    def usage_report(self) -> str:
+        return (f"LLM 调用 {self.calls} 次 | prompt {self.prompt_tokens} | "
+                f"completion {self.completion_tokens} | "
+                f"总计 {self.prompt_tokens + self.completion_tokens}")
 
     def chat(self, messages, max_tok: int = 512, json_mode: bool = False) -> str:
         kwargs = dict(model=self.model, messages=messages, max_tokens=max_tok)
@@ -75,6 +87,10 @@ class LLMClient:
             )
         except Exception:
             r = self.client.chat.completions.create(temperature=0.0, **kwargs)
+        if getattr(r, "usage", None):
+            self.calls += 1
+            self.prompt_tokens += r.usage.prompt_tokens or 0
+            self.completion_tokens += r.usage.completion_tokens or 0
         return (r.choices[0].message.content or "").strip()
 
     def chat_json(self, messages, max_tok: int = 512) -> dict:

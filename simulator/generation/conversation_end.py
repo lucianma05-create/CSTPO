@@ -7,23 +7,22 @@
 """
 from __future__ import annotations
 
-DONE_PROMPT = """You are analyzing the user's latest message in a multi-turn conversation.
+DONE_PROMPT = """Does the user's latest message intend to END the current conversation?
 
-Question: does the user intend to END the current conversation now?
+"Ending" includes: goodbye / farewell, leaving, refusing to continue talking,
+or otherwise closing the exchange.
+It does NOT include: agreeing to a proposal, accepting a deal, making a
+decision, or answering a question — task outcomes are irrelevant.
 
-"Ending the conversation" includes: saying goodbye or farewell, leaving,
-refusing to continue talking, or otherwise closing the exchange.
-
-It does NOT mean: agreeing to a proposal, making a decision, accepting a deal,
-or answering a question. Task outcomes are irrelevant here.
-
-Recent conversation:
+Recent context:
 {history}
 
 User's latest message:
 {utterance}
 
-Return exactly one JSON object: {{"done": true|false, "reason": "brief"}}"""
+Return exactly one JSON object: {{"done": true|false{reason_field}}}"""
+
+REASON_SCHEMA = ', "reason": "<= 10 words"'
 
 FAREWELL_PATTERNS = [
     "再见", "拜拜", "回头再", "下次再聊", "下次聊", "回聊", "先这样",
@@ -33,17 +32,23 @@ FAREWELL_PATTERNS = [
 ]
 
 
-def classify_user_done(llm, state, utterance: str) -> tuple[bool, str | None]:
-    """返回 (user_done, reason)。LLM 失败时退回规则式关键词匹配。"""
+def classify_user_done(llm, state, utterance: str, debug: bool = True) -> tuple[bool, str | None]:
+    """返回 (user_done, reason)。reason 为纯审计字段：debug=False 时不请求
+    （§5 审计）。LLM 失败时退回规则式关键词匹配。"""
     if not utterance.strip():
         return False, "empty utterance"
-    hist_text = "\n".join(f"{m['role']}: {m['text']}" for m in state.history[-8:])
+    hist_text = "\n".join(f"{m['role']}: {m['text']}" for m in state.history[-4:])
     try:
         out = llm.chat_json(
-            [{"role": "user", "content": DONE_PROMPT.format(history=hist_text, utterance=utterance)}],
+            [{"role": "user", "content": DONE_PROMPT.format(
+                history=hist_text, utterance=utterance,
+                reason_field=REASON_SCHEMA if debug else "")}],
             max_tok=100,
         )
-        return bool(out.get("done", False)), str(out.get("reason", "")) or None
+        reason = str(out.get("reason", "")) or None
+        if reason:
+            reason = reason[:100]   # reason 仅入日志，限长（审计 §10.2）
+        return bool(out.get("done", False)), reason
     except Exception as e:
         print(f"  [user_done] LLM 失败，退回规则匹配: {e}")
     low = utterance.lower()

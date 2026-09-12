@@ -45,7 +45,7 @@ def build_buyer() -> UserState:
             "你是一个想买二手自行车的学生，预算有限，但明天开学要用车，所以比较着急。"
             "你砍价比较直接，也愿意用小让步换取成交。"
         ),
-        profile=CognitiveProfile(eta_R=0.75, tau_A=0.45, tau_R=0.85),
+        profile=CognitiveProfile(eta_R=0.75, tau_A=0.45, tau_R=0.80),
         beliefs=[BDIItem("B1", "belief", "卖家最终可能接受80元", 3.0)],
         desires=[
             BDIItem("D1", "desire", "希望价格尽可能低", 3.8),
