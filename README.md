@@ -51,16 +51,16 @@ Elicit/Social: BDI 冻结（§35,§36），只更新情绪并生成回复
 
 | 模块 | 文件 | 职责 |
 |---|---|---|
-| state | `state/schema.py` `state/updater.py` | BDI/Emotion/Appraisal 数据结构；确定性约束（§31） |
-| profile | `profile/cognitive_profile.py` | 等级映射、τ 阈值、习惯卡片编译（§7） |
-| routing | `routing/mode_classifier.py` | Influence/Elicit/Social 分类 + reason（§8,§9） |
-| routing | `routing/route_features.py` | 三特征 + 交互压力 + target_proposition 一次提取（§13,§14,§34） |
-| routing | `routing/route_controller.py` | CentralScore/PeripheralScore/p_C/采样（§16,§17） |
-| routing | `routing/discrepancy.py` | 立场距离 + relevant_current_state（§18,§19） |
-| routing | `routing/judgment_controller.py` | d_t + τ 阈值 -> Accept/Noncommit/Reject（§20） |
-| cognitive | `cognitive/rj_contract.py` `cognitive/cognitive_engine.py` | RJ 六种合约（§22-27）；认知更新提案（§28-30） |
-| affect | `affect/appraisal.py` `affect/emotion.py` | 钳制 + §32.1 GC 公式重算（desire_assessment）；v̂=(GC+CP+FE)/3、r̂=γ1·\|ΔC\|+γ2·\|ΔGC\|+γ3·压力（§34）+ 惯性 + category 按 (v,r) 校验 |
-| generation | `generation/user_response.py` `generation/conversation_end.py` | reaction_plan → utterance（§37,§38）；user_done 分类 |
+| state | `simulator/state/schema.py` `simulator/state/updater.py` | BDI/Emotion/Appraisal 数据结构；确定性约束（§31） |
+| profile | `simulator/profile/cognitive_profile.py` | 等级映射、τ 阈值、习惯卡片编译（§7） |
+| routing | `simulator/routing/mode_classifier.py` | Influence/Elicit/Social 分类 + reason（§8,§9） |
+| routing | `simulator/routing/route_features.py` | 三特征 + 交互压力 + target_proposition 一次提取（§13,§14,§34） |
+| routing | `simulator/routing/route_controller.py` | CentralScore/PeripheralScore/p_C/采样（§16,§17） |
+| routing | `simulator/routing/discrepancy.py` | 立场距离 + relevant_current_state（§18,§19） |
+| routing | `simulator/routing/judgment_controller.py` | d_t + τ 阈值 -> Accept/Noncommit/Reject（§20） |
+| cognitive | `simulator/cognitive/rj_contract.py` `simulator/cognitive/cognitive_engine.py` | RJ 六种合约（§22-27）；认知更新提案（§28-30） |
+| affect | `simulator/affect/appraisal.py` `simulator/affect/emotion.py` | 钳制 + §32.1 GC 公式重算（desire_assessment）；v̂=(GC+CP+FE)/3、r̂=γ1·\|ΔC\|+γ2·\|ΔGC\|+γ3·压力（§34）+ 惯性 + category 按 (v,r) 校验 |
+| generation | `simulator/generation/user_response.py` `simulator/generation/conversation_end.py` | reaction_plan → utterance（§37,§38）；user_done 分类 |
 
 ## 0911 对齐说明
 
@@ -74,7 +74,7 @@ Elicit/Social: BDI 冻结（§35,§36），只更新情绪并生成回复
 3. **Discrepancy**（§19）：输出 `relevant_current_state`（B/D/I 节点 id，
    程序过滤幻觉 id），替代旧版只输出 belief id + support_quality
    （support_quality 在 0911 文档中已移除，故删除）。
-4. **模块归位**（§40）：route 相关控制器从 `cognitive/` 移至 `routing/`
+4. **模块归位**（§40）：route 相关控制器从 `simulator/cognitive/` 移至 `simulator/routing/`
    （route_features / route_controller / discrepancy / judgment_controller）。
 5. **Mode 分类**（§9）：按文档 prompt 返回 `{mode, reason}`，reason 入日志。
 6. **Engine 输入**（§28）：prompt 显式包含 Processing route 与 Judgment
