@@ -1,5 +1,8 @@
 # Cog-Sim / CSTPO diagnostics
 
+
+Generated results are local artifacts and are not distributed with this repository. Keep reusable diagnostic scripts here; put one-off scratch scripts in `experiments/_local/`. The research protocol link below is available in the local workspace only.
+
 Run from the CSTPO workspace. These scripts import the unchanged source in `Cog-Sim/`.
 They require its dependencies (including `openai`); no extra statistics package is needed.
 

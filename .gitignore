@@ -1,15 +1,31 @@
-# 环境配置（含 API key，勿提交）
+# Local credentials and assistant settings
 .env
-
-# Claude 本地配置（settings.local.json 含 API key 的权限规则，勿提交）
+.env.*
+!.env.example
 .claude/
 
-# 设计文档工作区（不入库；实验文档0912 例外，随版本上传）
-shared_work_space/*
+# Private research workspace (maintained locally)
+/shared_work_space/
 
-# Python
+# Python caches and local environments
 __pycache__/
 *.py[cod]
+.pytest_cache/
+.venv/
+venv/
 
-# 实验数据
-experiments/results/*
+# Generated diagnostics, evaluation reports, and conversation logs
+/experiments/results/
+/Cog-Sim/evaluation/results/
+/Cog-Sim/evaluation/reports/
+/Cog-Sim/evaluation/failures/
+/Cog-Sim/runs/
+/Cog-Sim/shared_work_space/
+
+# Local scratch scripts and training artifacts
+/scratch/
+/experiments/_local/
+/checkpoints/
+/outputs/
+/wandb/
+*.log

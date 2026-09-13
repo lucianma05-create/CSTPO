@@ -19,6 +19,12 @@ experiments/        已有审计、先导实验脚本及结果
 shared_work_space/  算法设计、数据规范、实验协议与推进记录
 ```
 
+## 仓库管理
+
+`Cog-Sim/` 当前作为源码副本由本仓库统一管理，来源为 [Cog-Sim](https://github.com/lucianma05-create/Cog-Sim)，不是 Git submodule。直接克隆 CSTPO 即可获得模拟器源码，不需要递归初始化子仓库。后续如需两个仓库独立维护和发布，可迁移为固定 commit 的 submodule；不要直接在此目录中再次 `git init` 或嵌套克隆。
+
+保留模拟器、评估代码和可复现的诊断脚本；生成的结果、评估报告、运行日志、模型产物及本地临时脚本不入库。`shared_work_space/` 延续本地研究文档的管理方式，不随仓库分发；下方研究文档链接供本地工作区使用。
+
 ## 文档入口
 
 先阅读 [UPDATEME：文档职责与推进顺序](shared_work_space/UPDATEME.md)，再按需查看：
