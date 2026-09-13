@@ -17,7 +17,9 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "Cog-Sim"
 sys.path.insert(0, str(SOURCE))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+from checkpoint import restore, snapshot
 from evaluation.robustness import run as robustness
 from evaluation.state_transition import rj_violations, state_stability
 from simulator.run_sim import SCENARIOS, build_state
@@ -29,6 +31,22 @@ from simulator.state.updater import constrained_apply
 def fingerprint():
     return {str(p.relative_to(SOURCE)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted((SOURCE / "simulator").rglob("*.py"))}
+
+
+def full_field_diff(before: dict, after: dict) -> list[str]:
+    """v1.0.1-fix（修复提案 05 问题 7）：全字段 BDI 差异比较。
+
+    id/content/strength/core/active/polarity 任一变化都可检出，
+    弥补强度-only 比较无法发现同强度内容变更的缺口。
+    """
+    diffs: list[str] = []
+    for key in ("beliefs", "desires", "intentions"):
+        b = {i["id"]: i for i in before.get(key, [])}
+        a = {i["id"]: i for i in after.get(key, [])}
+        for iid in set(b) | set(a):
+            if b.get(iid) != a.get(iid):
+                diffs.append(f"{iid}: {b.get(iid)} -> {a.get(iid)}")
+    return diffs
 
 
 def run_checks():
@@ -86,6 +104,8 @@ def run_checks():
            count <= MAX_ITEMS["belief"])
 
     # Inject at the engine boundary, so the real simulate_turn guards also execute.
+    # v1.0.1-fix（问题 5）：元素守卫生效后流程不再提前崩溃，需补上后续步骤的
+    # mock（appraisal/NLG/user_done）才能验证整轮不崩溃。
     from unittest.mock import patch
     import simulator.simulator as orchestrator
     state = build_state(copy.deepcopy(SCENARIOS["donation"]))
@@ -97,7 +117,13 @@ def run_checks():
          patch.object(orchestrator, "estimate_discrepancy", return_value={
              "target": "anchor", "stance_distance": 0.2, "relevant_state_ids": ["B1"]}), \
          patch.object(orchestrator, "propose_cognitive_update", return_value={
-             "bdi_updates": [1], "new_items": []}):
+             "bdi_updates": [1], "new_items": []}), \
+         patch.object(orchestrator, "propose_appraisal", return_value={
+             "appraisal": {"goal_congruence": 0.0, "coping_potential": 0.0,
+                           "future_expectancy": 0.0}, "desire_assessment": [],
+             "emotion_proposal": {"category": "neutral"}}), \
+         patch.object(orchestrator, "generate_utterance", return_value="嗯。"), \
+         patch.object(orchestrator, "classify_user_done", return_value=(False, None)):
         try:
             sim.simulate_turn("probe")
             error = None
@@ -113,11 +139,35 @@ def run_checks():
     # The preceding failure is an integration requirement, not a promised snapshot API.
     checks[-1]["category"] = "integration_requirement"
 
+    # v1.0.1-fix（问题 6，方案 B）：快照由 CSTPO 侧 checkpoint 模块提供，
+    # 上方 Cog-Sim 检查由设计保持 FAIL。此处验证 CSTPO 往返恢复的完整性。
+    snap = snapshot(sim)
+    sim_restored = restore(snap, llm=object())
+    roundtrip_ok = (
+        sim_restored.prev_gc == sim.prev_gc
+        and sim_restored.conversation_ended == sim.conversation_ended
+        and sim_restored.route_mode == sim.route_mode
+        and sim_restored.debug == sim.debug
+        and len(sim_restored.logs) == len(sim.logs)
+        and sim_restored.state is not sim.state
+        and sim_restored.state.beliefs[0] is not sim.state.beliefs[0]
+        and sim_restored.state.beliefs[0].strength == sim.state.beliefs[0].strength
+    )
+    record("cstpo_checkpoint_roundtrip_preserves_full_state", "all fields equal",
+           roundtrip_ok, roundtrip_ok)
+    checks[-1]["category"] = "integration_requirement"
+
     before = build_state(copy.deepcopy(SCENARIOS["donation"])).bdi_dict()
     after = copy.deepcopy(before)
     after["beliefs"][0]["content"] = "a different proposition"
     reported = state_stability(SimpleNamespace(mode="elicit", bdi_before=before, bdi_after=after))
     record("stability_audit_detects_content_change", "nonempty violations", reported, bool(reported))
+    checks[-1]["category"] = "audit_coverage"
+
+    # v1.0.1-fix（问题 7）：CSTPO 侧全字段比较可检出同强度内容变更；
+    # 上方检查测试的是 Cog-Sim 冻结的 state_stability，由设计保持 FAIL。
+    diff = full_field_diff(before, after)
+    record("cstpo_full_field_audit_detects_content_change", "nonempty diff", diff, bool(diff))
     checks[-1]["category"] = "audit_coverage"
     return checks
 
