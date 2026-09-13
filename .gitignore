@@ -10,3 +10,6 @@ shared_work_space/*
 # Python
 __pycache__/
 *.py[cod]
+
+# 实验数据
+experiments/results/*
