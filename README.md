@@ -33,7 +33,8 @@ shared_work_space/  算法设计、数据规范、实验协议与推进记录
 2. [Rollout 数据与种子规范](shared_work_space/02_Rollout数据与种子规范.md)
 3. [实施规范](shared_work_space/03_CSTPO实施规范.md)：当前算法实现的主要依据。
 4. [任务评价与实验协议](shared_work_space/04_任务评价与实验协议.md)
-5. [历史审计与先导记录](shared_work_space/90_CogSim历史审计与先导记录.md)
+5. [CogSim 修复版提案](shared_work_space/05_CogSim修复版提案.md)：启动模拟器修复前逐条裁定。
+6. [历史审计与先导记录](shared_work_space/90_CogSim历史审计与先导记录.md)
 
 模拟器使用说明见 [Cog-Sim README](Cog-Sim/README.md)；已有诊断脚本说明见 [experiments README](experiments/README.md)。
 
