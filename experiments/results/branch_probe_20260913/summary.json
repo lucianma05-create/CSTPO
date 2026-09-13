@@ -1,0 +1,438 @@
+{
+  "completed": 36,
+  "planned": 36,
+  "valid": 36,
+  "usage": {
+    "http_requests": 240,
+    "http_errors": 0,
+    "prompt_tokens": 136816,
+    "completion_tokens": 15153
+  },
+  "tasks": {
+    "donation": {
+      "completed": 12,
+      "valid": 12,
+      "modes": {
+        "influence": 12,
+        "elicit": 0,
+        "social": 0
+      },
+      "bdi_anchors": {
+        "available": true,
+        "repeat_noise": 0.0010546875000000003,
+        "wording_component": 0.0,
+        "strategy_component": 0.0003841145833333328,
+        "raw_between_strategy_mean_square": 0.0025911458333333316,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "emotion": {
+        "available": true,
+        "repeat_noise": 0.00048060416666666667,
+        "wording_component": 0.00018889583333333288,
+        "strategy_component": 0.0003651223958333335,
+        "raw_between_strategy_mean_square": 0.0023188854166666666,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "influence_only_bdi": {
+        "available": true,
+        "repeat_noise": 0.0010546875000000003,
+        "wording_component": 0.0,
+        "strategy_component": 0.0003841145833333328,
+        "raw_between_strategy_mean_square": 0.0025911458333333316,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "branches": [
+        {
+          "strategy": "concrete_impact",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "concrete_impact",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "concrete_impact",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "concrete_impact",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "reduce_commitment",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "reduce_commitment",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "accept"
+        },
+        {
+          "strategy": "reduce_commitment",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "reduce_commitment",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "social_norm",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "peripheral",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "social_norm",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "peripheral",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "social_norm",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "peripheral",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "social_norm",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "peripheral",
+          "judgment": "noncommit"
+        }
+      ]
+    },
+    "bargain": {
+      "completed": 12,
+      "valid": 12,
+      "modes": {
+        "influence": 12,
+        "elicit": 0,
+        "social": 0
+      },
+      "bdi_anchors": {
+        "available": true,
+        "repeat_noise": 0.00015625000000000003,
+        "wording_component": 0.0,
+        "strategy_component": 6.776263578034403e-21,
+        "raw_between_strategy_mean_square": 0.00015625000000000006,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "emotion": {
+        "available": true,
+        "repeat_noise": 7.928124999999986e-05,
+        "wording_component": 4.403125000000001e-05,
+        "strategy_component": 0.0006379010416666667,
+        "raw_between_strategy_mean_square": 0.002718947916666667,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "influence_only_bdi": {
+        "available": true,
+        "repeat_noise": 0.00015625000000000003,
+        "wording_component": 0.0,
+        "strategy_component": 6.776263578034403e-21,
+        "raw_between_strategy_mean_square": 0.00015625000000000006,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "branches": [
+        {
+          "strategy": "firm_reservation",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "firm_reservation",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "firm_reservation",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "firm_reservation",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "peripheral",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "immediate_utility",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "immediate_utility",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "immediate_utility",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "immediate_utility",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "quality_value",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "quality_value",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "quality_value",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "quality_value",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        }
+      ]
+    },
+    "support": {
+      "completed": 12,
+      "valid": 12,
+      "modes": {
+        "influence": 8,
+        "elicit": 0,
+        "social": 4
+      },
+      "bdi_anchors": {
+        "available": true,
+        "repeat_noise": 1.7361111111111145e-05,
+        "wording_component": -3.3881317890172014e-21,
+        "strategy_component": 0.0025520833333333333,
+        "raw_between_strategy_mean_square": 0.010225694444444444,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "emotion": {
+        "available": true,
+        "repeat_noise": 0.0002288333333333333,
+        "wording_component": -4.328125000000009e-05,
+        "strategy_component": 0.0013029036458333343,
+        "raw_between_strategy_mean_square": 0.00535388541666667,
+        "note": "Fixed handcrafted strategy set, one parent; signed moment estimates, no population inference"
+      },
+      "influence_only_bdi": {
+        "available": false,
+        "reason": "requires all 3 x 2 x 2 valid observations"
+      },
+      "branches": [
+        {
+          "strategy": "normalize_difficulty",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "social",
+          "route": null,
+          "judgment": null
+        },
+        {
+          "strategy": "normalize_difficulty",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "social",
+          "route": null,
+          "judgment": null
+        },
+        {
+          "strategy": "normalize_difficulty",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "social",
+          "route": null,
+          "judgment": null
+        },
+        {
+          "strategy": "normalize_difficulty",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "social",
+          "route": null,
+          "judgment": null
+        },
+        {
+          "strategy": "reframe_difficulty",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "reframe_difficulty",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "reframe_difficulty",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "reframe_difficulty",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "reject"
+        },
+        {
+          "strategy": "small_action",
+          "wording": 0,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "small_action",
+          "wording": 0,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "small_action",
+          "wording": 1,
+          "repeat": 0,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        },
+        {
+          "strategy": "small_action",
+          "wording": 1,
+          "repeat": 1,
+          "issues": [],
+          "mode": "influence",
+          "route": "central",
+          "judgment": "noncommit"
+        }
+      ]
+    }
+  }
+}

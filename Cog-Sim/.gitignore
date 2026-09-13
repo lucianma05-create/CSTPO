@@ -6,6 +6,7 @@
 
 # 设计文档工作区（不入库；实验文档0912 例外，随版本上传）
 shared_work_space/*
+!shared_work_space/实验文档0912.md
 
 # Python
 __pycache__/

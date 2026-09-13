@@ -1,0 +1,186 @@
+{
+  "created_utc": "2026-09-13T07:43:03.785269+00:00",
+  "scope": "Offline edge cases and existing demo logs; no model calls or human validation",
+  "source_sha256": {
+    "simulator/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/affect/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/affect/emotion_engine.py": "09be44b5745345c00d9fb3f67855798e535fed8e49fed4f0832cb095920ed9e3",
+    "simulator/cognitive/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/cognitive/cognitive_engine.py": "b3a3b33e0e4841b47112f60bb408b463e4a92f65439a5a552686613f6361705e",
+    "simulator/cognitive/rj_contract.py": "f7109f11679a91aa068234d0beb7dfdaceb234deef063da5139fdb5eac852d3b",
+    "simulator/demo_live_bargain.py": "5e15a625392dfbb617c5629a8bb6a17ab4259a3304297023c8d5b55290255385",
+    "simulator/generation/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/generation/conversation_end.py": "267013dc6672f487d44cf07e00b5fda64120fb8a15605c288bc80c4686c2d0bc",
+    "simulator/generation/user_response.py": "b4dda46f8065ed9c1c02edd76e30522ccc5d5aad881a197e4ceb903eb469e308",
+    "simulator/llm.py": "d60ec88d4b80ff69bd53d8e5c852fe846eeb147cd7bef936110718e299d7fbb2",
+    "simulator/profile/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/profile/cognitive_profile.py": "375533e2c0f364ff70959966e2e9b3d5ab4ce876b694e5332b844b56e8e67e0b",
+    "simulator/routing/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/routing/discrepancy.py": "4a1957ee12beb99e1dcc11171b4b797bd69ffae8a1f7549af1c9154807ef9094",
+    "simulator/routing/judgment_controller.py": "bfc96cb4b3e870aaa8d7db59e42cfcd6cc928897d24354bb85ae6e07b6fda426",
+    "simulator/routing/mode_classifier.py": "971b244603aba859a8df4b77f6b5035a4c510e7f4f0b16350d18a80be05dddce",
+    "simulator/routing/route_controller.py": "0c08e8a7a3acd1fd264e55183206164596bf036032aace9f2cba325ba479bfc9",
+    "simulator/routing/route_features.py": "ad70b3cc3a43b0669f1d7f0d1301196847ea2bdeddb68dbcdca8bb38a19cbc91",
+    "simulator/run_sim.py": "ab46bc22c652f12e1241ce58927493e45d5c4fa06683e6aa5f54e7789afa292c",
+    "simulator/simulator.py": "87058ddf903dccdea2bea0e2241d809a0b41af0f64639f1732a90d3f6ce48851",
+    "simulator/state/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/state/schema.py": "e263bfebdfe6c81f1d9e6e980a533c0c3c1f0ff0c17f293487f9d7f7bd683ac9",
+    "simulator/state/updater.py": "8a355c276f2e9962d4e277b98ded688e470d0551c5885deedabca6d8513556a8",
+    "simulator/utils.py": "a7716163ce4c5d60ad2aed3c68a3e89a63cb3de088d803215565fe7c6b976496"
+  },
+  "existing_robustness": {
+    "checks": [
+      {
+        "name": "mode fallback 问号",
+        "ok": true
+      },
+      {
+        "name": "mode fallback 主张",
+        "ok": true
+      },
+      {
+        "name": "features fallback",
+        "ok": true
+      },
+      {
+        "name": "CED fallback 中文再见",
+        "ok": true
+      },
+      {
+        "name": "CED fallback 英文再见",
+        "ok": true
+      },
+      {
+        "name": "CED fallback 非结束",
+        "ok": true
+      },
+      {
+        "name": "json fence",
+        "ok": true
+      },
+      {
+        "name": "json 前后缀",
+        "ok": true
+      },
+      {
+        "name": "json 非法抛错",
+        "ok": true
+      },
+      {
+        "name": "farewell 词表非空",
+        "ok": true
+      }
+    ],
+    "passed": 10,
+    "total": 10
+  },
+  "branching_checks": [
+    {
+      "name": "build_state_isolates_repeated_initialization",
+      "expected": 3.0,
+      "observed": 0.123,
+      "ok": false
+    },
+    {
+      "name": "deepcopy_branch_isolation",
+      "expected": 3.0,
+      "observed": 3.0,
+      "ok": true
+    },
+    {
+      "name": "single_update_turn_cap",
+      "expected": "abs(delta) <= 1.0",
+      "observed": 1.0,
+      "ok": true
+    },
+    {
+      "name": "duplicate_updates_turn_cap",
+      "expected": "abs(delta) <= 1.0",
+      "observed": 2.0,
+      "ok": false
+    },
+    {
+      "name": "reactivation_checked_after_clipping",
+      "expected": "inactive or strength >= 0.7",
+      "observed": {
+        "id": "B1",
+        "type": "belief",
+        "content": "anchor",
+        "strength": 0.5,
+        "core": false,
+        "active": true,
+        "polarity": "approach"
+      },
+      "ok": false
+    },
+    {
+      "name": "evict_weakest_noncore",
+      "expected": "replace 0.8 with 0.9",
+      "observed": [
+        [
+          "1",
+          0.8
+        ],
+        [
+          "2",
+          1.5
+        ],
+        [
+          "3",
+          2.0
+        ],
+        [
+          "4",
+          3.0
+        ]
+      ],
+      "ok": false
+    },
+    {
+      "name": "reactivation_respects_active_capacity",
+      "expected": "active beliefs <= 4",
+      "observed": 5,
+      "ok": false
+    },
+    {
+      "name": "nested_invalid_update_does_not_crash_turn",
+      "expected": null,
+      "observed": "AttributeError",
+      "ok": false
+    },
+    {
+      "name": "state_only_checkpoint_preserves_gc_memory",
+      "expected": 0.8,
+      "observed": null,
+      "ok": false,
+      "category": "integration_requirement"
+    },
+    {
+      "name": "stability_audit_detects_content_change",
+      "expected": "nonempty violations",
+      "observed": [],
+      "ok": false,
+      "category": "audit_coverage"
+    }
+  ],
+  "historical_demo_logs": [
+    {
+      "file": "Cog-Sim/runs/bargain_log.jsonl",
+      "turns": 1,
+      "rj_violations": [],
+      "duplicate_proposal_turns": 0
+    },
+    {
+      "file": "Cog-Sim/runs/donation_log.jsonl",
+      "turns": 1,
+      "rj_violations": [],
+      "duplicate_proposal_turns": 0
+    },
+    {
+      "file": "Cog-Sim/runs/support_log.jsonl",
+      "turns": 3,
+      "rj_violations": [],
+      "duplicate_proposal_turns": 0
+    }
+  ]
+}

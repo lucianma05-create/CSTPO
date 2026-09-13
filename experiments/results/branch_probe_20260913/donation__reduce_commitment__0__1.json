@@ -1,0 +1,214 @@
+{
+  "task": "donation",
+  "strategy": "reduce_commitment",
+  "wording": 0,
+  "repeat": 1,
+  "parent_sha256": "7d8649f06dac038352c1c0168d3e98518755c53c81717d8231ec43fc769c889f",
+  "assistant_reply": "可以把捐赠限定在五元以内，只做这一次，不需要长期承诺，也不必影响自己的日常开销。",
+  "issues": [],
+  "log": {
+    "turn": 1,
+    "assistant_reply": "可以把捐赠限定在五元以内，只做这一次，不需要长期承诺，也不必影响自己的日常开销。",
+    "mode": "influence",
+    "mode_reason": null,
+    "route": "central",
+    "route_mode": "deterministic",
+    "judgment": "accept",
+    "p_central": 0.788,
+    "relevance": 0.8,
+    "argument_strength": 0.5,
+    "cue_strength": 0.2,
+    "interaction_pressure": 0.2,
+    "dominant_cues": [],
+    "discrepancy": 0.2,
+    "target": "Limit the donation to within five yuan, make it a one-time act, with no long-term commitment and no impact on daily expenses.",
+    "relevant_state_ids": [
+      "B1",
+      "D2",
+      "I1"
+    ],
+    "bdi_before": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "小额捐赠作用很有限",
+          "strength": 3.0,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "我希望帮助别人",
+          "strength": 2.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "D2",
+          "type": "desire",
+          "content": "我想控制自己的支出",
+          "strength": 3.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "目前不准备捐款",
+          "strength": 2.8,
+          "core": true,
+          "active": true,
+          "polarity": "avoid"
+        }
+      ]
+    },
+    "bdi_after": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "小额捐赠作用很有限",
+          "strength": 2.0,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "B2",
+          "type": "belief",
+          "content": "五元以内的一次性捐赠既不会影响我的日常开销，也能带来一点实际帮助",
+          "strength": 1.0,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "我希望帮助别人",
+          "strength": 2.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "D2",
+          "type": "desire",
+          "content": "我想控制自己的支出",
+          "strength": 3.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "目前不准备捐款",
+          "strength": 2.3,
+          "core": true,
+          "active": true,
+          "polarity": "avoid"
+        }
+      ]
+    },
+    "appraisal": {
+      "goal_congruence": 0.278,
+      "coping_potential": 0.7,
+      "future_expectancy": 0.5
+    },
+    "emotion_before": {
+      "valence": 0.0,
+      "arousal": 0.3,
+      "category": "neutral"
+    },
+    "emotion_after": {
+      "valence": 0.197,
+      "arousal": 0.37,
+      "category": "interest"
+    },
+    "reaction_plan": "认可这个方案可行，但仍会谨慎考虑是否真的捐出这五元。",
+    "user_reply": "五块钱确实不算什么，不过我还是得再想想，毕竟最近开销挺紧的。",
+    "proposed_bdi": {
+      "bdi_updates": [
+        {
+          "id": "B1",
+          "new_strength": 2.4,
+          "operation": "update",
+          "reason": "五元以内的一次性捐赠确实能产生一点作用，削弱了'小额捐赠作用很有限'的绝对性"
+        },
+        {
+          "id": "D2",
+          "new_strength": 3.5,
+          "operation": "update",
+          "reason": "五元以内且不影响日常开销，控制支出的顾虑得到满足，该愿望的可行性更明确"
+        },
+        {
+          "id": "I1",
+          "new_strength": 2.3,
+          "operation": "update",
+          "reason": "支持不捐款的信念B1被削弱，且小额一次性捐赠不影响开销，使不捐款的意愿有所松动"
+        }
+      ],
+      "new_items": [
+        {
+          "type": "belief",
+          "content": "五元以内的一次性捐赠既不会影响我的日常开销，也能带来一点实际帮助",
+          "strength": 1.8,
+          "core": true,
+          "cue": false,
+          "conflicts_with": [
+            "B1"
+          ],
+          "reason": "该方案直接回应了'小额捐赠作用有限'与'控制支出'两个核心顾虑"
+        }
+      ]
+    },
+    "desire_assessment": [
+      {
+        "id": "D1",
+        "relevance": 0.8,
+        "gc": 0.4
+      },
+      {
+        "id": "D2",
+        "relevance": 0.9,
+        "gc": 0.2
+      }
+    ],
+    "user_done": false,
+    "done_reason": null,
+    "update_notes": [
+      "新增 belief 强度 1.8 超限 1.0，截断为 1.0",
+      "新增 B2 [belief] strength=1.00",
+      "新 Belief B2 与 B1 冲突，B1 按限幅 1.0 衰减 0.40 → 2.00",
+      "GC 按 §32.1 公式重算: Σ(s·rel·gc)/Σ(s·rel) = 0.278 (top2: ['D2', 'D1'])",
+      "GC 提议值 0.10 -> 公式值 0.278",
+      "r̂ = 0.6·|ΔC|(0.62) + 0.25·|ΔGC|(0.00) + 0.5·压力(0.20) = 0.475"
+    ]
+  },
+  "usage": {
+    "http_requests": 7,
+    "http_errors": 0,
+    "structured_errors": 0,
+    "calls": 7,
+    "prompt_tokens": 4115,
+    "completion_tokens": 564,
+    "parse_errors": 0,
+    "repair_attempts": 0,
+    "repair_successes": 0
+  },
+  "valid": true
+}

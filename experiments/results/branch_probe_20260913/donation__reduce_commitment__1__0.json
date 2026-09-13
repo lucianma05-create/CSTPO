@@ -1,0 +1,186 @@
+{
+  "task": "donation",
+  "strategy": "reduce_commitment",
+  "wording": 1,
+  "repeat": 0,
+  "parent_sha256": "7d8649f06dac038352c1c0168d3e98518755c53c81717d8231ec43fc769c889f",
+  "assistant_reply": "这次可以只考虑五元的一次性捐赠，没有后续固定扣款，先保留好自己生活所需的预算。",
+  "issues": [],
+  "log": {
+    "turn": 1,
+    "assistant_reply": "这次可以只考虑五元的一次性捐赠，没有后续固定扣款，先保留好自己生活所需的预算。",
+    "mode": "influence",
+    "mode_reason": null,
+    "route": "central",
+    "route_mode": "deterministic",
+    "judgment": "noncommit",
+    "p_central": 0.788,
+    "relevance": 0.8,
+    "argument_strength": 0.5,
+    "cue_strength": 0.2,
+    "interaction_pressure": 0.2,
+    "dominant_cues": [],
+    "discrepancy": 0.5,
+    "target": "Consider making a one-time donation of five yuan while preserving your living budget, with no ongoing fixed deductions.",
+    "relevant_state_ids": [
+      "B1",
+      "D2",
+      "I1"
+    ],
+    "bdi_before": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "小额捐赠作用很有限",
+          "strength": 3.0,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "我希望帮助别人",
+          "strength": 2.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "D2",
+          "type": "desire",
+          "content": "我想控制自己的支出",
+          "strength": 3.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "目前不准备捐款",
+          "strength": 2.8,
+          "core": true,
+          "active": true,
+          "polarity": "avoid"
+        }
+      ]
+    },
+    "bdi_after": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "小额捐赠作用很有限",
+          "strength": 2.6,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "我希望帮助别人",
+          "strength": 2.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "D2",
+          "type": "desire",
+          "content": "我想控制自己的支出",
+          "strength": 3.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "目前不准备捐款",
+          "strength": 2.5,
+          "core": true,
+          "active": true,
+          "polarity": "avoid"
+        }
+      ]
+    },
+    "appraisal": {
+      "goal_congruence": 0.264,
+      "coping_potential": 0.6,
+      "future_expectancy": 0.4
+    },
+    "emotion_before": {
+      "valence": 0.0,
+      "arousal": 0.3,
+      "category": "neutral"
+    },
+    "emotion_after": {
+      "valence": 0.169,
+      "arousal": 0.262,
+      "category": "neutral"
+    },
+    "reaction_plan": "承认证据合理，但因支出顾虑仍保持谨慎，暂不决定。",
+    "user_reply": "五块钱确实不算多，不过我还是想再想想，最近手头实在有点紧。",
+    "proposed_bdi": {
+      "bdi_updates": [
+        {
+          "operation": "update",
+          "id": "B1",
+          "new_strength": 2.4,
+          "reason": "一次性五元且无后续扣款，让“小额捐赠作用有限”的绝对性略有松动，但仍未完全被说服"
+        },
+        {
+          "operation": "update",
+          "id": "I1",
+          "new_strength": 2.4,
+          "reason": "支持不捐款的信念略有减弱，但支出顾虑仍在，因此只是稍微松动"
+        }
+      ],
+      "new_items": []
+    },
+    "desire_assessment": [
+      {
+        "id": "D1",
+        "relevance": 0.7,
+        "gc": 0.2
+      },
+      {
+        "id": "D2",
+        "relevance": 0.9,
+        "gc": 0.3
+      }
+    ],
+    "user_done": false,
+    "done_reason": null,
+    "update_notes": [
+      "B1 幅度 -0.60 超限 0.4，截断为 -0.40",
+      "I1 幅度 -0.40 超限 0.3，截断为 -0.30",
+      "GC 按 §32.1 公式重算: Σ(s·rel·gc)/Σ(s·rel) = 0.264 (top2: ['D2', 'D1'])",
+      "GC 提议值 -0.10 -> 公式值 0.264",
+      "r̂ = 0.6·|ΔC|(0.17) + 0.25·|ΔGC|(0.00) + 0.5·压力(0.20) = 0.205"
+    ]
+  },
+  "usage": {
+    "http_requests": 7,
+    "http_errors": 0,
+    "structured_errors": 0,
+    "calls": 7,
+    "prompt_tokens": 3948,
+    "completion_tokens": 401,
+    "parse_errors": 0,
+    "repair_attempts": 0,
+    "repair_successes": 0
+  },
+  "valid": true
+}

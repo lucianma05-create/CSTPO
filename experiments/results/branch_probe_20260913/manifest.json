@@ -1,0 +1,303 @@
+{
+  "created_utc": "2026-09-13T08:03:09.206149+00:00",
+  "model": "deepseek-flash",
+  "tasks": [
+    "donation",
+    "bargain",
+    "support"
+  ],
+  "planned_branches": 36,
+  "max_http_requests": 300,
+  "workers": 3,
+  "source_sha256": {
+    "simulator/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/affect/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/affect/emotion_engine.py": "09be44b5745345c00d9fb3f67855798e535fed8e49fed4f0832cb095920ed9e3",
+    "simulator/cognitive/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/cognitive/cognitive_engine.py": "b3a3b33e0e4841b47112f60bb408b463e4a92f65439a5a552686613f6361705e",
+    "simulator/cognitive/rj_contract.py": "f7109f11679a91aa068234d0beb7dfdaceb234deef063da5139fdb5eac852d3b",
+    "simulator/demo_live_bargain.py": "5e15a625392dfbb617c5629a8bb6a17ab4259a3304297023c8d5b55290255385",
+    "simulator/generation/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/generation/conversation_end.py": "267013dc6672f487d44cf07e00b5fda64120fb8a15605c288bc80c4686c2d0bc",
+    "simulator/generation/user_response.py": "b4dda46f8065ed9c1c02edd76e30522ccc5d5aad881a197e4ceb903eb469e308",
+    "simulator/llm.py": "d60ec88d4b80ff69bd53d8e5c852fe846eeb147cd7bef936110718e299d7fbb2",
+    "simulator/profile/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/profile/cognitive_profile.py": "375533e2c0f364ff70959966e2e9b3d5ab4ce876b694e5332b844b56e8e67e0b",
+    "simulator/routing/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/routing/discrepancy.py": "4a1957ee12beb99e1dcc11171b4b797bd69ffae8a1f7549af1c9154807ef9094",
+    "simulator/routing/judgment_controller.py": "bfc96cb4b3e870aaa8d7db59e42cfcd6cc928897d24354bb85ae6e07b6fda426",
+    "simulator/routing/mode_classifier.py": "971b244603aba859a8df4b77f6b5035a4c510e7f4f0b16350d18a80be05dddce",
+    "simulator/routing/route_controller.py": "0c08e8a7a3acd1fd264e55183206164596bf036032aace9f2cba325ba479bfc9",
+    "simulator/routing/route_features.py": "ad70b3cc3a43b0669f1d7f0d1301196847ea2bdeddb68dbcdca8bb38a19cbc91",
+    "simulator/run_sim.py": "ab46bc22c652f12e1241ce58927493e45d5c4fa06683e6aa5f54e7789afa292c",
+    "simulator/simulator.py": "87058ddf903dccdea2bea0e2241d809a0b41af0f64639f1732a90d3f6ce48851",
+    "simulator/state/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulator/state/schema.py": "e263bfebdfe6c81f1d9e6e980a533c0c3c1f0ff0c17f293487f9d7f7bd683ac9",
+    "simulator/state/updater.py": "8a355c276f2e9962d4e277b98ded688e470d0551c5885deedabca6d8513556a8",
+    "simulator/utils.py": "a7716163ce4c5d60ad2aed3c68a3e89a63cb3de088d803215565fe7c6b976496"
+  },
+  "stimuli": {
+    "donation": {
+      "concrete_impact": [
+        "这个项目会公开每笔钱的用途，五元也能为一个孩子提供一顿饭，小额捐赠同样有具体作用。",
+        "项目账目可以查询，即使只捐五元，也能给一个孩子增加一顿饭，小额帮助也能落到实处。"
+      ],
+      "reduce_commitment": [
+        "可以把捐赠限定在五元以内，只做这一次，不需要长期承诺，也不必影响自己的日常开销。",
+        "这次可以只考虑五元的一次性捐赠，没有后续固定扣款，先保留好自己生活所需的预算。"
+      ],
+      "social_norm": [
+        "不少和你一样的普通上班族会从五元开始参与公益，大家一起出一点，已经成了常见的做法。",
+        "许多收入普通的人也会选择捐五元，和大家一起为公益出一份小小的力，这种参与很普遍。"
+      ]
+    },
+    "bargain": {
+      "firm_reservation": [
+        "八十五元是我的最低价，八十元的报价我已经拒绝过，这次也不会按八十元出售。",
+        "这辆车我最低只能收八十五元，之前有人出八十我没有答应，这个底价不会再降。"
+      ],
+      "quality_value": [
+        "这辆车刹车和轮胎状态都很好，近期不用额外维修，八十五元包含的是这个车况的价值。",
+        "轮胎和刹车都维护好了，买回去不用再花钱整修，所以八十五元与这辆车的质量相符。"
+      ],
+      "immediate_utility": [
+        "按八十五元今天就能交车，你今晚可以骑走，明天开学就能直接用上，省去继续找车的时间。",
+        "八十五元成交的话今天可以马上取车，明天上学不会耽误，也就不需要再花时间联系别的卖家。"
+      ]
+    },
+    "support": {
+      "small_action": [
+        "可以先把任务缩小到明天给导师发一条进度消息，不要求一次解决论文，只完成这个小步骤。",
+        "明天先发一条消息告诉导师当前的进展就好，把它当作独立的小任务，不必同时解决整篇论文。"
+      ],
+      "reframe_difficulty": [
+        "目前进展不顺，只能说明眼前的问题还没找到解法，不能据此判断你完全没有解决论文的能力。",
+        "现在卡住并不等于你没有能力完成论文，暂时缺少合适的办法和完全解决不了是两件不同的事。"
+      ],
+      "normalize_difficulty": [
+        "研究过程中遇到停滞是许多研究生都会经历的阶段，这种压力和焦虑是可以理解的反应。",
+        "不少研究生也会在论文阶段卡住并感到焦虑，你现在的压力属于遇到困难时常见的感受。"
+      ]
+    }
+  },
+  "execution_order": [
+    [
+      "support",
+      "normalize_difficulty",
+      0,
+      1
+    ],
+    [
+      "donation",
+      "social_norm",
+      0,
+      0
+    ],
+    [
+      "donation",
+      "concrete_impact",
+      1,
+      0
+    ],
+    [
+      "donation",
+      "concrete_impact",
+      0,
+      0
+    ],
+    [
+      "donation",
+      "social_norm",
+      0,
+      1
+    ],
+    [
+      "support",
+      "reframe_difficulty",
+      0,
+      1
+    ],
+    [
+      "donation",
+      "reduce_commitment",
+      1,
+      1
+    ],
+    [
+      "donation",
+      "concrete_impact",
+      1,
+      1
+    ],
+    [
+      "bargain",
+      "immediate_utility",
+      0,
+      1
+    ],
+    [
+      "bargain",
+      "quality_value",
+      0,
+      0
+    ],
+    [
+      "support",
+      "reframe_difficulty",
+      1,
+      0
+    ],
+    [
+      "support",
+      "reframe_difficulty",
+      1,
+      1
+    ],
+    [
+      "support",
+      "small_action",
+      1,
+      1
+    ],
+    [
+      "bargain",
+      "immediate_utility",
+      0,
+      0
+    ],
+    [
+      "support",
+      "small_action",
+      0,
+      1
+    ],
+    [
+      "bargain",
+      "quality_value",
+      1,
+      0
+    ],
+    [
+      "support",
+      "small_action",
+      1,
+      0
+    ],
+    [
+      "support",
+      "normalize_difficulty",
+      0,
+      0
+    ],
+    [
+      "bargain",
+      "quality_value",
+      1,
+      1
+    ],
+    [
+      "bargain",
+      "firm_reservation",
+      1,
+      1
+    ],
+    [
+      "support",
+      "reframe_difficulty",
+      0,
+      0
+    ],
+    [
+      "donation",
+      "reduce_commitment",
+      0,
+      1
+    ],
+    [
+      "donation",
+      "reduce_commitment",
+      0,
+      0
+    ],
+    [
+      "bargain",
+      "immediate_utility",
+      1,
+      0
+    ],
+    [
+      "bargain",
+      "quality_value",
+      0,
+      1
+    ],
+    [
+      "support",
+      "normalize_difficulty",
+      1,
+      1
+    ],
+    [
+      "support",
+      "normalize_difficulty",
+      1,
+      0
+    ],
+    [
+      "donation",
+      "social_norm",
+      1,
+      1
+    ],
+    [
+      "donation",
+      "concrete_impact",
+      0,
+      1
+    ],
+    [
+      "donation",
+      "social_norm",
+      1,
+      0
+    ],
+    [
+      "bargain",
+      "firm_reservation",
+      0,
+      1
+    ],
+    [
+      "support",
+      "small_action",
+      0,
+      0
+    ],
+    [
+      "bargain",
+      "immediate_utility",
+      1,
+      1
+    ],
+    [
+      "bargain",
+      "firm_reservation",
+      1,
+      0
+    ],
+    [
+      "bargain",
+      "firm_reservation",
+      0,
+      0
+    ],
+    [
+      "donation",
+      "reduce_commitment",
+      1,
+      0
+    ]
+  ],
+  "sampling": "temperature=0; deterministic route; backend output can still vary",
+  "limitations": "Synthetic demo roots, handcrafted interventions, no terminal returns or human references"
+}

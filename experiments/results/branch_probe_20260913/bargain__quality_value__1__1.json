@@ -1,0 +1,206 @@
+{
+  "task": "bargain",
+  "strategy": "quality_value",
+  "wording": 1,
+  "repeat": 1,
+  "parent_sha256": "68af1cfae298187d8beedb356b6f5316e26e7612d5ed86f5e64f8382a0e86fdd",
+  "assistant_reply": "轮胎和刹车都维护好了，买回去不用再花钱整修，所以八十五元与这辆车的质量相符。",
+  "issues": [],
+  "log": {
+    "turn": 1,
+    "assistant_reply": "轮胎和刹车都维护好了，买回去不用再花钱整修，所以八十五元与这辆车的质量相符。",
+    "mode": "influence",
+    "mode_reason": null,
+    "route": "central",
+    "route_mode": "deterministic",
+    "judgment": "reject",
+    "p_central": 0.857,
+    "relevance": 0.8,
+    "argument_strength": 0.5,
+    "cue_strength": 0.2,
+    "interaction_pressure": 0.2,
+    "dominant_cues": [],
+    "discrepancy": 0.8,
+    "target": "85元与车辆质量相符，值得接受",
+    "relevant_state_ids": [
+      "D1",
+      "I1",
+      "B1"
+    ],
+    "bdi_before": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "卖家最终可能接受80元",
+          "strength": 3.0,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "希望价格尽可能低",
+          "strength": 3.8,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "D2",
+          "type": "desire",
+          "content": "希望今天成交",
+          "strength": 3.1,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "坚持80元",
+          "strength": 3.0,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ]
+    },
+    "bdi_after": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "卖家最终可能接受80元",
+          "strength": 2.6,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "B2",
+          "type": "belief",
+          "content": "卖家说维护好了不用再花钱，但这不能证明85元就值得我接受",
+          "strength": 0.4,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "希望价格尽可能低",
+          "strength": 3.8,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "D2",
+          "type": "desire",
+          "content": "希望今天成交",
+          "strength": 3.1,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "坚持80元",
+          "strength": 2.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ]
+    },
+    "appraisal": {
+      "goal_congruence": -0.374,
+      "coping_potential": 0.55,
+      "future_expectancy": 0.25
+    },
+    "emotion_before": {
+      "valence": 0.1,
+      "arousal": 0.4,
+      "category": "neutral"
+    },
+    "emotion_after": {
+      "valence": 0.117,
+      "arousal": 0.358,
+      "category": "neutral"
+    },
+    "reaction_plan": "承认维护说法，但预算有限，仍不愿轻易接受85元。",
+    "user_reply": "维护好了是好事，但我预算就这么多，八十我今天就能定。",
+    "proposed_bdi": {
+      "bdi_updates": [
+        {
+          "id": "B1",
+          "new_strength": 2.4,
+          "reason": "卖家强调质量与价格相符，但未直接证明会接受80元，原有预期被削弱"
+        },
+        {
+          "id": "I1",
+          "new_strength": 2.3,
+          "reason": "支撑80元成交的信念减弱，坚持80元的意愿随之下降"
+        }
+      ],
+      "new_items": [
+        {
+          "type": "belief",
+          "content": "卖家说维护好了不用再花钱，但这不能证明85元就值得我接受",
+          "strength": 1.8,
+          "core": true,
+          "cue": false,
+          "conflicts_with": [],
+          "reason": "对卖家论据的直接评估，认为其未充分支持85元值得接受"
+        }
+      ]
+    },
+    "desire_assessment": [
+      {
+        "id": "D1",
+        "relevance": 0.9,
+        "gc": -0.5
+      },
+      {
+        "id": "D2",
+        "relevance": 0.8,
+        "gc": -0.2
+      }
+    ],
+    "user_done": false,
+    "done_reason": null,
+    "update_notes": [
+      "B1 幅度 -0.60 超限 0.4，截断为 -0.40",
+      "I1 幅度 -0.70 超限 0.5，截断为 -0.50",
+      "新增 belief 强度 1.8 超限 0.4，截断为 0.4",
+      "新增 B2 [belief] strength=0.40",
+      "GC 按 §32.1 公式重算: Σ(s·rel·gc)/Σ(s·rel) = -0.374 (top2: ['D1', 'D2'])",
+      "GC 提议值 -0.35 -> 公式值 -0.374",
+      "r̂ = 0.6·|ΔC|(0.33) + 0.25·|ΔGC|(0.00) + 0.5·压力(0.20) = 0.295",
+      "category=frustration 与 (v=0.12, r=0.36) 矛盾，改写为 neutral"
+    ]
+  },
+  "usage": {
+    "http_requests": 7,
+    "http_errors": 0,
+    "structured_errors": 0,
+    "calls": 7,
+    "prompt_tokens": 4084,
+    "completion_tokens": 440,
+    "parse_errors": 0,
+    "repair_attempts": 0,
+    "repair_successes": 0
+  },
+  "valid": true
+}

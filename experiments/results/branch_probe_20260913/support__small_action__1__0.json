@@ -1,0 +1,183 @@
+{
+  "task": "support",
+  "strategy": "small_action",
+  "wording": 1,
+  "repeat": 0,
+  "parent_sha256": "0bace2349f9c813cede6be1545a5da75e82b1fcaa8b6cf9a06367f82f3de8f07",
+  "assistant_reply": "明天先发一条消息告诉导师当前的进展就好，把它当作独立的小任务，不必同时解决整篇论文。",
+  "issues": [],
+  "log": {
+    "turn": 1,
+    "assistant_reply": "明天先发一条消息告诉导师当前的进展就好，把它当作独立的小任务，不必同时解决整篇论文。",
+    "mode": "influence",
+    "mode_reason": null,
+    "route": "central",
+    "route_mode": "deterministic",
+    "judgment": "noncommit",
+    "p_central": 0.651,
+    "relevance": 0.8,
+    "argument_strength": 0.2,
+    "cue_strength": 0.2,
+    "interaction_pressure": 0.5,
+    "dominant_cues": [],
+    "discrepancy": 0.5,
+    "target": "明天先发一条消息告诉导师当前的进展，把它当作独立的小任务，不必同时解决整篇论文。",
+    "relevant_state_ids": [
+      "B1",
+      "D1",
+      "I1"
+    ],
+    "bdi_before": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "这件事我完全解决不了",
+          "strength": 3.5,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "我希望恢复一些控制感",
+          "strength": 3.2,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "我暂时不想采取行动",
+          "strength": 2.8,
+          "core": true,
+          "active": true,
+          "polarity": "avoid"
+        }
+      ]
+    },
+    "bdi_after": {
+      "beliefs": [
+        {
+          "id": "B1",
+          "type": "belief",
+          "content": "这件事我完全解决不了",
+          "strength": 3.1,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        },
+        {
+          "id": "B2",
+          "type": "belief",
+          "content": "也许我可以先把'发一条进展消息'当成一件单独的小事来做",
+          "strength": 0.4,
+          "core": false,
+          "active": false,
+          "polarity": "approach"
+        }
+      ],
+      "desires": [
+        {
+          "id": "D1",
+          "type": "desire",
+          "content": "我希望恢复一些控制感",
+          "strength": 3.2,
+          "core": true,
+          "active": true,
+          "polarity": "approach"
+        }
+      ],
+      "intentions": [
+        {
+          "id": "I1",
+          "type": "intention",
+          "content": "我暂时不想采取行动",
+          "strength": 2.5,
+          "core": true,
+          "active": true,
+          "polarity": "avoid"
+        }
+      ]
+    },
+    "appraisal": {
+      "goal_congruence": -0.25,
+      "coping_potential": 0.15,
+      "future_expectancy": 0.1
+    },
+    "emotion_before": {
+      "valence": -0.45,
+      "arousal": 0.65,
+      "category": "anxiety"
+    },
+    "emotion_after": {
+      "valence": -0.27,
+      "arousal": 0.556,
+      "category": "anxiety"
+    },
+    "reaction_plan": "觉得拆小任务有点道理，但仍犹豫是否真能执行，先保持观望。",
+    "user_reply": "嗯……拆开来看确实没那么吓人，但我现在连打开文档都有点抗拒。先这样吧，我试试看。",
+    "proposed_bdi": {
+      "bdi_updates": [
+        {
+          "id": "B1",
+          "new_strength": 3.0,
+          "reason": "把任务拆小后，'完全解决不了'的说法似乎没那么绝对，但整体论文仍让我觉得难以掌控"
+        },
+        {
+          "id": "I1",
+          "new_strength": 2.5,
+          "reason": "发一条消息听起来比推进整篇论文容易，但我不确定自己明天真的会去做"
+        }
+      ],
+      "new_items": [
+        {
+          "type": "belief",
+          "content": "也许我可以先把'发一条进展消息'当成一件单独的小事来做",
+          "strength": 1.6,
+          "core": false,
+          "cue": false,
+          "conflicts_with": [
+            "B1"
+          ],
+          "reason": "这个建议把大问题拆成了可操作的小步骤，但我还没有完全被说服"
+        }
+      ]
+    },
+    "desire_assessment": [
+      {
+        "id": "D1",
+        "relevance": 0.85,
+        "gc": -0.25
+      }
+    ],
+    "user_done": true,
+    "done_reason": null,
+    "update_notes": [
+      "B1 幅度 -0.50 超限 0.4，截断为 -0.40",
+      "新增 belief 强度 1.6 超限 0.4，截断为 0.4",
+      "新增 B2 [belief] strength=0.40 过弱，直接退役",
+      "新 Belief B2 未激活（过弱退役），对 ['B1'] 不产生冲突衰减",
+      "GC 按 §32.1 公式重算: Σ(s·rel·gc)/Σ(s·rel) = -0.250 (top1: ['D1'])",
+      "r̂ = 0.6·|ΔC|(0.28) + 0.25·|ΔGC|(0.00) + 0.5·压力(0.50) = 0.415"
+    ]
+  },
+  "usage": {
+    "http_requests": 7,
+    "http_errors": 0,
+    "structured_errors": 0,
+    "calls": 7,
+    "prompt_tokens": 3973,
+    "completion_tokens": 448,
+    "parse_errors": 0,
+    "repair_attempts": 0,
+    "repair_successes": 0
+  },
+  "valid": true
+}
