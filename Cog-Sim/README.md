@@ -171,7 +171,9 @@ python -m evaluation.runner report           # 汇总生成 evaluation/reports/e
     及与 SCENARIOS 共享 BDIItem 对象；② updater 更新已有节点改为轮级限幅
     （重复更新合计不超过 limits）、激活判定移到裁剪后、重新激活遵守容量上限
     （超限拒绝）、淘汰排序改为最弱优先；③ `constrained_apply` 增加
-    bdi_updates/new_items 元素级类型守卫与 new_strength/strength 数值守卫。
+    bdi_updates/new_items 元素级类型守卫与 new_strength/strength 数值守卫；
+    ④ `run_sim --out` 字符串路径转 Path（原实现日志不落盘、退出码 1，
+    2026-09-14 flash 验证中发现）。
     回归：6 项实现边界检查翻转 PASS，robustness 10/10，fault injection 12 例
     TurnCrashRate=0；相对 v1.0 仅 `run_sim.py`、`state/updater.py` 变化。
     指纹与实施记录见 CSTPO `experiments/results/fix_v1.0.1_fingerprint.json`

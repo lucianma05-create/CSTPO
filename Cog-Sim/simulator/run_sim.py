@@ -164,7 +164,9 @@ def main():
             break
         print()
 
-    out = args.out or Path(__file__).resolve().parent.parent / "runs" / f"{args.task}_log.jsonl"
+    # v1.0.1-fix（修复提案 05 问题 8）：--out 为字符串时先转 Path，
+    # 否则 out.parent 抛 AttributeError、日志不落盘
+    out = Path(args.out) if args.out else Path(__file__).resolve().parent.parent / "runs" / f"{args.task}_log.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     sim.dump_logs(out)
     print("===== 状态轨迹 =====")
