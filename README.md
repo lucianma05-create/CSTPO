@@ -1,5 +1,11 @@
 # 轻量化认知状态用户模拟器（MVP 实现）
 
+> **CogSim v1.0 is frozen after Validation v1.1.** Subsequent experiments must not
+> modify simulator prompts, state transition rules, or evaluation definitions
+> unless fixing a documented implementation bug. 方法级改进统一进入
+> **CogSim v1.1 candidates**：finer/continuous discrepancy、improved
+> Argument-Cue discrimination、multi-target proposition modeling（记录，不实施）。
+
 对应 `shared_work_space/改进文档0911.md` 第 40、43 节的 MVP 范围。
 （0911 版对 0910 版的主要修改：Route 决策公式、Route 特征提取合并
 Target Extraction、Discrepancy 输出相关节点，见下"0911 对齐"一节。）
@@ -39,6 +45,23 @@ a_t -> Mode(§8,§9) -> [Influence]
 Elicit/Social: BDI 冻结（§35,§36），合并调用出 A 提案+plan（Elicit 记录
     revealed_items），随后 Emotion -> NLG 与 Influence 相同。
 ```
+
+## Evaluation（Validation 阶段，Prompt 架构已冻结）
+
+```bash
+python -m evaluation.runner seeds            # 120 seed 批量（六 RJ×三模式×Θ 变体）+ 程序化指标
+python -m evaluation.runner evaluators       # LLM 盲评：state-utterance / realism / neutrality
+python -m evaluation.runner controllability  # η_R、τ 可控性实验（--repeats N）
+python -m evaluation.runner ablation         # M0(纯Persona) / M1(无RJ) / M2(完整) 对照
+python -m evaluation.runner components       # ATC/TRIE/JEE 标注集 + robustness 单测
+python -m evaluation.runner longhorizon      # 三任务 8 轮轨迹（drift/reversal/重复/persona）
+python -m evaluation.runner report           # 汇总生成 evaluation/reports/evaluation_report.md
+```
+
+- 结果：`evaluation/results/*.json`；失败案例：`evaluation/failures/failure_*.json`
+  （完整 trace + 自动分类：implementation bug / prompt failure / method limitation /
+  model stochasticity / parameter issue）。
+- 原则：发现失败先记录分类，不据此改 Prompt；只有明确 implementation bug 才修。
 
 ## 对话终止（user_done，任务中立）
 

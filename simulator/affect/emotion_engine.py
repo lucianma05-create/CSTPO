@@ -34,6 +34,7 @@ appraisal.py 与 emotion.py 合并，对应实验文档0912 §7）。
 from __future__ import annotations
 
 from simulator.state.schema import EMOTION_CATEGORIES, Appraisal, Emotion, UserState
+from simulator.llm import StructuredCallError
 from simulator.utils import clamp
 
 ACTIVE_GOALS_K = 2   # 文档 §4：ActiveGoals = TopK(s_i * rel_i)，第一版 K=2
@@ -203,7 +204,15 @@ def propose_appraisal(llm, state, reply: str, updater_notes: list[str]) -> dict:
             category_list=CATEGORY_LIST,
         )},
     ]
-    return llm.chat_json(msgs, max_tok=600)
+    try:
+        return llm.chat_json(msgs, max_tok=600)
+    except StructuredCallError:
+        # 保守 fallback：GC=CP=FE=0、无逐 Desire 标注、neutral 提案（最终仍由程序校验）
+        return {"appraisal": {"goal_congruence": 0.0, "coping_potential": 0.0,
+                              "future_expectancy": 0.0},
+                "desire_assessment": [],
+                "emotion_proposal": {"category": "neutral"},
+                "_fallback": "eue"}
 
 
 # ---------- Emotion（§33、§34）----------

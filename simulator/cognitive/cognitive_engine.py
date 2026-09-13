@@ -8,6 +8,8 @@ propose_appraisal），基于约束后的 C_{t+1} 与 Updater 审计产出。
 """
 from __future__ import annotations
 
+from simulator.llm import StructuredCallError
+
 ENGINE_SYSTEM = """You are simulating one user in a multi-turn conversation.
 
 Your task is not to help the assistant succeed.
@@ -128,4 +130,10 @@ def propose_cognitive_update(llm, state, reply: str, contract: str,
             contract=contract,
         )},
     ]
-    return llm.chat_json(msgs, max_tok=1200)
+    try:
+        return llm.chat_json(msgs, max_tok=1200)
+    except StructuredCallError:
+        # 最保守 fallback：不更新任何 B/D/I，不猜新的认知变化（Validation 1.1）
+        return {"bdi_updates": [], "new_items": [],
+                "reaction_plan": "respond cautiously and stay consistent with current state",
+                "_fallback": "engine"}

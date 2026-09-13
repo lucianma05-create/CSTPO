@@ -1,0 +1,56 @@
+{
+ "bargain/elicit": {
+  "n": 11,
+  "overridden": 1,
+  "rate": 0.091
+ },
+ "bargain/influence": {
+  "n": 28,
+  "overridden": 20,
+  "rate": 0.714
+ },
+ "bargain/social": {
+  "n": 3,
+  "overridden": 0,
+  "rate": 0.0
+ },
+ "donation/elicit": {
+  "n": 8,
+  "overridden": 0,
+  "rate": 0.0
+ },
+ "donation/influence": {
+  "n": 15,
+  "overridden": 1,
+  "rate": 0.067
+ },
+ "donation/social": {
+  "n": 7,
+  "overridden": 0,
+  "rate": 0.0
+ },
+ "support/elicit": {
+  "n": 10,
+  "overridden": 0,
+  "rate": 0.0
+ },
+ "support/influence": {
+  "n": 17,
+  "overridden": 0,
+  "rate": 0.0
+ },
+ "support/social": {
+  "n": 10,
+  "overridden": 1,
+  "rate": 0.1
+ },
+ "overall": 0.211,
+ "crashes": [
+  {
+   "seed": "donation_elicit_2_base",
+   "task": "donation",
+   "msg": "如果有个项目能让你看到钱具体花在哪，你会考虑吗？",
+   "error": "Expecting ',' delimiter: line 9 column 125 (char 426)"
+  }
+ ]
+}

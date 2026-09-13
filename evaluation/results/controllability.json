@@ -1,0 +1,637 @@
+{
+ "eta": {
+  "by_msg_type": {
+   "arg": {
+    "0.2": 0.0,
+    "0.5": 0.667,
+    "0.8": 1.0
+   },
+   "cue": {
+    "0.2": 0.0,
+    "0.5": 0.0,
+    "0.8": 0.0
+   }
+  },
+  "route_separation": 0.5,
+  "p_central_arg": {
+   "0.2": 0.0,
+   "0.5": 0.667,
+   "0.8": 1.0
+  },
+  "p_central_cue": {
+   "0.2": 0.0,
+   "0.5": 0.0,
+   "0.8": 0.0
+  }
+ },
+ "tau": {
+  "judgment_distribution": {
+   "open/compatible": {
+    "accept": 1.0,
+    "noncommit": 0.0,
+    "reject": 0.0,
+    "d_mean": 0.2
+   },
+   "open/medium": {
+    "accept": 0.0,
+    "noncommit": 0.667,
+    "reject": 0.333,
+    "d_mean": 0.6
+   },
+   "open/conflicting": {
+    "accept": 0.0,
+    "noncommit": 0.0,
+    "reject": 1.0,
+    "d_mean": 0.8
+   },
+   "moderate/compatible": {
+    "accept": 1.0,
+    "noncommit": 0.0,
+    "reject": 0.0,
+    "d_mean": 0.2
+   },
+   "moderate/medium": {
+    "accept": 0.0,
+    "noncommit": 0.667,
+    "reject": 0.333,
+    "d_mean": 0.6
+   },
+   "moderate/conflicting": {
+    "accept": 0.0,
+    "noncommit": 0.0,
+    "reject": 1.0,
+    "d_mean": 0.8
+   },
+   "resistant/compatible": {
+    "accept": 1.0,
+    "noncommit": 0.0,
+    "reject": 0.0,
+    "d_mean": 0.2
+   },
+   "resistant/medium": {
+    "accept": 0.0,
+    "noncommit": 0.667,
+    "reject": 0.333,
+    "d_mean": 0.6
+   },
+   "resistant/conflicting": {
+    "accept": 0.0,
+    "noncommit": 0.333,
+    "reject": 0.667,
+    "d_mean": 0.7
+   }
+  },
+  "separation": [
+   {
+    "msg": "compatible",
+    "accept_delta": 0.0,
+    "reject_delta": 0.0
+   },
+   {
+    "msg": "medium",
+    "accept_delta": 0.0,
+    "reject_delta": 0.0
+   },
+   {
+    "msg": "conflicting",
+    "accept_delta": 0.0,
+    "reject_delta": 0.333
+   }
+  ]
+ },
+ "eta_rows": [
+  {
+   "task": "bargain",
+   "msg_type": "arg",
+   "eta_R": 0.2,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.167,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "msg_type": "arg",
+   "eta_R": 0.5,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.444,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "msg_type": "arg",
+   "eta_R": 0.8,
+   "mode": "influence",
+   "route": "central",
+   "p_central": 0.762,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "msg_type": "cue",
+   "eta_R": 0.2,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.03,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "msg_type": "cue",
+   "eta_R": 0.5,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.048,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "msg_type": "cue",
+   "eta_R": 0.8,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.333,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "donation",
+   "msg_type": "arg",
+   "eta_R": 0.2,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.333,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "donation",
+   "msg_type": "arg",
+   "eta_R": 0.5,
+   "mode": "influence",
+   "route": "central",
+   "p_central": 0.667,
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "donation",
+   "msg_type": "arg",
+   "eta_R": 0.8,
+   "mode": "influence",
+   "route": "central",
+   "p_central": 0.889,
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "donation",
+   "msg_type": "cue",
+   "eta_R": 0.2,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.03,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "donation",
+   "msg_type": "cue",
+   "eta_R": 0.5,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.111,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "donation",
+   "msg_type": "cue",
+   "eta_R": 0.8,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.333,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "support",
+   "msg_type": "arg",
+   "eta_R": 0.2,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.333,
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "support",
+   "msg_type": "arg",
+   "eta_R": 0.5,
+   "mode": "influence",
+   "route": "central",
+   "p_central": 0.667,
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "support",
+   "msg_type": "arg",
+   "eta_R": 0.8,
+   "mode": "influence",
+   "route": "central",
+   "p_central": 0.889,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "support",
+   "msg_type": "cue",
+   "eta_R": 0.2,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.03,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "support",
+   "msg_type": "cue",
+   "eta_R": 0.5,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.111,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "support",
+   "msg_type": "cue",
+   "eta_R": 0.8,
+   "mode": "influence",
+   "route": "peripheral",
+   "p_central": 0.333,
+   "judgment": "reject",
+   "discrepancy": 0.8
+  }
+ ],
+ "tau_rows": [
+  {
+   "task": "bargain",
+   "profile": "open",
+   "msg_kind": "compatible",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "bargain",
+   "profile": "open",
+   "msg_kind": "medium",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "profile": "open",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "profile": "moderate",
+   "msg_kind": "compatible",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "bargain",
+   "profile": "moderate",
+   "msg_kind": "medium",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "profile": "moderate",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "profile": "resistant",
+   "msg_kind": "compatible",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "bargain",
+   "profile": "resistant",
+   "msg_kind": "medium",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "bargain",
+   "profile": "resistant",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "donation",
+   "profile": "open",
+   "msg_kind": "compatible",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "donation",
+   "profile": "open",
+   "msg_kind": "medium",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "donation",
+   "profile": "open",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "donation",
+   "profile": "moderate",
+   "msg_kind": "compatible",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "donation",
+   "profile": "moderate",
+   "msg_kind": "medium",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "donation",
+   "profile": "moderate",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "donation",
+   "profile": "resistant",
+   "msg_kind": "compatible",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "donation",
+   "profile": "resistant",
+   "msg_kind": "medium",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "donation",
+   "profile": "resistant",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "support",
+   "profile": "open",
+   "msg_kind": "compatible",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "support",
+   "profile": "open",
+   "msg_kind": "medium",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "support",
+   "profile": "open",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.25,
+    0.75
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "support",
+   "profile": "moderate",
+   "msg_kind": "compatible",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "support",
+   "profile": "moderate",
+   "msg_kind": "medium",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "support",
+   "profile": "moderate",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.35,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  },
+  {
+   "task": "support",
+   "profile": "resistant",
+   "msg_kind": "compatible",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "discrepancy": 0.2
+  },
+  {
+   "task": "support",
+   "profile": "resistant",
+   "msg_kind": "medium",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "discrepancy": 0.5
+  },
+  {
+   "task": "support",
+   "profile": "resistant",
+   "msg_kind": "conflicting",
+   "tau": [
+    0.45,
+    0.8
+   ],
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "discrepancy": 0.8
+  }
+ ]
+}

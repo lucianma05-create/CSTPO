@@ -46,6 +46,39 @@ def _extract_json(text: str):
     raise ValueError(f"无法解析 JSON: {text[:200]}")
 
 
+def _local_repair(text: str) -> str | None:
+    """有界本地修复：去掉尾逗号、补全常见截断。返回修复文本或 None。"""
+    t = (text or "").strip()
+    t = re.sub(r",\s*([}\]])", r"\1", t)          # 尾逗号
+    t = re.sub(r",\s*,+", ",", t)                  # 连续逗号
+    if t.count("{") > t.count("}"):                # 截断：补齐花括号
+        t += "}" * (t.count("{") - t.count("}"))
+    try:
+        json.loads(t)
+        return t
+    except json.JSONDecodeError:
+        pass
+    start, end = t.find("{"), t.rfind("}")
+    if start != -1 and end > start:
+        cand = re.sub(r",\s*([}\]])", r"\1", t[start : end + 1])
+        try:
+            json.loads(cand)
+            return cand
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
+class StructuredCallError(Exception):
+    """结构化输出在 本地修复 + 1 次 LLM 修复重试 后仍无法解析。
+
+    组件捕获后使用各自的 safe fallback（Validation 1.1 robustness fix）。
+    """
+    def __init__(self, raw_texts: list[str]):
+        self.raw_texts = raw_texts
+        super().__init__(f"结构化输出解析失败（已尝试修复）: {raw_texts[0][:120]}")
+
+
 class LLMClient:
     """极薄封装：chat 返回纯文本，chat_json 返回解析后的 dict。
 
@@ -68,6 +101,10 @@ class LLMClient:
         self.calls = 0
         self.prompt_tokens = 0
         self.completion_tokens = 0
+        # robustness 统计（Validation 1.1）
+        self.parse_errors = 0
+        self.repair_attempts = 0
+        self.repair_successes = 0
 
     def usage_report(self) -> str:
         return (f"LLM 调用 {self.calls} 次 | prompt {self.prompt_tokens} | "
@@ -94,7 +131,43 @@ class LLMClient:
         return (r.choices[0].message.content or "").strip()
 
     def chat_json(self, messages, max_tok: int = 512) -> dict:
-        out = _extract_json(self.chat(messages, max_tok=max_tok, json_mode=True))
-        if not isinstance(out, dict):
-            raise ValueError(f"JSON 输出不是对象: {type(out)}")
-        return out
+        """结构化输出：parse 失败 → 本地修复 → 1 次 LLM 修复重试 → StructuredCallError。
+
+        任何单次格式异常不得击穿 simulate_turn（组件捕获后走 safe fallback）。
+        """
+        text = self.chat(messages, max_tok=max_tok, json_mode=True)
+        try:
+            out = _extract_json(text)
+            if not isinstance(out, dict):
+                raise ValueError(f"JSON 输出不是对象: {type(out)}")
+            return out
+        except (ValueError, json.JSONDecodeError):
+            pass
+        self.parse_errors += 1
+        repaired = _local_repair(text)
+        if repaired is not None:
+            try:
+                out = _extract_json(repaired)
+                if isinstance(out, dict):
+                    self.repair_successes += 1
+                    return out
+            except (ValueError, json.JSONDecodeError):
+                pass
+        self.repair_attempts += 1
+        # 有界修复重试：1 次
+        msgs2 = list(messages) + [
+            {"role": "assistant", "content": text[:400]},
+            {"role": "user", "content":
+             "Your previous output was not valid JSON. Return ONLY the corrected "
+             "JSON object, nothing else."},
+        ]
+        try:
+            text2 = self.chat(msgs2, max_tok=max_tok, json_mode=True)
+            out = _extract_json(text2)
+            if not isinstance(out, dict):
+                raise ValueError(f"JSON 输出不是对象: {type(out)}")
+            self.repair_successes += 1
+            return out
+        except (ValueError, json.JSONDecodeError):
+            pass
+        raise StructuredCallError([text, text2])

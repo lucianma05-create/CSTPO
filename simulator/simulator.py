@@ -96,12 +96,22 @@ class UserSimulator:
                 self.llm, user, assistant_reply, contract, route, judgment,
                 target=target,
             )
+            if proposal.get("_fallback"):
+                notes.append(f"[robustness] Engine 结构化输出解析失败，采用保守 fallback（ΔC=0）")
 
             # 8) Deterministic Updater 施加约束（§31）
             proposed_bdi = {
                 "bdi_updates": proposal.get("bdi_updates", []),
                 "new_items": proposal.get("new_items", []),
             }
+            # 字段类型守卫（Validation 1.1）：合法 JSON 但字段类型错误时忽略该字段，
+            # 净化后的列表同时写回 proposal（constrained_apply 消费的是 proposal）
+            for k in ("bdi_updates", "new_items"):
+                if not isinstance(proposed_bdi[k], list):
+                    notes.append(f"[robustness] Engine 输出字段 {k} 类型异常，忽略")
+                    proposed_bdi[k] = []
+            proposal["bdi_updates"] = proposed_bdi["bdi_updates"]
+            proposal["new_items"] = proposed_bdi["new_items"]
             belief_ids = [i for i in relevant_ids
                           if (it := user.find(i)) is not None and it.type == "belief"]
             notes += constrained_apply(user, proposal, route, judgment, belief_ids)
@@ -110,15 +120,22 @@ class UserSimulator:
             # 8.5) 独立 Appraisal 调用（0912 拆分）：基于约束后的 C_{t+1} 与
             #      Updater 审计评价本轮局势，CP/FE 不再锚定未生效的提案
             appraisal_prop = propose_appraisal(self.llm, user, assistant_reply, notes)
+            if appraisal_prop.get("_fallback"):
+                notes.append("[robustness] EUE 结构化输出解析失败，采用保守 appraisal fallback（GC=CP=FE=0）")
         else:
             # Elicit：State Revelation（§35）；Social：Affective Interaction（§36），BDI 均不变
             proposal = respond_without_bdi_change(self.llm, user, assistant_reply, mode)
             proposed_bdi = {}
             appraisal_prop = proposal
+            if proposal.get("_fallback"):
+                notes.append(f"[robustness] {mode} 合并调用结构化输出解析失败，采用保守 fallback（无揭示/中性 appraisal）")
             reaction_plan = proposal.get("reaction_plan")
             pressure = map_level(proposal.get("interaction_pressure", "medium"))
             if mode == "elicit":
                 revealed = proposal.get("revealed_items", []) or []
+                if not isinstance(revealed, list):
+                    notes.append("[robustness] revealed_items 字段类型异常，忽略")
+                    revealed = []
                 if revealed:
                     notes.append(f"Elicit 揭示已有节点: {revealed}")
 

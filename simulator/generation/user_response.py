@@ -8,7 +8,15 @@ appraisal + emotion_proposal + reaction_plan（Elicit 另记录 revealed_items�
 from __future__ import annotations
 
 from simulator.affect.emotion_engine import CATEGORY_LIST, DESIRE_ASSESSMENT_DEF
+from simulator.llm import StructuredCallError
 from simulator.routing.route_features import INTERACTION_PRESSURE_DEF
+
+# NLG 失败时的安全话语（按 mode，与 persona 语言一致，不含任何新承诺）
+SAFE_UTTERANCES = {
+    "influence": "嗯，我再想想吧。",
+    "elicit": "这个不太好说。",
+    "social": "嗯，行。",
+}
 
 NLG_SYSTEM = """You are simulating one user in a multi-turn conversation.
 Generate the user's next message based on the updated internal state.
@@ -97,8 +105,18 @@ def generate_utterance(llm, state, reaction_plan: str | None, emotion=None,
             reveal_block=reveal_block,
         )},
     ]
-    text = llm.chat(msgs, max_tok=300, json_mode=False)
-    return text.strip().strip('"').strip("“”").strip()
+    for attempt in range(2):
+        try:
+            text = llm.chat(msgs, max_tok=300, json_mode=False)
+        except Exception as e:
+            print(f"  [nlg] 生成调用失败（第 {attempt + 1} 次）: {e}")
+            text = ""
+        text = text.strip().strip('"').strip("“”").strip()
+        if text:
+            return text
+    # 两次失败：返回与 mode 一致的安全话语，不产生新承诺（Validation 1.1）
+    print(f"  [nlg] 生成失败，返回安全话语（mode={mode}）")
+    return SAFE_UTTERANCES.get(mode, "嗯。")
 
 
 RESPOND_USER = """You are simulating the user in a multi-turn conversation.
@@ -185,7 +203,18 @@ def respond_without_bdi_change(llm, state, reply: str, mode: str) -> dict:
             category_list=CATEGORY_LIST,
         )},
     ]
-    out = llm.chat_json(msgs, max_tok=800)
+    try:
+        out = llm.chat_json(msgs, max_tok=800)
+    except StructuredCallError:
+        # 保守 fallback：C 冻结、无揭示、中性 appraisal、与 mode 相符的最小计划
+        plan = ("answer briefly, revealing only what is asked, no new state"
+                if mode == "elicit" else "stay light, social/affective only, no commitment")
+        out = {"appraisal": {"goal_congruence": 0.0, "coping_potential": 0.0,
+                             "future_expectancy": 0.0},
+               "desire_assessment": [], "interaction_pressure": "medium",
+               "emotion_proposal": {"category": "neutral"},
+               "reaction_plan": plan, "revealed_items": [],
+               "_fallback": "srr_err"}
     out.setdefault("reaction_plan", None)
     out.setdefault("revealed_items", [])
     return out

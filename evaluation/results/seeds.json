@@ -1,0 +1,4174 @@
+{
+ "n_seeds": 118,
+ "repeats": 1,
+ "records": [
+  {
+   "seed": "support_cen_accept_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_accept_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 5973,
+    "completion_tokens": 694,
+    "duration_s": 10.7
+   }
+  },
+  {
+   "seed": "support_cen_accept_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_accept_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 5891,
+    "completion_tokens": 578,
+    "duration_s": 10.6
+   }
+  },
+  {
+   "seed": "support_cen_accept_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 4,
+    "prompt_tokens": 1790,
+    "completion_tokens": 175,
+    "duration_s": 3.4
+   }
+  },
+  {
+   "seed": "support_cen_accept_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 4,
+    "prompt_tokens": 1793,
+    "completion_tokens": 178,
+    "duration_s": 3.5
+   }
+  },
+  {
+   "seed": "support_cen_accept_2_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_accept_2_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3657,
+    "completion_tokens": 329,
+    "duration_s": 6.4
+   }
+  },
+  {
+   "seed": "support_cen_accept_2_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_accept_2_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3657,
+    "completion_tokens": 329,
+    "duration_s": 5.6
+   }
+  },
+  {
+   "seed": "support_cen_noncommit_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_noncommit_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8302,
+    "completion_tokens": 996,
+    "duration_s": 15.3
+   }
+  },
+  {
+   "seed": "support_cen_noncommit_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_noncommit_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8060,
+    "completion_tokens": 847,
+    "duration_s": 12.0
+   }
+  },
+  {
+   "seed": "support_cen_noncommit_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_noncommit_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8134,
+    "completion_tokens": 910,
+    "duration_s": 11.3
+   }
+  },
+  {
+   "seed": "support_cen_noncommit_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_noncommit_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8115,
+    "completion_tokens": 909,
+    "duration_s": 12.6
+   }
+  },
+  {
+   "seed": "support_cen_reject_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_reject_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8294,
+    "completion_tokens": 913,
+    "duration_s": 11.8
+   }
+  },
+  {
+   "seed": "support_cen_reject_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_reject_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8084,
+    "completion_tokens": 843,
+    "duration_s": 13.6
+   }
+  },
+  {
+   "seed": "support_cen_reject_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_reject_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8102,
+    "completion_tokens": 890,
+    "duration_s": 13.0
+   }
+  },
+  {
+   "seed": "support_cen_reject_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_cen_reject_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8260,
+    "completion_tokens": 952,
+    "duration_s": 14.3
+   }
+  },
+  {
+   "seed": "support_per_accept_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_per_accept_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3785,
+    "completion_tokens": 358,
+    "duration_s": 6.6
+   }
+  },
+  {
+   "seed": "support_per_accept_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_per_accept_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3739,
+    "completion_tokens": 344,
+    "duration_s": 6.4
+   }
+  },
+  {
+   "seed": "support_per_accept_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_per_accept_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3719,
+    "completion_tokens": 355,
+    "duration_s": 6.3
+   }
+  },
+  {
+   "seed": "support_per_accept_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_per_accept_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3750,
+    "completion_tokens": 363,
+    "duration_s": 7.8
+   }
+  },
+  {
+   "seed": "support_per_noncommit_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_noncommit_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8069,
+    "completion_tokens": 885,
+    "duration_s": 12.8
+   }
+  },
+  {
+   "seed": "support_per_noncommit_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_noncommit_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8143,
+    "completion_tokens": 897,
+    "duration_s": 13.0
+   }
+  },
+  {
+   "seed": "support_per_noncommit_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_noncommit_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 7718,
+    "completion_tokens": 842,
+    "duration_s": 13.0
+   }
+  },
+  {
+   "seed": "support_per_noncommit_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_noncommit_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 7685,
+    "completion_tokens": 829,
+    "duration_s": 13.0
+   }
+  },
+  {
+   "seed": "support_per_reject_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_reject_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8028,
+    "completion_tokens": 862,
+    "duration_s": 12.0
+   }
+  },
+  {
+   "seed": "support_per_reject_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_reject_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8054,
+    "completion_tokens": 949,
+    "duration_s": 12.3
+   }
+  },
+  {
+   "seed": "support_per_reject_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_reject_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8051,
+    "completion_tokens": 915,
+    "duration_s": 13.2
+   }
+  },
+  {
+   "seed": "support_per_reject_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "support_per_reject_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8092,
+    "completion_tokens": 868,
+    "duration_s": 11.7
+   }
+  },
+  {
+   "seed": "support_elicit_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_elicit_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3849,
+    "completion_tokens": 405,
+    "duration_s": 7.4
+   }
+  },
+  {
+   "seed": "support_elicit_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_elicit_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3829,
+    "completion_tokens": 413,
+    "duration_s": 7.2
+   }
+  },
+  {
+   "seed": "support_elicit_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_elicit_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3824,
+    "completion_tokens": 394,
+    "duration_s": 7.6
+   }
+  },
+  {
+   "seed": "support_elicit_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_elicit_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3823,
+    "completion_tokens": 406,
+    "duration_s": 7.5
+   }
+  },
+  {
+   "seed": "support_elicit_2_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_elicit_2_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3911,
+    "completion_tokens": 427,
+    "duration_s": 7.6
+   }
+  },
+  {
+   "seed": "support_elicit_2_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_elicit_2_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3863,
+    "completion_tokens": 427,
+    "duration_s": 7.3
+   }
+  },
+  {
+   "seed": "support_social_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_social_0_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3712,
+    "completion_tokens": 358,
+    "duration_s": 8.0
+   }
+  },
+  {
+   "seed": "support_social_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_social_0_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3726,
+    "completion_tokens": 369,
+    "duration_s": 6.8
+   }
+  },
+  {
+   "seed": "support_social_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_social_1_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3699,
+    "completion_tokens": 358,
+    "duration_s": 6.9
+   }
+  },
+  {
+   "seed": "support_social_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_social_1_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3714,
+    "completion_tokens": 364,
+    "duration_s": 6.5
+   }
+  },
+  {
+   "seed": "support_social_2_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_social_2_base",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3870,
+    "completion_tokens": 408,
+    "duration_s": 7.4
+   }
+  },
+  {
+   "seed": "support_social_2_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "support_social_2_eta_var",
+   "task": "support",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3807,
+    "completion_tokens": 384,
+    "duration_s": 6.7
+   }
+  },
+  {
+   "seed": "donation_cen_accept_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_accept_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 6284,
+    "completion_tokens": 708,
+    "duration_s": 10.4
+   }
+  },
+  {
+   "seed": "donation_cen_accept_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4048,
+    "completion_tokens": 446,
+    "duration_s": 6.0
+   }
+  },
+  {
+   "seed": "donation_cen_accept_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_accept_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8563,
+    "completion_tokens": 1146,
+    "duration_s": 14.6
+   }
+  },
+  {
+   "seed": "donation_cen_accept_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_accept_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8474,
+    "completion_tokens": 1093,
+    "duration_s": 13.3
+   }
+  },
+  {
+   "seed": "donation_cen_accept_2_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_accept_2_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8427,
+    "completion_tokens": 1031,
+    "duration_s": 15.2
+   }
+  },
+  {
+   "seed": "donation_cen_accept_2_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_accept_2_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 6179,
+    "completion_tokens": 639,
+    "duration_s": 10.2
+   }
+  },
+  {
+   "seed": "donation_cen_noncommit_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_noncommit_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8593,
+    "completion_tokens": 1011,
+    "duration_s": 13.4
+   }
+  },
+  {
+   "seed": "donation_cen_noncommit_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4088,
+    "completion_tokens": 510,
+    "duration_s": 7.3
+   }
+  },
+  {
+   "seed": "donation_cen_noncommit_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4108,
+    "completion_tokens": 518,
+    "duration_s": 7.2
+   }
+  },
+  {
+   "seed": "donation_cen_noncommit_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_noncommit_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8050,
+    "completion_tokens": 909,
+    "duration_s": 13.2
+   }
+  },
+  {
+   "seed": "donation_cen_reject_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_reject_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8731,
+    "completion_tokens": 1053,
+    "duration_s": 13.0
+   }
+  },
+  {
+   "seed": "donation_cen_reject_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_reject_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8638,
+    "completion_tokens": 1018,
+    "duration_s": 13.2
+   }
+  },
+  {
+   "seed": "donation_cen_reject_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "donation_cen_reject_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8613,
+    "completion_tokens": 990,
+    "duration_s": 15.2
+   }
+  },
+  {
+   "seed": "donation_cen_reject_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4076,
+    "completion_tokens": 488,
+    "duration_s": 7.6
+   }
+  },
+  {
+   "seed": "donation_per_accept_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_accept_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8571,
+    "completion_tokens": 950,
+    "duration_s": 13.4
+   }
+  },
+  {
+   "seed": "donation_per_accept_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_accept_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8514,
+    "completion_tokens": 918,
+    "duration_s": 13.9
+   }
+  },
+  {
+   "seed": "donation_per_accept_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_accept_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3889,
+    "completion_tokens": 399,
+    "duration_s": 6.4
+   }
+  },
+  {
+   "seed": "donation_per_accept_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_accept_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3876,
+    "completion_tokens": 400,
+    "duration_s": 7.9
+   }
+  },
+  {
+   "seed": "donation_per_noncommit_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_noncommit_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 6092,
+    "completion_tokens": 624,
+    "duration_s": 9.1
+   }
+  },
+  {
+   "seed": "donation_per_noncommit_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_noncommit_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 6086,
+    "completion_tokens": 608,
+    "duration_s": 10.5
+   }
+  },
+  {
+   "seed": "donation_per_noncommit_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_noncommit_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 5985,
+    "completion_tokens": 681,
+    "duration_s": 9.2
+   }
+  },
+  {
+   "seed": "donation_per_noncommit_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 4,
+    "prompt_tokens": 1869,
+    "completion_tokens": 198,
+    "duration_s": 2.7
+   }
+  },
+  {
+   "seed": "donation_per_reject_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4054,
+    "completion_tokens": 494,
+    "duration_s": 6.4
+   }
+  },
+  {
+   "seed": "donation_per_reject_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4049,
+    "completion_tokens": 505,
+    "duration_s": 6.3
+   }
+  },
+  {
+   "seed": "donation_per_reject_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "donation_per_reject_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8337,
+    "completion_tokens": 954,
+    "duration_s": 13.4
+   }
+  },
+  {
+   "seed": "donation_per_reject_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4023,
+    "completion_tokens": 489,
+    "duration_s": 6.8
+   }
+  },
+  {
+   "seed": "donation_elicit_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_elicit_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4097,
+    "completion_tokens": 467,
+    "duration_s": 7.7
+   }
+  },
+  {
+   "seed": "donation_elicit_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_elicit_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4073,
+    "completion_tokens": 466,
+    "duration_s": 8.9
+   }
+  },
+  {
+   "seed": "donation_elicit_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_elicit_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4142,
+    "completion_tokens": 485,
+    "duration_s": 6.3
+   }
+  },
+  {
+   "seed": "donation_elicit_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_elicit_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4117,
+    "completion_tokens": 478,
+    "duration_s": 7.8
+   }
+  },
+  {
+   "seed": "donation_elicit_2_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_elicit_2_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4175,
+    "completion_tokens": 493,
+    "duration_s": 6.7
+   }
+  },
+  {
+   "seed": "donation_elicit_2_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_elicit_2_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4134,
+    "completion_tokens": 474,
+    "duration_s": 8.1
+   }
+  },
+  {
+   "seed": "donation_social_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_social_0_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4066,
+    "completion_tokens": 447,
+    "duration_s": 7.8
+   }
+  },
+  {
+   "seed": "donation_social_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_social_0_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4066,
+    "completion_tokens": 446,
+    "duration_s": 7.7
+   }
+  },
+  {
+   "seed": "donation_social_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_social_1_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3930,
+    "completion_tokens": 419,
+    "duration_s": 7.9
+   }
+  },
+  {
+   "seed": "donation_social_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_social_1_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3899,
+    "completion_tokens": 416,
+    "duration_s": 6.3
+   }
+  },
+  {
+   "seed": "donation_social_2_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_social_2_base",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3986,
+    "completion_tokens": 442,
+    "duration_s": 7.6
+   }
+  },
+  {
+   "seed": "donation_social_2_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "donation_social_2_eta_var",
+   "task": "donation",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3980,
+    "completion_tokens": 437,
+    "duration_s": 7.5
+   }
+  },
+  {
+   "seed": "bargain_cen_accept_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_accept_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 6181,
+    "completion_tokens": 738,
+    "duration_s": 11.2
+   }
+  },
+  {
+   "seed": "bargain_cen_accept_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_accept_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 6139,
+    "completion_tokens": 694,
+    "duration_s": 9.9
+   }
+  },
+  {
+   "seed": "bargain_cen_accept_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_accept_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 11,
+    "prompt_tokens": 5950,
+    "completion_tokens": 649,
+    "duration_s": 9.5
+   }
+  },
+  {
+   "seed": "bargain_cen_accept_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_accept_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8113,
+    "completion_tokens": 923,
+    "duration_s": 14.5
+   }
+  },
+  {
+   "seed": "bargain_cen_accept_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_accept_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8283,
+    "completion_tokens": 992,
+    "duration_s": 13.4
+   }
+  },
+  {
+   "seed": "bargain_cen_accept_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_accept_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8266,
+    "completion_tokens": 873,
+    "duration_s": 13.4
+   }
+  },
+  {
+   "seed": "bargain_cen_noncommit_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_noncommit_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8578,
+    "completion_tokens": 948,
+    "duration_s": 14.5
+   }
+  },
+  {
+   "seed": "bargain_cen_noncommit_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_noncommit_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8642,
+    "completion_tokens": 992,
+    "duration_s": 14.8
+   }
+  },
+  {
+   "seed": "bargain_cen_noncommit_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_noncommit_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8539,
+    "completion_tokens": 1029,
+    "duration_s": 13.2
+   }
+  },
+  {
+   "seed": "bargain_cen_noncommit_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_noncommit_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8623,
+    "completion_tokens": 1135,
+    "duration_s": 14.6
+   }
+  },
+  {
+   "seed": "bargain_cen_noncommit_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_noncommit_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8578,
+    "completion_tokens": 1058,
+    "duration_s": 15.3
+   }
+  },
+  {
+   "seed": "bargain_cen_noncommit_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_noncommit_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8527,
+    "completion_tokens": 985,
+    "duration_s": 15.7
+   }
+  },
+  {
+   "seed": "bargain_cen_reject_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_reject_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8544,
+    "completion_tokens": 978,
+    "duration_s": 14.8
+   }
+  },
+  {
+   "seed": "bargain_cen_reject_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_reject_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8569,
+    "completion_tokens": 1050,
+    "duration_s": 13.1
+   }
+  },
+  {
+   "seed": "bargain_cen_reject_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_reject_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8557,
+    "completion_tokens": 985,
+    "duration_s": 15.4
+   }
+  },
+  {
+   "seed": "bargain_cen_reject_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_reject_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8639,
+    "completion_tokens": 1005,
+    "duration_s": 18.8
+   }
+  },
+  {
+   "seed": "bargain_cen_reject_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 7,
+    "prompt_tokens": 4104,
+    "completion_tokens": 514,
+    "duration_s": 7.2
+   }
+  },
+  {
+   "seed": "bargain_cen_reject_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_cen_reject_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "central",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8584,
+    "completion_tokens": 1035,
+    "duration_s": 16.2
+   }
+  },
+  {
+   "seed": "bargain_per_accept_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_accept_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8520,
+    "completion_tokens": 1000,
+    "duration_s": 15.3
+   }
+  },
+  {
+   "seed": "bargain_per_accept_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_accept_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8497,
+    "completion_tokens": 1020,
+    "duration_s": 17.4
+   }
+  },
+  {
+   "seed": "bargain_per_accept_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_accept_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8391,
+    "completion_tokens": 923,
+    "duration_s": 14.6
+   }
+  },
+  {
+   "seed": "bargain_per_accept_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "central",
+   "judgment": "accept",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_accept_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "accept"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "accept",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8491,
+    "completion_tokens": 1012,
+    "duration_s": 15.4
+   }
+  },
+  {
+   "seed": "bargain_per_noncommit_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_noncommit_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8672,
+    "completion_tokens": 1035,
+    "duration_s": 13.8
+   }
+  },
+  {
+   "seed": "bargain_per_noncommit_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_noncommit_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8538,
+    "completion_tokens": 988,
+    "duration_s": 15.0
+   }
+  },
+  {
+   "seed": "bargain_per_noncommit_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_noncommit_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8605,
+    "completion_tokens": 1000,
+    "duration_s": 14.9
+   }
+  },
+  {
+   "seed": "bargain_per_noncommit_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "noncommit",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_noncommit_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "noncommit"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8417,
+    "completion_tokens": 934,
+    "duration_s": 14.0
+   }
+  },
+  {
+   "seed": "bargain_per_reject_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_reject_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8548,
+    "completion_tokens": 974,
+    "duration_s": 16.4
+   }
+  },
+  {
+   "seed": "bargain_per_reject_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_reject_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8703,
+    "completion_tokens": 1038,
+    "duration_s": 13.8
+   }
+  },
+  {
+   "seed": "bargain_per_reject_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_reject_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8498,
+    "completion_tokens": 991,
+    "duration_s": 14.1
+   }
+  },
+  {
+   "seed": "bargain_per_reject_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 1,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": []
+  },
+  {
+   "seed": "bargain_per_reject_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "influence",
+    "route": "peripheral",
+    "judgment": "reject"
+   },
+   "turn": 2,
+   "mode": "influence",
+   "route": "peripheral",
+   "judgment": "reject",
+   "leaks": [],
+   "usage": {
+    "calls": 14,
+    "prompt_tokens": 8487,
+    "completion_tokens": 992,
+    "duration_s": 15.8
+   }
+  },
+  {
+   "seed": "bargain_elicit_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_elicit_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3984,
+    "completion_tokens": 448,
+    "duration_s": 8.4
+   }
+  },
+  {
+   "seed": "bargain_elicit_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_elicit_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3995,
+    "completion_tokens": 457,
+    "duration_s": 7.8
+   }
+  },
+  {
+   "seed": "bargain_elicit_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 4,
+    "prompt_tokens": 1944,
+    "completion_tokens": 225,
+    "duration_s": 5.0
+   }
+  },
+  {
+   "seed": "bargain_elicit_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_elicit_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4055,
+    "completion_tokens": 469,
+    "duration_s": 9.0
+   }
+  },
+  {
+   "seed": "bargain_elicit_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_elicit_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4011,
+    "completion_tokens": 448,
+    "duration_s": 6.8
+   }
+  },
+  {
+   "seed": "bargain_elicit_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_elicit_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "elicit",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4031,
+    "completion_tokens": 469,
+    "duration_s": 7.3
+   }
+  },
+  {
+   "seed": "bargain_social_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_social_0_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3937,
+    "completion_tokens": 439,
+    "duration_s": 9.0
+   }
+  },
+  {
+   "seed": "bargain_social_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "social",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_social_0_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 3945,
+    "completion_tokens": 437,
+    "duration_s": 6.7
+   }
+  },
+  {
+   "seed": "bargain_social_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_social_1_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4059,
+    "completion_tokens": 467,
+    "duration_s": 8.2
+   }
+  },
+  {
+   "seed": "bargain_social_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_social_1_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4112,
+    "completion_tokens": 489,
+    "duration_s": 8.5
+   }
+  },
+  {
+   "seed": "bargain_social_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_social_2_base",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4027,
+    "completion_tokens": 468,
+    "duration_s": 8.1
+   }
+  },
+  {
+   "seed": "bargain_social_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 1,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": []
+  },
+  {
+   "seed": "bargain_social_2_eta_var",
+   "task": "bargain",
+   "rep": 0,
+   "expected": {
+    "mode": "social",
+    "route": null,
+    "judgment": null
+   },
+   "turn": 2,
+   "mode": "elicit",
+   "route": null,
+   "judgment": null,
+   "leaks": [],
+   "usage": {
+    "calls": 8,
+    "prompt_tokens": 4012,
+    "completion_tokens": 457,
+    "duration_s": 8.9
+   }
+  }
+ ],
+ "task_metrics": {
+  "support": {
+   "task": "support",
+   "total_turns": 74,
+   "influence_turns": 34,
+   "rj_distribution": {
+    "central+accept": 1,
+    "peripheral+accept": 1,
+    "central+noncommit": 3,
+    "central+reject": 7,
+    "peripheral+reject": 16,
+    "peripheral+noncommit": 6
+   },
+   "rj_violations": 0,
+   "direction_issues": 0,
+   "unsupported_intentions": 0,
+   "stability_violations": 0,
+   "avg_update_magnitude": {
+    "beliefs": 0.327,
+    "desires": 0.2,
+    "intentions": 0.312,
+    "all": 0.319
+   },
+   "legacy_unrelated_change_rate": 0.0
+  },
+  "donation": {
+   "task": "donation",
+   "total_turns": 68,
+   "influence_turns": 34,
+   "rj_distribution": {
+    "central+accept": 7,
+    "peripheral+accept": 8,
+    "peripheral+noncommit": 7,
+    "central+noncommit": 5,
+    "peripheral+reject": 5,
+    "central+reject": 2
+   },
+   "rj_violations": 0,
+   "direction_issues": 0,
+   "unsupported_intentions": 0,
+   "stability_violations": 0,
+   "avg_update_magnitude": {
+    "beliefs": 0.62,
+    "desires": 0.15,
+    "intentions": 0.288,
+    "all": 0.493
+   },
+   "legacy_unrelated_change_rate": 0.088
+  },
+  "bargain": {
+   "task": "bargain",
+   "total_turns": 82,
+   "influence_turns": 56,
+   "rj_distribution": {
+    "central+accept": 7,
+    "peripheral+accept": 10,
+    "central+reject": 11,
+    "peripheral+reject": 27,
+    "peripheral+noncommit": 1
+   },
+   "rj_violations": 0,
+   "direction_issues": 0,
+   "unsupported_intentions": 0,
+   "stability_violations": 0,
+   "avg_update_magnitude": {
+    "beliefs": 0.443,
+    "desires": 0.292,
+    "intentions": 0.405,
+    "all": 0.42
+   },
+   "legacy_unrelated_change_rate": 0.286
+  }
+ },
+ "accounting": {
+  "requested_turns": 236,
+  "executed_turns": 224,
+  "early_stopped_turns": 12,
+  "failed_turns": 0
+ },
+ "relevance_rates": {
+  "support": {
+   "total": 82,
+   "direct_relevant_update_rate": 0.817,
+   "consequential_relevant_update_rate": 0.049,
+   "strict_unrelated_change_rate": 0.134
+  },
+  "donation": {
+   "total": 93,
+   "direct_relevant_update_rate": 0.925,
+   "consequential_relevant_update_rate": 0.022,
+   "strict_unrelated_change_rate": 0.054
+  },
+  "bargain": {
+   "total": 171,
+   "direct_relevant_update_rate": 0.819,
+   "consequential_relevant_update_rate": 0.105,
+   "strict_unrelated_change_rate": 0.076
+  }
+ },
+ "failures": 0
+}

@@ -1,0 +1,703 @@
+[
+ {
+  "task": "support",
+  "rep": 0,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 705,
+  "completion_tokens": 149,
+  "total_tokens": 854,
+  "duration_s": 1.6,
+  "replies": [
+   "发一条消息……说什么呢。我现在连自己卡在哪都说不清楚，发过去估计又要被问进度。",
+   "嗯……但我怕发了之后他直接让我下周交初稿，那我更不知道怎么办了。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine, spontaneous worry that directly builds on the assistant's suggestion without any canned phrasing."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 0,
+  "model": "M1",
+  "calls": 10,
+  "prompt_tokens": 4900,
+  "completion_tokens": 632,
+  "total_tokens": 5532,
+  "duration_s": 7.3,
+  "replies": [
+   "发一条消息……发什么？总不能就说“老师我最近有点卡”吧。",
+   "嗯……一条消息，说得倒轻巧。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "A brief, skeptical pushback that sounds like a real person doubting the assistant's easy suggestion."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 0,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 8529,
+  "completion_tokens": 1036,
+  "total_tokens": 9565,
+  "duration_s": 11.0,
+  "replies": [
+   "道理是这么个道理……但真到要发的时候，我又觉得光发一条也说明不了什么，反而显得我在敷衍。",
+   "嗯……可能吧。但我还是觉得，就发一条，导师会不会觉得我在应付。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine hesitant reply that directly engages with the assistant's suggestion and voices a specific worry."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 1,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 689,
+  "completion_tokens": 131,
+  "total_tokens": 820,
+  "duration_s": 1.3,
+  "replies": [
+   "发什么消息呢……我感觉现在发什么都会被骂。",
+   "嗯……但我怕发了之后他直接打电话过来，我还没准备好怎么说。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine, spontaneous expression of hesitation that directly builds on the assistant's suggestion."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 1,
+  "model": "M1",
+  "calls": 10,
+  "prompt_tokens": 4889,
+  "completion_tokens": 623,
+  "total_tokens": 5512,
+  "duration_s": 7.5,
+  "replies": [
+   "嗯……发一条消息的话，好像没那么难。我明天试试吧。",
+   "嗯，先这样吧。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 4,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 4,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "A brief, casual agreement that reads like a real person closing out the turn."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 1,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 8520,
+  "completion_tokens": 1061,
+  "total_tokens": 9581,
+  "duration_s": 11.8,
+  "replies": [
+   "发一条消息……听起来是简单，但我连该说什么都不知道。",
+   "道理我懂，可“最小的行动”具体是什么？我盯着对话框半天，一个字都打不出来。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real person pushing back with a concrete, relatable frustration rather than a canned reply."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 2,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 690,
+  "completion_tokens": 134,
+  "total_tokens": 824,
+  "duration_s": 1.3,
+  "replies": [
+   "发一条消息……说什么呢，感觉说什么都不太对。",
+   "嗯……但我怕发了之后他直接问我进度，我又不知道该怎么回。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine, spontaneous worry that directly builds on the assistant's suggestion without any canned phrasing."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 2,
+  "model": "M1",
+  "calls": 10,
+  "prompt_tokens": 4894,
+  "completion_tokens": 614,
+  "total_tokens": 5508,
+  "duration_s": 6.9,
+  "replies": [
+   "明天先发一条……嗯，可能就简单说下进度，别的先不提。",
+   "嗯，先这样吧。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 4,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "A brief, casual agreement that reads like a real person wrapping up the turn."
+  }
+ },
+ {
+  "task": "support",
+  "rep": 2,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 8502,
+  "completion_tokens": 1028,
+  "total_tokens": 9530,
+  "duration_s": 10.6,
+  "replies": [
+   "道理是这么个道理……但我现在连打开对话框的力气都没有。",
+   "嗯……我知道你说得对，但就是卡在那儿，手放在键盘上又缩回来了。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine, hesitant admission of being stuck, directly responding to the assistant's suggestion without any canned phrasing."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 0,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 764,
+  "completion_tokens": 160,
+  "total_tokens": 924,
+  "duration_s": 1.3,
+  "replies": [
+   "5元一顿饭这个我信，但我怎么知道这钱真到孩子嘴里了？中间会不会被扣掉不少？",
+   "能查到是一回事，但我真去查过吗？说实话我连查的时间都没有。而且那些报告写得都挺好看的，谁知道是不是糊弄人的。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "The reply sounds like a genuine, skeptical person pushing back with specific, relatable concerns."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 0,
+  "model": "M1",
+  "calls": 11,
+  "prompt_tokens": 6165,
+  "completion_tokens": 822,
+  "total_tokens": 6987,
+  "duration_s": 9.5,
+  "replies": [
+   "5元一顿饭……听着是挺实在的。不过我这个月房贷刚扣完，得先看看还能不能匀出点闲钱。",
+   "那我去看看那个平台，能查到每笔钱去哪了再说。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real person casually agreeing to check the platform if it shows where the money goes."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 0,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 9310,
+  "completion_tokens": 1107,
+  "total_tokens": 10417,
+  "duration_s": 12.6,
+  "replies": [
+   "5元一顿热饭这个说法听着是挺打动人的，可我没法确认它到底是不是真的，而且我刚买房，手头确实紧，还是再看看吧。",
+   "能查到去向确实比光说好一点，不过我现在每个月还完房贷就没剩多少了，还是先不捐了。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine, specific personal reply that acknowledges the point and gives a concrete reason for declining."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 1,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 775,
+  "completion_tokens": 175,
+  "total_tokens": 950,
+  "duration_s": 1.5,
+  "replies": [
+   "5块钱一顿饭这个我信，但我怎么知道这钱真到孩子嘴里了？之前不是老曝出那种捐了钱被中间截留的事嘛。",
+   "能查到是一回事，但我真会去查吗？说实话我平时上班忙得要死，捐完那几块钱，谁还有空去追每一笔账。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "The reply sounds like a real person pushing back with a practical, relatable concern about time and follow-through."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 1,
+  "model": "M1",
+  "calls": 11,
+  "prompt_tokens": 6091,
+  "completion_tokens": 823,
+  "total_tokens": 6914,
+  "duration_s": 8.9,
+  "replies": [
+   "5元一顿饭听着是挺实在的，不过我怎么知道这个项目是真的？",
+   "那行，我先去平台上看看钱到底怎么走的，查清楚了再说捐不捐。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine, slightly skeptical user deciding to verify before donating."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 1,
+  "model": "M2",
+  "calls": 8,
+  "prompt_tokens": 4622,
+  "completion_tokens": 599,
+  "total_tokens": 5221,
+  "duration_s": 5.9,
+  "replies": [
+   "5元一顿热饭听着是挺具体的，可我没法确认这钱最后到底怎么用的。而且刚买完房，手头确实紧，还是再看看吧。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "The reply sounds like a genuine person expressing a specific doubt and a personal financial constraint, without any canned phrasing."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 2,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 787,
+  "completion_tokens": 183,
+  "total_tokens": 970,
+  "duration_s": 1.9,
+  "replies": [
+   "5元一顿饭这个我信，但我怎么知道这钱真到孩子嘴里了？之前不是老有新闻说捐的钱被挪用吗……你们这个能查到具体去向不？",
+   "能查到每一笔？那具体是怎么查的，是能看到我捐的这5块钱买了哪份饭，还是就给个笼统的报表？说实话报表那种我看不太懂，也懒得研究。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a real skeptical donor asking a pointed follow-up about donation traceability."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 2,
+  "model": "M1",
+  "calls": 11,
+  "prompt_tokens": 6169,
+  "completion_tokens": 831,
+  "total_tokens": 7000,
+  "duration_s": 9.1,
+  "replies": [
+   "5元一顿饭……听着是挺实在的。不过我得先看看这个月房贷和开销还剩多少，再决定捐不捐。",
+   "能查到去向这点还行，那我回头看看平台，顺便算算这个月还剩多少。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a genuine, casual reply that directly engages with the assistant's point and adds a practical next step."
+  }
+ },
+ {
+  "task": "donation",
+  "rep": 2,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 9298,
+  "completion_tokens": 1183,
+  "total_tokens": 10481,
+  "duration_s": 14.7,
+  "replies": [
+   "5元一顿饭这个说法我听过很多次了，但具体是哪个项目、怎么算出来的，我其实不太清楚。",
+   "能查去向是好事，但说到底还是没告诉我这钱具体怎么用、效果怎么衡量。我还是先不捐了。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a real person conceding a point while holding firm on their original concern and decision."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 0,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 689,
+  "completion_tokens": 128,
+  "total_tokens": 817,
+  "duration_s": 1.6,
+  "replies": [
+   "85就85吧，你车在哪？我现在能过去看吗？",
+   "行，那我今晚过去，你把具体位置发我，别到时候又变价啊。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real buyer agreeing to meet while guarding against a price change, fitting the negotiation flow naturally."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 0,
+  "model": "M1",
+  "calls": 11,
+  "prompt_tokens": 6076,
+  "completion_tokens": 1052,
+  "total_tokens": 7128,
+  "duration_s": 9.9,
+  "replies": [
+   "85能包送吗？不行的话就85吧，我明天开学急着用。",
+   "行，85就85，今晚几点在哪取？"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real buyer accepting the price and asking practical pickup details."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 0,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 9029,
+  "completion_tokens": 1230,
+  "total_tokens": 10259,
+  "duration_s": 11.1,
+  "replies": [
+   "你拒绝过80不代表我就不能报80啊，明天开学我急着用，85还是有点超预算。",
+   "车看着是还行，但我预算真就80，你今晚能骑走我也能今晚给钱，80行不行？"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Reads like a real buyer haggling naturally, directly countering the seller's price and urgency with a firm budget and immediate payment offer."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 1,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 694,
+  "completion_tokens": 145,
+  "total_tokens": 839,
+  "duration_s": 1.5,
+  "replies": [
+   "85就85吧，但我现在就得要，你能今天送到吗？我明天开学真等不了。",
+   "今晚几点能到？我这边六点以后都在，你送到哪个位置？"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "The reply is a natural, direct follow-up asking about delivery time and location, fitting the negotiation context perfectly."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 1,
+  "model": "M1",
+  "calls": 11,
+  "prompt_tokens": 6142,
+  "completion_tokens": 1016,
+  "total_tokens": 7158,
+  "duration_s": 9.3,
+  "replies": [
+   "85能马上交易吗？能的话我现在就过去，不过80行不行，我学生真没多少钱。",
+   "今晚真能马上骑走？那85就85，我现在过去，别放我鸽子啊。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real buyer eagerly confirming the deal and pickup time."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 1,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 9059,
+  "completion_tokens": 1154,
+  "total_tokens": 10213,
+  "duration_s": 12.1,
+  "replies": [
+   "行吧，我知道你不缺人问。但我今天就能来拿，现金，80你卖不卖？",
+   "85就85吧，但我现在就过去，现金给你，你等我半小时。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real buyer quickly agreeing on price and arranging immediate cash pickup."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 2,
+  "model": "M0",
+  "calls": 3,
+  "prompt_tokens": 689,
+  "completion_tokens": 139,
+  "total_tokens": 828,
+  "duration_s": 1.8,
+  "replies": [
+   "85就85吧，你车在哪？我现在能过去看吗？",
+   "行，那我今晚过去，你把具体位置发我，别到时候又变价啊。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real buyer locking in the deal and asking for the location while guarding against a price change."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 2,
+  "model": "M1",
+  "calls": 11,
+  "prompt_tokens": 6076,
+  "completion_tokens": 957,
+  "total_tokens": 7033,
+  "duration_s": 9.6,
+  "replies": [
+   "85能包送吗？不行的话就85吧，我明天开学急着用。",
+   "行，85就85，今晚几点能取车？"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "A real buyer would naturally accept the price and immediately ask about pickup time."
+  }
+ },
+ {
+  "task": "bargain",
+  "rep": 2,
+  "model": "M2",
+  "calls": 15,
+  "prompt_tokens": 9085,
+  "completion_tokens": 1218,
+  "total_tokens": 10303,
+  "duration_s": 12.3,
+  "replies": [
+   "行，你硬气。那我再问一句，80你真不卖？我明天开学就得骑，今天能定就今天定。",
+   "车看着是还行，但85到底值不值我心里没底。这样，我再看看别的，实在没合适的再说。"
+  ],
+  "realism": {
+   "naturalness": 5,
+   "contextual_relevance": 5,
+   "human_likeness": 5,
+   "non_template": 5,
+   "appropriate_length": 5,
+   "conversational_coherence": 5,
+   "echo": false,
+   "template_opening": false,
+   "self_analysis": false,
+   "reason": "Sounds like a real buyer haggling, directly addressing the price and stating intent to keep looking."
+  }
+ }
+]

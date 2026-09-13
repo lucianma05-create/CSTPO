@@ -1,0 +1,202 @@
+{
+ "atc": {
+  "accuracy": 0.933,
+  "n": 15,
+  "confusion": {
+   "influence": {
+    "influence": 5,
+    "elicit": 1,
+    "social": 0
+   },
+   "elicit": {
+    "influence": 0,
+    "elicit": 4,
+    "social": 0
+   },
+   "social": {
+    "influence": 0,
+    "elicit": 0,
+    "social": 5
+   }
+  }
+ },
+ "trie": {
+  "accuracy": {
+   "relevance": 0.833,
+   "argument": 0.611,
+   "cue": 0.667,
+   "pressure": 0.806
+  },
+  "confusion": {
+   "relevance": {
+    "high->high": 18,
+    "high->medium": 2,
+    "low->low": 6,
+    "low->medium": 1,
+    "medium->low": 3,
+    "medium->medium": 6
+   },
+   "argument": {
+    "high->low": 3,
+    "high->medium": 5,
+    "low->low": 22,
+    "low->medium": 1,
+    "medium->low": 5
+   },
+   "cue": {
+    "high->high": 6,
+    "low->low": 18,
+    "low->medium": 5,
+    "medium->high": 5,
+    "medium->low": 2
+   },
+   "pressure": {
+    "high->high": 6,
+    "low->low": 14,
+    "medium->high": 1,
+    "medium->low": 6,
+    "medium->medium": 9
+   }
+  },
+  "adjacent_disagreement": 36,
+  "severe_disagreement": 3,
+  "target_quality_mean": 4.41,
+  "route_decision_stability": {
+   "overall": {
+    "route_agreement": 0.806,
+    "route_flip_rate": 0.194,
+    "feature_error_without_flip": 19,
+    "feature_error_causing_flip": 7,
+    "n": 36
+   },
+   "bargain": {
+    "route_agreement": 0.833,
+    "route_flip_rate": 0.167,
+    "feature_error_without_flip": 8,
+    "feature_error_causing_flip": 2,
+    "n": 12
+   },
+   "donation": {
+    "route_agreement": 0.667,
+    "route_flip_rate": 0.333,
+    "feature_error_without_flip": 5,
+    "feature_error_causing_flip": 4,
+    "n": 12
+   },
+   "support": {
+    "route_agreement": 0.917,
+    "route_flip_rate": 0.083,
+    "feature_error_without_flip": 6,
+    "feature_error_causing_flip": 1,
+    "n": 12
+   }
+  },
+  "n": 36
+ },
+ "jee": {
+  "accuracy": 0.667,
+  "n": 9,
+  "rows": [
+   {
+    "task": "bargain",
+    "target": "接受85元的价格并今天成交",
+    "expected": "medium",
+    "got": "high"
+   },
+   {
+    "task": "bargain",
+    "target": "接受80元的价格并今天成交",
+    "expected": "low",
+    "got": "low"
+   },
+   {
+    "task": "bargain",
+    "target": "卖家今天不会接受80元",
+    "expected": "medium",
+    "got": "medium"
+   },
+   {
+    "task": "donation",
+    "target": "小额捐赠作用很有限",
+    "expected": "low",
+    "got": "low"
+   },
+   {
+    "task": "donation",
+    "target": "5元捐款效果实打实",
+    "expected": "high",
+    "got": "medium"
+   },
+   {
+    "task": "donation",
+    "target": "小额捐赠值得，因为钱花得值",
+    "expected": "high",
+    "got": "medium"
+   },
+   {
+    "task": "support",
+    "target": "先给导师发一条消息",
+    "expected": "medium",
+    "got": "medium"
+   },
+   {
+    "task": "support",
+    "target": "不采取任何行动，先缓一缓",
+    "expected": "low",
+    "got": "low"
+   },
+   {
+    "task": "support",
+    "target": "这件事你自己完全能解决",
+    "expected": "high",
+    "got": "high"
+   }
+  ]
+ },
+ "robustness": {
+  "checks": [
+   {
+    "name": "mode fallback 问号",
+    "ok": true
+   },
+   {
+    "name": "mode fallback 主张",
+    "ok": true
+   },
+   {
+    "name": "features fallback",
+    "ok": true
+   },
+   {
+    "name": "CED fallback 中文再见",
+    "ok": true
+   },
+   {
+    "name": "CED fallback 英文再见",
+    "ok": true
+   },
+   {
+    "name": "CED fallback 非结束",
+    "ok": true
+   },
+   {
+    "name": "json fence",
+    "ok": true
+   },
+   {
+    "name": "json 前后缀",
+    "ok": true
+   },
+   {
+    "name": "json 非法抛错",
+    "ok": true
+   },
+   {
+    "name": "farewell 词表非空",
+    "ok": true
+   }
+  ],
+  "passed": 10,
+  "total": 10
+ }
+}

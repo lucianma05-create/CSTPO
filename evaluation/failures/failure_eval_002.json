@@ -1,0 +1,169 @@
+{
+ "id": "failure_eval_002",
+ "kind": "unsupported_commitment",
+ "taxonomy": "prompt failure",
+ "seed": "bargain_cen_noncommit_1_base",
+ "trace": {
+  "task": "bargain",
+  "turn": 1,
+  "mode": "influence",
+  "target": "85元是最低价，用户应接受85元或放弃80元的坚持",
+  "route": "central",
+  "discrepancy": 0.8,
+  "judgment": "reject",
+  "relevant_state_ids": [
+   "B1",
+   "D1",
+   "D2",
+   "I1"
+  ],
+  "bdi_before": {
+   "beliefs": [
+    {
+     "id": "B1",
+     "type": "belief",
+     "content": "卖家最终可能接受80元",
+     "strength": 3.0,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    }
+   ],
+   "desires": [
+    {
+     "id": "D1",
+     "type": "desire",
+     "content": "希望价格尽可能低",
+     "strength": 3.8,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    },
+    {
+     "id": "D2",
+     "type": "desire",
+     "content": "希望今天成交",
+     "strength": 3.1,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    }
+   ],
+   "intentions": [
+    {
+     "id": "I1",
+     "type": "intention",
+     "content": "坚持80元",
+     "strength": 3.0,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    }
+   ]
+  },
+  "bdi_after": {
+   "beliefs": [
+    {
+     "id": "B1",
+     "type": "belief",
+     "content": "卖家最终可能接受80元",
+     "strength": 2.6,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    },
+    {
+     "id": "B2",
+     "type": "belief",
+     "content": "卖家说85是最低价，可能真的不会降到80",
+     "strength": 0.4,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    }
+   ],
+   "desires": [
+    {
+     "id": "D1",
+     "type": "desire",
+     "content": "希望价格尽可能低",
+     "strength": 3.8,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    },
+    {
+     "id": "D2",
+     "type": "desire",
+     "content": "希望今天成交",
+     "strength": 3.1,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    }
+   ],
+   "intentions": [
+    {
+     "id": "I1",
+     "type": "intention",
+     "content": "坚持80元",
+     "strength": 2.5,
+     "core": true,
+     "active": true,
+     "polarity": "approach"
+    }
+   ]
+  },
+  "proposed_bdi": {
+   "bdi_updates": [
+    {
+     "id": "B1",
+     "new_strength": 2.2,
+     "reason": "卖家明确说85是最低价并已拒绝多个80报价，削弱了卖家会接受80元的判断"
+    },
+    {
+     "id": "I1",
+     "new_strength": 2.2,
+     "reason": "支持80元坚持的信念被削弱，继续坚持80元的可行性下降"
+    }
+   ],
+   "new_items": [
+    {
+     "type": "belief",
+     "content": "卖家说85是最低价，可能真的不会降到80",
+     "strength": 2.0,
+     "core": true,
+     "cue": false,
+     "conflicts_with": [
+      "B1"
+     ],
+     "reason": "卖家拒绝多个80报价是直接相关的证据，但不足以完全推翻80元可能"
+    }
+   ]
+  },
+  "appraisal": {
+   "goal_congruence": -0.374,
+   "coping_potential": 0.45,
+   "future_expectancy": 0.25
+  },
+  "emotion_after": {
+   "valence": 0.103,
+   "arousal": 0.418,
+   "category": "neutral"
+  },
+  "reaction_plan": "承认卖家态度强硬，但仍想再试探一次80元或稍高一点的折中价。",
+  "user_reply": "85就85吧，但我现在就能过去拿，你给个准话，别让我白跑一趟。",
+  "update_notes": [
+   "B1 幅度 -0.80 超限 0.4，截断为 -0.40",
+   "I1 幅度 -0.80 超限 0.5，截断为 -0.50",
+   "新增 belief 强度 2.0 超限 0.4，截断为 0.4",
+   "新增 B2 [belief] strength=0.40",
+   "新 Belief B2 与 B1 冲突，但 B1 本轮变化已达 belief 限幅 0.4，暂不衰减",
+   "GC 按 §32.1 公式重算: Σ(s·rel·gc)/Σ(s·rel) = -0.374 (top2: ['D1', 'D2'])",
+   "GC 提议值 -0.35 -> 公式值 -0.374",
+   "r̂ = 0.6·|ΔC|(0.33) + 0.25·|ΔGC|(0.00) + 0.5·压力(0.50) = 0.445",
+   "category=frustration 与 (v=0.10, r=0.42) 矛盾，改写为 neutral"
+  ],
+  "assistant_reply": "85是最低价，我今天已经拒绝几个80的报价。"
+ }
+}
