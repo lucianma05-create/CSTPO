@@ -25,7 +25,7 @@ $$
 $$
 
 $$
-J(\theta)=\mathbb E_{z\sim\mathcal D,\;\tau\sim(\pi_\theta,\mathrm{CogSim}\mid z)}[G(\tau)],
+J(\theta)=\mathbb E_{z\sim\mathcal D,\tau\sim(\pi_\theta,\mathrm{CogSim}\mid z)}[G(\tau)],
 \qquad \gamma=1,\quad r_t=0\;(t<T),\quad r_T=G(\tau).
 $$
 
@@ -77,6 +77,65 @@ flowchart TD
 ```
 
 图中 G12 仅帮助估计原策略标签优势，其话语 token 不进入 Actor loss；G21/G22 也不更新 Actor。分叉从同一父快照独立续演，不重置剩余轮数。
+
+
+### 3.1 高效采样由三层机制组成
+
+当前可直接实施的是第一层；第二、三层必须通过对应预实验后才能启用，不能在方法描述中写成已经验证有效。
+
+**第一层：稀疏完整分叉。** 每批 64 条主干只预选最多 4 条轨迹，每条轨迹最多一个候选节点。一个 $2\times2$ 包复用已有主干 $(k_1,u_{11},G_{11})$，因此只增加三个尾部，而不是重新生成四条完整轨迹：
+
+$$
+N_{\mathrm{extra}}=B_{\mathrm{branch}}(2\times2-1)=3B_{\mathrm{branch}},
+\qquad B_{\mathrm{branch}}\leq 4.
+$$
+
+这里节省的是重复生成共同前缀及第四条尾部的成本。额外尾部仍可能很贵，所以是否高效必须用包括 Cog-Sim、Judge 和重试在内的实际 token／时间曲线验证，不能由 $3/4$ 复用比例直接推出。
+
+**第二层：认知敏感度调度（P4/P7 通过后启用）。** 先用独立探测数据训练低容量预测器 $\widehat S_\psi(x_t)$。它只读取动作前状态，不需要在正式采样时先生成多个策略来计算真实敏感度。用开发集经验分布 $F_{\mathrm{dev}}$ 将预测转换为分位数：
+
+$$
+s_t=F_{\mathrm{dev}}\!\left(\widehat S_\psi(x_t)\right)\in[0,1].
+$$
+
+当前保守协议在每条主干开始前，从 $1,\ldots,H$ 均匀抽取一个候选轮次 $t^*$；到达该轮且预算足够时，在生成当前动作之前决定是否建立分叉包：
+
+$$
+t^*\sim\mathrm{Uniform}\{1,\ldots,H\},
+$$
+
+$$
+p_{\mathrm{branch}}(x_{t^*})
+=\min\left\{1,\max\left\{0,
+c\left(0.5+0.5s_{t^*}\right)
+\right\}\right\}.
+$$
+
+$c$ 只用开发数据校准，使预期分叉数满足预算：
+
+$$
+\sum_i p_{\mathrm{branch}}(x_i)\leq B_{\mathrm{branch}}.
+$$
+
+这个规则把高敏感度候选的入选概率提高到低敏感度候选的至多两倍，同时始终保留探索概率。随机对照使用相同预算下的常数概率。每次必须记录候选轮次、$s_t$、选择概率、预算是否可用和实际选择结果。
+
+如果加入价值不确定性分位数 $q_t\in[0,1]$，当前候选组合是等权和，而不是未经验证的乘积：
+
+$$
+a_t^{\mathrm{combined}}=\frac{s_t+q_t}{2}.
+$$
+
+随后在分叉概率中用 $a_t^{\mathrm{combined}}$ 替换 $s_t$。正式比较包括随机、仅 $q_t$、仅 $s_t$、以及二者组合；只有认知敏感度方案在成本计全后优于仅不确定性，才构成认知驱动高效采样的证据。
+
+**第三层：浅续演与 bootstrap（P6 通过后可选）。** 完整尾部经过 $h$ 步后，用冻结旧 critic 估计剩余价值：
+
+$$
+\widehat Q_h=\sum_{i=0}^{h-1}r_{t+i}+V_{\mathrm{old}}(x_{t+h}).
+$$
+
+首版中间奖励为零，所以非终局截断时 $\widehat Q_h=V_{\mathrm{old}}(x_{t+h})$；若在 $h$ 步内真实终止，则使用终局 $G$ 且后继价值为零。只有它相对独立完整续演保持动作排序并实际降低至少预注册的采样成本时才上线。
+
+因此，当前版本的效率主张应写成两级：稀疏完整分叉是已定义的采样机制；认知敏感度预测与浅 bootstrap 是有明确接口和退出条件的候选增强。前者能否优于增加普通主干、后两者能否进一步节省预算，都仍需实验回答。
 
 ## 4. critic：一个模型，两种价值输出
 
@@ -180,8 +239,8 @@ $$
 
 $$
 \ell_j(\theta)=\min\left[
-r_j(\theta)\widehat A_j,\;
-\operatorname{clip}(r_j(\theta),1-\epsilon,1+\epsilon)\widehat A_j
+r_j(\theta)\widehat A_j,
+\mathrm{clip}(r_j(\theta),1-\epsilon,1+\epsilon)\widehat A_j
 \right].
 $$
 
