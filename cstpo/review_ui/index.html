@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>种子草稿人工预审</title>
+<style>
+:root { --bg:#f5f6f8; --panel:#fff; --line:#e2e5ea; --text:#24292f;
+  --muted:#6a737d; --accent:#0969da; --ok:#1a7f37; --warn:#9a6700; --bad:#cf222e; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--text); font-size:14px; }
+#app { display:flex; height:100vh; }
+#sidebar { width:320px; min-width:320px; background:var(--panel);
+  border-right:1px solid var(--line); display:flex; flex-direction:column; }
+#sidebar header { padding:12px 16px; border-bottom:1px solid var(--line); }
+#sidebar header h1 { font-size:15px; margin-bottom:8px; }
+.tabs { display:flex; gap:4px; }
+.tabs button { flex:1; padding:6px 4px; border:1px solid var(--line);
+  background:#fff; border-radius:6px; cursor:pointer; font-size:12px; }
+.tabs button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+.progress { margin-top:8px; font-size:12px; color:var(--muted); }
+.progress b { color:var(--text); }
+#seedlist { overflow-y:auto; flex:1; }
+.seed { padding:8px 14px; border-bottom:1px solid var(--line); cursor:pointer; }
+.seed:hover { background:#f0f6ff; }
+.seed.active { background:#ddf0ff; border-left:3px solid var(--accent); }
+.seed .id { font-weight:600; }
+.seed .meta { font-size:11px; color:var(--muted); margin-top:2px; }
+.dot { display:inline-block; width:8px; height:8px; border-radius:50%;
+  margin-right:6px; vertical-align:middle; }
+.dot.none { background:#c4cad1; } .dot.part { background:#d4a72c; }
+.dot.full { background:var(--ok); }
+.tag { display:inline-block; font-size:10px; padding:1px 6px; border-radius:8px;
+  margin-left:6px; background:#fff8c5; border:1px solid #e5d98f; }
+.tag.low { background:#ffe3e3; border-color:#f0b8b8; }
+#main { flex:1; overflow-y:auto; padding:20px 28px; }
+#main h2 { font-size:18px; margin-bottom:6px; }
+.meta-line { color:var(--muted); font-size:12px; margin-bottom:16px; }
+.section { background:var(--panel); border:1px solid var(--line);
+  border-radius:8px; padding:14px 18px; margin-bottom:14px; }
+.section h3 { font-size:14px; margin-bottom:10px; color:var(--accent); }
+.kv { display:grid; grid-template-columns:110px 1fr; gap:6px 12px; }
+.kv .k { color:var(--muted); font-size:12px; }
+.bdi-item { border-left:3px solid #d0d7de; padding:8px 12px; margin-bottom:8px;
+  background:#fafbfc; border-radius:0 6px 6px 0; }
+.bdi-item .head { font-size:12px; color:var(--muted); margin-bottom:4px; }
+.bdi-item .zh { margin-bottom:2px; }
+.bdi-item .en { font-size:12px; color:var(--muted); }
+.msg { display:flex; gap:8px; margin-bottom:6px; }
+.msg .who { min-width:64px; font-size:12px; color:var(--accent); font-weight:600; }
+.msg .zh { flex:1; }
+.msg .en { flex:1; font-size:12px; color:var(--muted); }
+.checklist .item { display:flex; align-items:center; gap:10px;
+  padding:7px 0; border-bottom:1px dashed var(--line); }
+.checklist .item span.txt { flex:1; }
+.opt { border:1px solid var(--line); background:#fff; border-radius:5px;
+  padding:3px 10px; cursor:pointer; font-size:12px; }
+.opt.yes.on { background:#dafbe1; border-color:var(--ok); color:var(--ok); font-weight:600; }
+.opt.no.on { background:#ffebe9; border-color:var(--bad); color:var(--bad); font-weight:600; }
+.opt.na.on { background:#eaeef2; border-color:#8c959f; color:#57606a; font-weight:600; }
+textarea { width:100%; min-height:70px; border:1px solid var(--line);
+  border-radius:6px; padding:8px; font-family:inherit; font-size:13px; }
+#reviewer { width:220px; border:1px solid var(--line); border-radius:6px; padding:6px; }
+#savebar { position:sticky; bottom:0; background:var(--panel);
+  border-top:1px solid var(--line); padding:10px 28px; display:flex;
+  gap:12px; align-items:center; }
+#savebar button { background:var(--accent); color:#fff; border:none;
+  padding:8px 22px; border-radius:6px; cursor:pointer; font-size:14px; }
+#savebar #savestate { font-size:13px; }
+.nav { display:flex; gap:6px; margin-bottom:10px; }
+.nav button { padding:5px 12px; border:1px solid var(--line); border-radius:6px;
+  background:#fff; cursor:pointer; }
+#errbar { display:none; background:#ffebe9; border:1px solid var(--bad);
+  color:var(--bad); padding:8px 12px; font-size:13px; }
+#errbar:not(:empty) { display:block; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="errbar"></div>
+  <div id="sidebar">
+    <header>
+      <h1>种子草稿人工预审</h1>
+      <div class="tabs" id="tabs"></div>
+      <div class="progress" id="progress"></div>
+    </header>
+    <div id="seedlist"></div>
+  </div>
+  <div id="main">
+    <div class="nav">
+      <button id="prev">← 上一个</button>
+      <button id="next">下一个 →</button>
+    </div>
+    <div id="detail"><p style="color:var(--muted)">选择左侧种子开始审阅</p></div>
+    <div id="savebar">
+      <label>审阅人 <input id="reviewer" placeholder="姓名/代号"></label>
+      <button id="save">保存审阅</button>
+      <span id="savestate"></span>
+    </div>
+  </div>
+</div>
+<script>
+window.onerror = (msg, src, line) => {
+  const b = document.getElementById('errbar');
+  if (b) b.innerHTML = `⚠️ 前端错误：${msg}（${src}:${line}）——请把这条信息发给 Claude`;
+};
+window.onunhandledrejection = e => {
+  const b = document.getElementById('errbar');
+  if (b) b.innerHTML = `⚠️ 异步错误：${e.reason}`;
+};
+const $ = id => document.getElementById(id);
+let task = null, seeds = [], current = null, seed = null;
+const esc = s => String(s ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const DEFAULT_CHECKLIST = [
+  "来源与时间：每个 Persona/BDI 事实都有允许原始字段或截止前证据",
+  "未来不变性：无未来信息进入初始化路径",
+  "可见性：Actor/Cog-Sim/critic/judge 输入符合角色视图",
+  "语义分工：固定 Persona 没有锁死当前信念/意图/情绪",
+  "结构合法性：数值范围、容量、ID、极性、情绪类别、角色与 cutoff 合法",
+  "缺失与覆盖：B/D/I 数量、默认字段率、任务关键约束遗漏率",
+  "参数有效性：参数条件与判断表一致",
+  "Persona 效用：背景信息改善事实一致性（vs 仅必要任务事实）",
+  "可变性：有效依据下可合理变化、无依据时不漂移",
+];
+function effectiveChecklist() {
+  const cl = seed.review && seed.review.checklist;
+  if (cl && Object.keys(cl).length) return cl;
+  return Object.fromEntries(DEFAULT_CHECKLIST.map(c => [c, null]));
+}
+
+async function api(path, opt) {
+  const r = await fetch(path, opt);
+  return r.json();
+}
+
+async function loadTasks() {
+  const tasks = await api('/api/tasks');
+  const tabs = $('tabs'); tabs.innerHTML = '';
+  tasks.forEach(t => {
+    const b = document.createElement('button');
+    b.textContent = {esconv:'ESConv', p4g:'P4G', craigslistbargain:'CB'}[t.task] || t.task;
+    b.onclick = () => selectTask(t.task);
+    tabs.appendChild(b);
+  });
+  if (tasks[0]) selectTask(tasks[0].task);
+}
+
+async function selectTask(t) {
+  task = t; current = null;
+  document.querySelectorAll('.tabs button').forEach(b =>
+    b.classList.toggle('active', b.textContent ===
+      ({esconv:'ESConv', p4g:'P4G', craigslistbargain:'CB'}[t] || t)));
+  seeds = await api('/api/seeds?task=' + t);
+  const tasks = await api('/api/tasks');
+  const info = tasks.find(x => x.task === t);
+  $('progress').innerHTML = `共 <b>${info.total}</b> 个 · 已审 <b>${info.reviewed}</b> · low_info <b>${info.low_info}</b>`;
+  renderList();
+  if (seeds[0]) openSeed(seeds[0].seed_id);
+}
+
+function renderList() {
+  const el = $('seedlist'); el.innerHTML = '';
+  seeds.forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'seed' + (current === s.seed_id ? ' active' : '');
+    const cls = s.checklist_done === 0 ? 'none' : (s.checklist_done < s.checklist_total ? 'part' : 'full');
+    d.innerHTML = `<div><span class="dot ${cls}"></span><span class="id">${esc(s.seed_id)}</span>` +
+      (s.low_info ? '<span class="tag low">low_info</span>' : '') + `</div>
+      <div class="meta">${esc(s.emotion)} · ${esc(s.cutoff_rule.split('-')[0])} · 检查 ${s.checklist_done}/${s.checklist_total}</div>`;
+    d.onclick = () => openSeed(s.seed_id);
+    el.appendChild(d);
+  });
+}
+
+async function openSeed(id) {
+  current = id;
+  seed = await api(`/api/seed/${task}/${id}`);
+  renderList();
+  renderDetail();
+}
+
+function bdiBlock(kind, label) {
+  const items = seed.initial_bdi[kind] || [];
+  if (!items.length) return `<h3>${label}（空）</h3>`;
+  return `<h3>${label}（${items.length} 项）</h3>` + items.map((it, i) => {
+    const pol = it.polarity && kind !== 'beliefs' ? ` / ${it.polarity}` : '';
+    const src = it.source_kind || '';
+    return `<div class="bdi-item">
+      <div class="head">强度 <b>${it.strength}</b> · core=${it.core}${pol} · ${esc(src)} · 证据：${esc(it.evidence || '')}</div>
+      <div class="zh">${esc((seed._zh?.[kind] || [])[i] || '')}</div>
+      <div class="en">${esc(it.content_en)}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderDetail() {
+  const zh = seed._zh || {};
+  const c = seed.context;
+  const factsZh = zh.persona_facts || [];
+  const facts = seed.persona.facts || [];
+  const prefix = c.prefix || [];
+  const zhPrefix = {};
+  (zh.prefix || []).forEach(p => zhPrefix[p.index] = p.text);
+  let html = `<h2>${esc(seed.seed_id)}</h2>
+    <div class="meta-line">来源 ${esc(seed.provenance.source_id)} · 分组 ${esc(seed.provenance.group_id)}
+    · cutoff：${esc(c.cutoff.rule || '')}${c.low_info ? ' · <b style="color:var(--bad)">low_info</b>' : ''}
+    · 情绪 ${esc(seed.initial_emotion.category)}
+    · η_R=${seed.cognitive_profile.eta_R} τ_A=${seed.cognitive_profile.tau_A} τ_R=${seed.cognitive_profile.tau_R}</div>
+    <div class="section"><h3>任务</h3><p>${esc(zh.task_description || seed.task.description)}</p></div>`;
+  if (seed.persona.situation_en) {
+    html += `<div class="section"><h3>情境</h3>
+      <div class="kv"><div class="k">中文</div><div>${esc(zh.situation || seed.persona.situation_en)}</div>
+      <div class="k">原文</div><div>${esc(seed.persona.situation_en)}</div></div></div>`;
+  }
+  if (facts.length) {
+    html += `<div class="section"><h3>Persona 事实（草案，${facts.length} 条）</h3>` + facts.map((f, i) =>
+      `<div class="bdi-item"><div class="zh">${esc(factsZh[i] || '')}</div>
+       <div class="en">${esc(f.fact_en)}</div>
+       <div class="head">类别 ${esc(f.category || '')} · 证据：${esc(f.evidence || '')}</div></div>`).join('') + `</div>`;
+  }
+  html += `<div class="section">${bdiBlock('beliefs', '信念 B')}</div>
+    <div class="section">${bdiBlock('desires', '愿望 D')}</div>
+    <div class="section">${bdiBlock('intentions', '意图 I')}</div>`;
+  if (prefix.length) {
+    html += `<div class="section"><h3>前缀对话（截止点前）</h3>` + prefix.map(p =>
+      `<div class="msg"><span class="who">[${p.original_index}] ${esc(p.role)}</span>
+       <span class="zh">${esc(zhPrefix[p.original_index] || '')}</span>
+       <span class="en">${esc(p.text_en)}</span></div>`).join('') + `</div>`;
+  }
+  if (task === 'craigslistbargain') {
+    const av = seed.actor_task_view, uv = seed.user_task_view;
+    html += `<div class="section"><h3>角色任务视图</h3>
+      <div class="kv"><div class="k">Actor(buyer)</div><div>Target ${esc(av.target)} · Bottomline ${esc(av.bottomline)} · ${esc((av.item||{}).Title || '')}</div>
+      <div class="k">用户(seller)</div><div>Target ${esc(uv.target)} · Bottomline ${esc(uv.bottomline)}</div></div></div>`;
+  }
+  html += `<div class="section"><h3>九项检查（02§10）</h3><div class="checklist">` +
+    Object.entries(effectiveChecklist()).map(([txt, v], i) =>
+      `<div class="item"><span class="txt">${i + 1}. ${esc(txt)}</span>
+       <button class="opt yes ${v === true ? 'on' : ''}" data-i="${i}" data-v="yes">✓ 通过</button>
+       <button class="opt no ${v === false ? 'on' : ''}" data-i="${i}" data-v="no">✗ 不通过</button>
+       <button class="opt na ${v === null ? 'on' : ''}" data-i="${i}" data-v="na">— 未核</button></div>`).join('') + `</div></div>
+    <div class="section"><h3>批注（自定义字段）</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:6px">review_notes：任意文字</p>
+      <textarea id="notes">${esc(seed.review.review_notes)}</textarea>
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 6px">custom（JSON，预定义字段之外的信息）：</p>
+      <textarea id="custom">${esc(JSON.stringify(seed.review.custom || {}, null, 2))}</textarea></div>`;
+  $('detail').innerHTML = html;
+  $('reviewer').value = seed.review.reviewer || '';
+  document.querySelectorAll('.opt').forEach(b =>
+    b.onclick = () => toggleCheck(+b.dataset.i, b.dataset.v));
+  $('savestate').textContent = seed.review.review_date ? `上次保存：${seed.review.review_date}` : '未保存';
+}
+
+function toggleCheck(i, v) {
+  const cl = effectiveChecklist();
+  const key = Object.keys(cl)[i];
+  cl[key] = v === 'yes' ? true : (v === 'no' ? false : null);
+  seed.review.checklist = cl;
+  renderDetail();
+}
+
+async function save() {
+  let custom = {};
+  try { custom = JSON.parse($('custom').value || '{}'); }
+  catch (e) { $('savestate').textContent = 'custom 不是合法 JSON，未保存'; return; }
+  const body = {
+    reviewer: $('reviewer').value,
+    review_notes: $('notes').value,
+    custom,
+    checklist: seed.review.checklist || effectiveChecklist(),
+  };
+  const r = await api(`/api/seed/${task}/${seed.seed_id}/review`,
+    { method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body) });
+  $('savestate').textContent = r.ok ? `已保存 ${r.saved} ✓` : `保存失败：${r.error}`;
+  if (r.ok) { await selectTask(task); openSeed(seed.seed_id); }
+}
+
+$('save').onclick = save;
+$('prev').onclick = () => {
+  const i = seeds.findIndex(s => s.seed_id === current);
+  if (i > 0) openSeed(seeds[i - 1].seed_id);
+};
+$('next').onclick = () => {
+  const i = seeds.findIndex(s => s.seed_id === current);
+  if (i >= 0 && i < seeds.length - 1) openSeed(seeds[i + 1].seed_id);
+};
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowLeft') $('prev').click();
+  if (e.key === 'ArrowRight') $('next').click();
+});
+loadTasks();
+</script>
+</body>
+</html>
