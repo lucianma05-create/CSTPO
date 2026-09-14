@@ -29,3 +29,10 @@ venv/
 /outputs/
 /wandb/
 *.log
+
+# Local raw datasets (organized under data/raw, not distributed)
+/data/
+# Versioned evaluation archives (local artifacts)
+/Cog-Sim/evaluation/results_v1_0_1_fix/
+/Cog-Sim/evaluation/failures_v1_0_1_fix/
+/Cog-Sim/evaluation/reports_v1_0_1_fix/
