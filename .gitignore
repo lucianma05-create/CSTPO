@@ -4,10 +4,9 @@
 !.env.example
 .claude/
 
-# Private research workspace (maintained locally)
+# Research workspace: publish the algorithm overview only
 /shared_work_space/*
 !/shared_work_space/01_CSTPO算法概览.md
-
 
 # Python caches and local environments
 __pycache__/
@@ -34,3 +33,7 @@ venv/
 
 # Local raw datasets (organized under data/raw, not distributed)
 /data/
+# Versioned evaluation archives (local artifacts)
+/Cog-Sim/evaluation/results_v1_0_1_fix/
+/Cog-Sim/evaluation/failures_v1_0_1_fix/
+/Cog-Sim/evaluation/reports_v1_0_1_fix/

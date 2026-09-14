@@ -2,7 +2,9 @@
 
 > 2026-09-13 复审：当前实施入口为 [实施规范与审查结论 v1](03_CSTPO实施规范.md)。其状态定义、概率/KL、critic 监督、分支用途及正式实验约束优先；本文件保留补充细节，不能单独视为已通过运行与创新验收。
 
-日期：2026-09-13。状态：可实施设计草案，尚未实现 RL 训练，也没有新增模型实验。此前的 36 分支仅为模拟器诊断。
+原稿日期：2026-09-13；公式与流程图更新：2026-09-14。下述原型状态描述属于原稿，最新实施进展见 [UPDATEME](UPDATEME.md)。状态：可实施设计草案，尚未实现 RL 训练，也没有新增模型实验。此前的 36 分支仅为模拟器诊断。
+
+公式采用 Markdown 的 `$...$` 与 `$$...$$`，图采用 Mermaid；请使用支持数学与 Mermaid 的预览器。算法约定保持与 03 一致。
 
 ## 1. 本版固定的选择
 
@@ -13,6 +15,21 @@
 - 分叉：每条入选主干最多一个分叉节点，该处共两策略、每策略两措辞，随后全部续演至同一终局协议。一次主干已有的原动作算四个分支之一，额外生成三个尾部。
 - Actor 只用完整主干上的原始动作更新；额外尾部用于分支比较和 critic 训练。暂不把自适应收集的全部树节点直接混进 PPO。
 - 不从第一批数据开始依赖浅分支 bootstrap；敏感度预测器与自适应调度留待原有待验证问题通过后引入。
+
+
+记 $o_t$ 为对话历史及 Actor 自己合法可见的任务信息，$x_t$ 为动作前训练侧状态，$k_t$ 为策略，$u_t$ 为话语：
+
+$$
+\pi_\theta(k_t,u_t\mid o_t)
+=\pi_\theta(k_t\mid o_t)\,\pi_\theta(u_t\mid o_t,k_t).
+$$
+
+$$
+J(\theta)=\mathbb E_{z\sim\mathcal D,\;\tau\sim(\pi_\theta,\mathrm{CogSim}\mid z)}[G(\tau)],
+\qquad \gamma=1,\quad r_t=0\;(t<T),\quad r_T=G(\tau).
+$$
+
+$z$ 是初始种子，$\tau$ 是完整对话，$T$ 是实际终止回合。终局回报由任务协议定义，不能用认知变化幅度替代。Actor 不读取隐藏的 $x_t$ 字段。
 
 ## 2. 环境接口和字段约定
 
@@ -38,6 +55,29 @@ Actor 的策略字段使用固定枚举。实现可以使用单独特殊 token�
 
 设置额外采样 token 预算上限。优先预留一个完整分支包的预算，完成预算允许的包；不能只保留先成功的尾部。若出现部分包，统计为不完整，不用其均值产生策略分支优势。完成的主干仍可按普通方式训练。比较基线须用等总 token/时间预算，不能固定主干数后忽略额外尾部。
 
+
+```mermaid
+flowchart TD
+    X["同一动作前快照 x"] --> K1["主干策略 k1"]
+    X --> K2["另一策略 k2"]
+    K1 --> U11["原话语 u11：主干"]
+    K1 --> U12["替代话语 u12"]
+    K2 --> U21["话语 u21"]
+    K2 --> U22["话语 u22"]
+    U11 --> G11["完整续演回报 G11"]
+    U12 --> G12["完整续演回报 G12"]
+    U21 --> G21["完整续演回报 G21"]
+    U22 --> G22["完整续演回报 G22"]
+    G11 --> A["原主干 Actor 优势"]
+    G12 --> A
+    G11 --> V["主干节点监督 V 和 U"]
+    G12 --> C["额外尾部仅监督父节点 U"]
+    G21 --> C
+    G22 --> C
+```
+
+图中 G12 仅帮助估计原策略标签优势，其话语 token 不进入 Actor loss；G21/G22 也不更新 Actor。分叉从同一父快照独立续演，不重置剩余轮数。
+
 ## 4. critic：一个模型，两种价值输出
 
 训练输入 x 包含历史、固定 Persona、用户角色 KB、BDI 节点文本及属性、Emotion、用户参数、prev_gc、任务事件状态和剩余回合数。仅输入数值强度无法区分节点含义。
@@ -52,27 +92,67 @@ V(x) 预测旧策略下的终局期望回报；U(x,k) 预测选定 k、后续措
 
 预热：先用冻结 SFT Actor 收集完整对话训练 critic，留出独立用户检查其回报误差。预测不足时也可训练 Actor：V/U 仅作基线，但不能据此宣称已经实现可靠的条件归因或开启浅分支截断。
 
+
+$$
+V^{\pi_{\mathrm{old}}}(x)=\mathbb E_{\pi_{\mathrm{old}}}[G\mid x],
+\qquad
+U^{\pi_{\mathrm{old}}}(x,k)=\mathbb E_{\pi_{\mathrm{old}}}[G\mid x,k].
+$$
+
+令 $\mathcal D$ 为主干节点集合，$\mathcal B$ 为完整分叉父节点集合，$\mathcal E_{b,i}$ 为父节点 $b$ 的第 $i$ 个策略下的额外尾部。完整包中 $\mathcal E_{b,1}=\{12\}$、$\mathcal E_{b,2}=\{21,22\}$。critic 参数记为 $\phi$，其 MSE 为：
+
+$$
+\begin{aligned}
+\mathcal L_{\mathrm{main}}(\phi)
+&=\frac{1}{|\mathcal D|}\sum_{(x,k,G)\in\mathcal D}
+\left[(V_\phi(x)-G)^2+(U_\phi(x,k)-G)^2\right],\\
+\mathcal L_{\mathrm{extra}}(\phi)
+&=\frac{1}{|\mathcal B|}\sum_{b\in\mathcal B}\frac12\sum_{i=1}^2
+\frac{1}{|\mathcal E_{b,i}|}\sum_{v\in\mathcal E_{b,i}}
+(U_\phi(x_b,k_{b,i})-G_{b,v})^2,\\
+\mathcal L_{\mathrm{critic}}(\phi)
+&=\mathcal L_{\mathrm{main}}(\phi)+0.25\,\mathcal L_{\mathrm{extra}}(\phi).
+\end{aligned}
+$$
+
+没有完整包时额外项为零。G11 已计入主干项，不再重复放入额外项；未采样策略没有零标签。先算本批旧基线，再拟合本批回报。旧 critic 可能有策略滞后，不等于当前策略的精确条件期望。
+
 ## 5. 实际可计算的两个字段优势
 
 设原始主干的终局回报为 G11。普通主干节点：
 
-```
-A_strategy  = G11 - V_old(x)
-A_utterance = G11 - U_old(x,k1)
-```
+$$
+\begin{aligned}
+\widehat A^{\mathrm{strategy}}&=G_{11}-V_{\mathrm{old}}(x),\\
+\widehat A^{\mathrm{utterance}}&=G_{11}-U_{\mathrm{old}}(x,k_1).
+\end{aligned}
+$$
 
 对完成了同策略替代措辞尾部的分叉节点，设其独立回报为 G12：
 
-```
-A_strategy  = (G11 + G12)/2 - V_old(x)
-A_utterance = G11 - U_old(x,k1)
-```
+$$
+\begin{aligned}
+\widehat A^{\mathrm{strategy}}&=\frac{G_{11}+G_{12}}{2}-V_{\mathrm{old}}(x),\\
+\widehat A^{\mathrm{utterance}}&=G_{11}-U_{\mathrm{old}}(x,k_1).
+\end{aligned}
+$$
 
 解释：策略优势在有分支时对两个同策略实现取均值，减少把策略优劣等同于某一个措辞效果；原话语优势对比冻结的策略条件基线。给原标签更新一次，不因两个措辞复制两次标签 loss。额外 k2 的结果用于训练 U 和评估策略间分歧。
 
 这是一组可实现的优势估计器，不是强制满足逐样本加和的奖励切分。理想条件价值分解为 (U-V) 与 (Q-U)；上述 G-V 在条件期望上估计 U-V，分叉均值进一步估计该期望。在准确回报、按策略采样及动作独立基线等条件下可解释原始 score-function 梯度；token PPO clipping、有限样本与近似 critic 的实际收益仍需实验，不宣称完整 PPO 更新无偏。
 
 首版不要用 U_old-V_old 完全替代有终局样本依据的策略优势；也不要要求两个措辞的差异一定显著，用户模拟噪声尚未被两个样本消除。
+
+
+理想分解中 $Q^\pi(x,k,u)=\mathbb E_\pi[G\mid x,k,u]$，因此：
+
+$$
+Q^\pi(x,k,u)-V^\pi(x)
+=\underbrace{U^\pi(x,k)-V^\pi(x)}_{\text{策略条件价值差}}
++\underbrace{Q^\pi(x,k,u)-U^\pi(x,k)}_{\text{同策略下的话语价值差}}.
+$$
+
+这是条件价值的代数分解，不要求上面两个采样优势逐样本相加守恒。所有用于 Actor 的优势均停止梯度。
 
 ## 6. PPO 更新边界
 
@@ -82,19 +162,73 @@ A_utterance = G11 - U_old(x,k1)
 
 额外分支只训练 critic 和支持分支估计，是明确的第一版数据用途限制。待这一版有效，再研究如何合法复用全部树节点进入 Actor；不能把这种未来收益算入当前采样效率。
 
+
+设 $\mathcal M$ 为主干有效动作 token 集，$N=|\mathcal M|$；$c_j$ 是 token 前缀，$y_j$ 是实际采样 token。按字段分配优势：
+
+$$
+\widehat A_j=
+\begin{cases}
+\widehat A^{\mathrm{strategy}}_t,&j\text{ 属于第 }t\text{ 轮策略字段},\\
+\widehat A^{\mathrm{utterance}}_t,&j\text{ 属于第 }t\text{ 轮话语字段}.
+\end{cases}
+$$
+
+$$
+r_j(\theta)=\exp\left[\log p_\theta(y_j\mid c_j)-\log p_{\mathrm{old}}(y_j\mid c_j)\right],
+\qquad \epsilon=0.2.
+$$
+
+$$
+\ell_j(\theta)=\min\left[
+r_j(\theta)\widehat A_j,\;
+\operatorname{clip}(r_j(\theta),1-\epsilon,1+\epsilon)\widehat A_j
+\right].
+$$
+
+$$
+\mathcal L_{\mathrm{Actor}}(\theta)
+=-\frac1N\sum_{j\in\mathcal M}\ell_j(\theta)
++\frac{\beta}{N}\sum_{j\in\mathcal M}
+D_{\mathrm{KL}}\left(p_\theta(\cdot\mid c_j)\,\|\,p_{\mathrm{SFT}}(\cdot\mid c_j)\right).
+$$
+
+参考 SFT Actor 冻结；KL 在旧轨迹前缀处计算，是显式 loss 正则，不加进 G 或 critic target。策略位置的概率和 KL 使用相同 trie 合法支持；话语位置使用实际采样词表支持。跨微批与设备使用同一个 N，不分别对两个字段再平均。采样 EOS 属于话语动作，强制模板和结束标记不计入。本式是 token surrogate，不宣称等同整段话语概率比的精确 PPO。
+
 ## 7. 单次训练迭代
 
+```mermaid
+flowchart TD
+    F["冻结 actor_old 与 critic_old"] --> P["选择主干案例、目标轮次并预留分叉预算"]
+    P --> R["旧 Actor 交互；保存动作前快照、旧概率和旧 V/U"]
+    R --> B{"到达预选节点且预算允许？"}
+    B -->|是| T["同一快照生成完整分支包"]
+    B -->|否| M["继续主干"]
+    T --> J["全部按原剩余轮数结束；固定 Judge 评分"]
+    M --> J
+    J --> V{"主干终局评分有效？"}
+    V -->|是| A["以旧 V/U 与回报计算固定字段优势"]
+    V -->|否| X["记录故障；不赋任务失败奖励；按协议处理"]
+    A --> U["仅主干动作 token 更新 Actor"]
+    U --> C["MSE 拟合 critic；额外尾部仅监督父节点 U"]
+    C --> L["记录任务指标、成本、KL 与故障率"]
+    X --> L
+    L --> Q{"达到预定预算？"}
+    Q -->|否| F
+    Q -->|是| E["保存检查点并独立评估"]
 ```
-freeze actor_old, critic_old
-draw main cases and branch schedule before observing their outcomes
-collect complete main dialogues; cache pre-action checkpoints and old logprobs
-collect budgeted complete branch packages with actor_old
-score complete dialogues with the fixed terminal judge
-compute field advantages using critic_old and observed terminal returns
-update actor on main dialogue tokens only
-fit critic on the corresponding main/branch return targets
-log task outcomes, critic errors, branch noise, and all sampling/judge costs
-```
+
+包不完整而主干有效时退回普通优势，关闭完整包辅助项；机械错误先暂停修复。额外尾部可以从预先保存的快照续演，但采样资格不能事后根据主干成功与否选择。
+
+| 步骤 | 输入与操作 | 输出 |
+|---|---|---|
+| 1. 冻结 | 保存旧 Actor 与旧 critic | 本批采样与基线版本 |
+| 2. 采样 | 主干及预先安排的分支包 | 完整轨迹、快照、旧概率与成本 |
+| 3. 评价 | 固定 Judge 读取可见完整对话 | 有效终局回报及证据 |
+| 4. 计算优势 | 旧 V/U 与 G11、G12 | 固定的两个字段优势 |
+| 5. 更新 Actor | 主干 token 的 PPO surrogate 与参考 KL | 新 Actor |
+| 6. 拟合 critic | 主干 V/U 目标、额外父节点 U 目标 | 新 critic |
+| 7. 记录 | 指标、故障与全部成本 | 检查点、评估或下一批 |
+
 
 批内不能更换 Actor 后继续生成同一包的尾部。失败的 API 调用不是任务失败。超长终止、用户退出和任务完成分别记录；轮数上限到达时按完整评价协议评分，不伪装为自然结束。
 
@@ -110,7 +244,9 @@ log task outcomes, critic errors, branch noise, and all sampling/judge costs
 
 最终需要分别证明：Cog-Sim 的反馈质量、认知输入的价值估计贡献、分层字段优化、分支预算调度。条件基线和 PPO 本身不是创新；不把尚未验证的四个部件捆成一个无法诊断的最终算法。
 
-## 9. 当前缺少的实现模块
+## 9. 原稿的实现模块清单（2026-09-13）
+
+以下为原稿时点的清单，不覆盖 09-14 已完成的修复与 checkpoint 等进展；最新状态以 UPDATEME 和 05 为准。
 
 现有：Cog-Sim 主循环、日志、36 分支单轮诊断脚本。缺少：正式数据适配器、可靠的终局 judge、完整环境快照、SFT Actor、带字段 mask 的 PPO 入口、critic、完整尾部分叉采集器与成本账本。
 
