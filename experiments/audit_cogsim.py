@@ -16,10 +16,10 @@ from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "Cog-Sim"
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(SOURCE))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from checkpoint import restore, snapshot
+from cstpo.checkpoint import restore, snapshot
 from evaluation.robustness import run as robustness
 from evaluation.state_transition import rj_violations, state_stability
 from simulator.run_sim import SCENARIOS, build_state
