@@ -137,17 +137,17 @@ $$
 s_t=F_{\mathrm{dev}}\!\left(\widehat S_\psi(x_t)\right)\in[0,1].
 $$
 
-当前保守协议在每条主干开始前，从 $1,\ldots,H$ 均匀抽取一个候选轮次 $t^*$；到达该轮且预算足够时，在生成当前动作之前决定是否建立分叉包：
+当前保守协议在每条主干开始前，从 $1,\ldots,H$ 中均匀抽取一个候选轮次 $t^{\ast}$；到达该轮且预算足够时，在生成当前动作之前决定是否建立分叉包：
 
 $$
-t^*\sim\mathrm{Uniform}\{1,\ldots,H\},
+t^{\ast}\sim\mathrm{Uniform}(1,\ldots,H),
 $$
 
 $$
-p_{\mathrm{branch}}(x_{t^*})
-=\min\left\{1,\max\left\{0,
-c\left(0.5+0.5s_{t^*}\right)
-\right\}\right\}.
+p_{\mathrm{branch}}(x_{t^{\ast}})
+=\min\left(1,\max\left(0,
+c\left(0.5+0.5s_{t^{\ast}}\right)
+\right)\right).
 $$
 
 $c$ 只用开发数据校准，使预期分叉数满足预算：
@@ -197,7 +197,7 @@ $$
 设当前批还剩 $b_t$ 个分叉包预算，预算控制器依据剩余候选量的开发估计选择 $c_t$，并在当前动作生成前采样
 
 $$
-p_t=\min\left\{1,c_t w_t\right\},
+p_t=\min\left(1,c_t w_t\right),
 \qquad
 I_t\sim\mathrm{Bernoulli}(p_t).
 $$
