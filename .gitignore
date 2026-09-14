@@ -5,7 +5,9 @@
 .claude/
 
 # Private research workspace (maintained locally)
-/shared_work_space/
+/shared_work_space/*
+!/shared_work_space/01_CSTPO算法概览.md
+
 
 # Python caches and local environments
 __pycache__/
@@ -29,3 +31,6 @@ venv/
 /outputs/
 /wandb/
 *.log
+
+# Local raw datasets (organized under data/raw, not distributed)
+/data/
