@@ -29,6 +29,9 @@ sys.path.insert(0, str(ROOT / "Cog-Sim"))
 from simulator.llm import LLMClient, StructuredCallError
 
 OUT = ROOT / "data" / "diversity_probe"
+# 目录内的模块产物（非对话文件），加载器必须排除
+ARTIFACTS = ("summary.json", "snr_analysis.json", "llm_judge_eval.json",
+             "polarity_by_condition.json")
 SIMS = ("cogsim", "std_roleplay", "std_persona", "std_persona_resist", "std_bdi")
 
 DRIFT_SYSTEM = """You are a dialogue evaluator. The user in this conversation is
@@ -102,9 +105,7 @@ def main():
     ap.add_argument("--workers", type=int, default=200)
     args = ap.parse_args()
 
-    files = [p for p in OUT.rglob("*.json")
-             if p.name not in ("summary.json", "snr_analysis.json",
-                               "llm_judge_eval.json")]
+    files = [p for p in OUT.rglob("*.json") if p.name not in ARTIFACTS]
     dialogues = [json.loads(p.read_text()) for p in files]
     print(f"加载 {len(dialogues)} 条对话", flush=True)
 

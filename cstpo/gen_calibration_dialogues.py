@@ -2,7 +2,7 @@
 
 - Agent：默认 LLM Agent（`cstpo/agent.py`，论文香草提示 + cooperative/pushy/
   neutral 风格画像轮流使用制造边界样本；`--scripted` 回退话术池版），
-  用冻结种子在真实模拟器上跑到终止（user_ended / time_limit / 8 轮上限）。
+  自由结束（30 轮安全阀 + 15 轮后冗余 judger，与多样性实验同口径）。
 - 分配：ESConv 20 开发 + 20 留出；P4G/CB 各 5 开发 + 5 留出。
 - judge smoke：留出对话用 judge 独立评分 3 次（flash），报告重复一致性与
   分数分布；开发对话评分 1 次供提示修订。
@@ -18,6 +18,7 @@ import json
 import re
 import statistics
 import sys
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -29,10 +30,11 @@ from simulator.llm import LLMClient
 
 from cstpo.cost_ledger import RecordingLLM, attribute_calls
 from cstpo.judge import judge_cb, judge_esconv, judge_p4g, reward_for
+from cstpo.stale_judger import check_stale, should_check
 from cstpo.task_env import TaskEnv, prefix_turns
 
 OUT = ROOT / "data" / "judge_calibration"
-MAX_TURNS = 8
+SAFETY_CAP = 30  # 安全阀（非协议轮数）：自由结束由 CED + 冗余 judger 决定
 
 # 脚本化 Agent 画像：每画像一组循环使用的话语（覆盖成功/失败/边界）
 AGENT_PROFILES = {
@@ -117,7 +119,7 @@ def dialogue_seed_ref(seed: dict) -> dict:
 def run_dialogue(args, scripted: bool = False) -> dict:
     """跑一条对话到终止。默认 LLM Agent；scripted=True 用话术池。"""
     task, seed, profile, did, llm = args
-    env = TaskEnv(llm=llm, max_turns=MAX_TURNS)
+    env = TaskEnv(llm=llm, max_turns=SAFETY_CAP)
     out = env.reset(seed)
     cp = out["checkpoint"]
     turns = prefix_turns(seed)  # 从截止前缀继续（actor 可见历史）
@@ -129,9 +131,18 @@ def run_dialogue(args, scripted: bool = False) -> dict:
         actor_llm = _LC()
     pool = AGENT_PROFILES[task][profile]
     i = 0
+    n = 0
+    reason = None
     while not (r and r["terminated"]):
         if r:
             cp = r["checkpoint"]
+        # 15 轮后冗余 judger（与多样性实验同口径）
+        if not scripted and should_check(n):
+            j = check_stale(LLMClient(), turns, task)
+            if j["stale"] and j["final_line"]:
+                turns.append({"role": "user", "text": j["final_line"]})
+                reason = "judger_stale_end"
+                break
         if scripted:
             utter = pool[i % len(pool)]
         else:
@@ -141,16 +152,38 @@ def run_dialogue(args, scripted: bool = False) -> dict:
             actor_costs["completion_tokens"] += actor_llm.completion_tokens
         i += 1
         r = env.step(cp, utter)
+        cp = r["checkpoint"]
         turns.append({"role": "assistant", "text": utter})
         turns.append({"role": "user", "text": r["user_reply"]})
-    n_pre_ass = len([t for t in turns[:len(prefix_turns(seed))]
-                     if t["role"] == "assistant"])
+        n += 1
+    pre_n = len(prefix_turns(seed))
+    n_pre_ass = len([t for t in turns[:pre_n] if t["role"] == "assistant"])
     return {"task": task, "dialogue_id": did, "profile": profile,
-            "turns": turns, "termination": r["termination_reason"],
+            "turns": turns, "termination": reason or r["termination_reason"],
             "n_turns": len([t for t in turns if t["role"] == "assistant"]) - n_pre_ass,
-            "prefix_n": len(prefix_turns(seed)),
+            "prefix_n": pre_n,
             "seed": dialogue_seed_ref(seed), "costs": r["costs"],
             "actor_costs": actor_costs}
+
+
+def aggregate_scores(task, vs):
+    """三次 judge 聚合：数值取平均（E/A）、布尔取多数、可空字段取众数。"""
+    if task == "esconv":
+        return {"E": sum(v["E"] for v in vs) / len(vs),
+                "A": sum(v["A"] for v in vs) / len(vs),
+                "evidence_sufficient": Counter(
+                    bool(v["evidence_sufficient"]) for v in vs).most_common(1)[0][0]}
+    if task == "p4g":
+        out = {k: Counter(bool(v[k]) for v in vs).most_common(1)[0][0]
+               for k in ("commitment", "conditional", "withdrawn")}
+        amts = [v["amount"] for v in vs if v.get("amount") is not None]
+        out["amount"] = Counter(amts).most_common(1)[0][0] if amts else None
+        return out
+    out = {"deal": Counter(bool(v["deal"]) for v in vs).most_common(1)[0][0],
+           "parse_error": Counter(bool(v.get("parse_error")) for v in vs).most_common(1)[0][0]}
+    prices = [v["final_price"] for v in vs if v.get("final_price") is not None]
+    out["final_price"] = Counter(str(prices)).most_common(1)[0][0] if prices else None
+    return out
 
 
 def judge_dialogue(args):
@@ -171,14 +204,16 @@ def judge_dialogue(args):
                  "parse_error": v.parse_error, "currency": v.currency}
 
 
-def run_smoke(plans, results, workers, term=None, out=OUT):
-    """留出 3 次独立评分 + 开发 1 次；报告重复一致性与分数分布。"""
-    print("\njudge smoke（留出 3 次独立评分）...")
+def run_smoke(results, workers, term=None, out=OUT):
+    """全部对话 3 次独立评分（建议 2：数值均值/布尔多数聚合）；
+    报告重复一致性、聚合分数分布，以及与人工标注的一致性。
+    注意：results 为完成顺序（逐条落盘），split/task 从结果自身推导，
+    不能与 plans 按序 zip。"""
+    print("\njudge smoke（全部 3 次独立评分 + 聚合）...")
     jobs = []
-    for p, res in zip(plans, results):
-        rep = 3 if p[4] == "heldout" else 1
-        for _ in range(rep):
-            jobs.append((res["dialogue_id"], res["turns"], p[0],
+    for res in results:
+        for _ in range(3):
+            jobs.append((res["dialogue_id"], res["turns"], res["task"],
                          res["seed"].get("situation"),
                          res["seed"].get("emotion"), LLMClient()))
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -188,8 +223,7 @@ def run_smoke(plans, results, workers, term=None, out=OUT):
         by_did.setdefault(did, []).append(v)
     # 一致性：留出对话 3 次评分的一致率
     for task in ("esconv", "p4g", "craigslistbargain"):
-        rows = [(did, vs) for did, vs in by_did.items()
-                if did.startswith(task) and "heldout" in did]
+        rows = [(did, vs) for did, vs in by_did.items() if did.startswith(task)]
         exact = 0
         for did, vs in rows:
             if task == "esconv":
@@ -199,7 +233,14 @@ def run_smoke(plans, results, workers, term=None, out=OUT):
                 k = "deal" if task == "craigslistbargain" else "commitment"
                 pairs = {v[k] for v in vs}
                 exact += len(pairs) == 1
-        print(f"  {task}: 留出 {len(rows)} 条，3 次评分完全一致 {exact} 条")
+        print(f"  {task}: {len(rows)} 条，3 次评分完全一致 {exact} 条")
+        # 聚合 + 人工比对
+        agg_by = {did: aggregate_scores(task, vs) for did, vs in rows}
+        annos = load_human_annotations()
+        if annos:
+            report_human_agreement(task, agg_by, annos)
+        for did, a in agg_by.items():
+            by_did[did].append({"aggregated": a})
     # 分布
     dist = {}
     for did, vs in by_did.items():
@@ -219,6 +260,47 @@ def run_smoke(plans, results, workers, term=None, out=OUT):
                    ensure_ascii=False, indent=1) + "\n")
     print(f"\n产物: {out}/{{dev,heldout}}/ 与 smoke_summary.json")
     return by_did
+
+
+def load_human_annotations() -> dict:
+    """annotations/ 下全部标注人评分：{did: {annotator: scores}}。"""
+    annos = {}
+    anno_dir = OUT / "annotations"
+    if not anno_dir.exists():
+        return annos
+    for fp in anno_dir.rglob("*.json"):
+        d = json.loads(fp.read_text())
+        for who, a in d.get("annotations", {}).items():
+            annos.setdefault(d["dialogue_id"], {})[who] = a.get("scores", {})
+    return annos
+
+
+def report_human_agreement(task, agg_by, annos):
+    """聚合 judge vs 人工标注：esconv 报 MAE 与差异≥2 比例；p4g/cb 报二元一致率。"""
+    if task == "esconv":
+        de, da, n, big = [], [], 0, 0
+        for did, a in agg_by.items():
+            for who, sc in annos.get(did, {}).items():
+                if "E" not in sc:
+                    continue
+                n += 1
+                de.append(abs(sc["E"] - a["E"]))
+                da.append(abs(sc["A"] - a["A"]))
+                if max(de[-1], da[-1]) >= 2:
+                    big += 1
+        if n:
+            print(f"    聚合 vs 人工（{n} 份）: E 平均差 {sum(de)/n:.2f} | "
+                  f"A 平均差 {sum(da)/n:.2f} | 差异≥2 {big} 条")
+    else:
+        k = "deal" if task == "craigslistbargain" else "commitment"
+        ok = n = 0
+        for did, a in agg_by.items():
+            for who, sc in annos.get(did, {}).items():
+                if k in sc:
+                    n += 1
+                    ok += (bool(sc[k]) == bool(a[k]))
+        if n:
+            print(f"    聚合 vs 人工（{n} 份）: {k} 一致 {ok}/{n}")
 
 
 def main():
@@ -242,7 +324,7 @@ def main():
                     plans.append((res["task"], None, res.get("profile"),
                                   res["dialogue_id"], split))
         print(f"judge-only：加载 {len(results)} 条已有对话")
-        run_smoke(plans, results, args.workers)
+        run_smoke(results, args.workers)
         return
 
     if args.pilot:
@@ -261,12 +343,26 @@ def main():
             plans.append((task, seed, profiles[i % 3], f"{task}_{split}_{i:02d}",
                           split))
 
-    llms = [RecordingLLM() for _ in plans]
-    print(f"生成 {len(plans)} 条对话（workers={args.workers}，"
-          f"Agent={'scripted' if args.scripted else 'llm'}）...", flush=True)
     base = OUT / "pilot" if args.pilot else OUT
 
     def out_path(split, task, did):
+        d = base / split / task
+        d.mkdir(parents=True, exist_ok=True)
+        return d / f"{did}.json"
+
+    # 跳过已落盘完成的对话（崩溃/修复续跑）
+    done = set()
+    for fp in OUT.rglob("*.json"):
+        if fp.name == "smoke_summary.json" or "annotations" in fp.parts:
+            continue
+        done.add((fp.parent.parent.name, fp.parent.name, fp.stem))
+    plans = [pl for pl in plans
+             if (("heldout" if pl[4] == "heldout" else "dev"), pl[0], pl[3]) not in done]
+    llms = [RecordingLLM() for _ in plans]
+    print(f"待生成 {len(plans)} 条对话（workers={args.workers}，"
+          f"Agent={'scripted' if args.scripted else 'llm'}）...", flush=True)
+    if not plans:
+        return
         d = base / split / task
         d.mkdir(parents=True, exist_ok=True)
         return d / f"{did}.json"
@@ -299,7 +395,7 @@ def main():
     print(f"生成成本: {total_calls} 调用 / {total_tok} tokens")
 
     # judge smoke：留出 3 次 + 开发 1 次
-    run_smoke(plans, results, args.workers, term=term, out=base)
+    run_smoke(results, args.workers, term=term, out=base)
 
 
 if __name__ == "__main__":

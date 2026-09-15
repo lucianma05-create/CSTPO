@@ -49,15 +49,23 @@ PREFIX_ROUNDS = 2
 
 def prefix_turns(seed: dict, n_rounds: int | None = None) -> list[dict]:
     """种子截止前缀 → [{role:'assistant'|'user', text}]（与 compile_state 同一
-    角色映射）。默认取前 PREFIX_ROUNDS 回合（实验口径）；n_rounds 显式
-    指定时取前 n_rounds 回合。Agent 可见历史与提示式模拟器历史都应从该前缀继续。"""
+    角色映射）。统一口径：**截到第 n_rounds 条用户消息为止（含）**——
+    前缀必然以用户消息结尾（对话循环恒为 agent 先发言，若前缀以 agent
+    提问结尾会出现"agent 自问自答"的废轮）；不足 n_rounds 条用户消息时
+    全保留（CB 短前缀、02§6 冷启动种子按数据天然更短）。
+    Agent 可见历史与提示式模拟器历史都应从该前缀继续。"""
+    if n_rounds is None:
+        n_rounds = PREFIX_ROUNDS
     turns = []
+    n_user = 0
     for m in seed["context"].get("prefix", []):
         role = "user" if m["role"] in USER_ROLES else "assistant"
         turns.append({"role": role, "text": m["text_en"]})
-    if n_rounds is None:
-        n_rounds = PREFIX_ROUNDS
-    return turns[:2 * n_rounds]
+        if role == "user":
+            n_user += 1
+            if n_user >= n_rounds:
+                break
+    return turns
 
 
 def render_persona(seed: dict) -> str:
@@ -91,9 +99,8 @@ def compile_state(seed: dict) -> UserState:
     cat = seed["initial_emotion"]["category"]
     v, a = EMOTION_DEFAULTS.get(cat, EMOTION_DEFAULTS["neutral"])
     state.emotion = Emotion(valence=v, arousal=a, category=cat)
-    for m in seed["context"]["prefix"][:2 * PREFIX_ROUNDS]:
-        role = "user" if m["role"] in USER_ROLES else "assistant"
-        state.history.append({"role": role, "text": m["text_en"]})
+    for m in prefix_turns(seed):
+        state.history.append(m)
     return state
 
 
