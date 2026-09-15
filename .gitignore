@@ -33,6 +33,10 @@ venv/
 
 # Local raw datasets (organized under data/raw, not distributed)
 /data/
+
+# 实验结果：仅 RDVD 论文形式文档随仓库分发，其余报告本地保留
+/result/*
+!/result/RDVD_20260915.md
 # Versioned evaluation archives (local artifacts)
 /Cog-Sim/evaluation/results_v1_0_1_fix/
 /Cog-Sim/evaluation/failures_v1_0_1_fix/
