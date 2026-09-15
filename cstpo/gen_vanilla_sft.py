@@ -28,7 +28,7 @@ from cstpo.label_maps import (CB_CANONICAL, ESCONV_CANONICAL, P4G_CANONICAL)
 from cstpo.stale_judger import check_stale, should_check
 from cstpo.task_env import TaskEnv, prefix_turns
 
-SEEDS = ROOT / "data" / "seeds_vanilla"
+SEEDS = ROOT / "data" / "seeds_vanilla"  # 默认；--seeds-dir 可覆盖（扩种批次）
 OUT = ROOT / "data" / "sft" / "vanilla_dialogues"
 SAFETY_CAP = 30
 
@@ -101,11 +101,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=120)
     ap.add_argument("--n", type=int, default=0, help="每任务种子数（0=全部）")
+    ap.add_argument("--seeds-dir", default=None, help="种子目录（默认 data/seeds_vanilla）")
     args = ap.parse_args()
+    seeds_root = Path(args.seeds_dir) if args.seeds_dir else SEEDS
     jobs = []
     for task in ("esconv", "p4g", "craigslistbargain"):
         seeds = [json.loads(p.read_text()) for p in sorted(
-            (SEEDS / task).glob("*.json")) if p.name != "manifest.json"]
+            (seeds_root / task).glob("*.json")) if p.name != "manifest.json"]
         if args.n:
             seeds = seeds[:args.n]
         done = {p.stem for p in (OUT / task).glob("*.json")} if (OUT / task).exists() else set()

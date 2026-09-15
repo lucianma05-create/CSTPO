@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT / "Cog-Sim"))
 
 from simulator.llm import LLMClient
 from simulator.simulator import UserSimulator
-from simulator.state.schema import BDIItem, Emotion, UserState
+from simulator.state.schema import BDIItem, CognitiveProfile, Emotion, UserState
 
 from cstpo.checkpoint import snapshot
 
@@ -82,7 +82,12 @@ def render_persona(seed: dict) -> str:
 
 def compile_state(seed: dict) -> UserState:
     """种子 → UserState（v4.2 冻结种子专用编译路径）。"""
-    state = UserState(persona=render_persona(seed))
+    cp = seed.get("cognitive_profile") or {}
+    profile = CognitiveProfile(
+        eta_R=float(cp.get("eta_R", 0.6)),
+        tau_A=float(cp.get("tau_A", 0.35)),
+        tau_R=float(cp.get("tau_R", 0.70)))
+    state = UserState(persona=render_persona(seed), profile=profile)
     bdi = seed["initial_bdi"]
     for i, b in enumerate(bdi["beliefs"], 1):
         state.beliefs.append(BDIItem(f"B{i}", "belief", b["content_en"],
