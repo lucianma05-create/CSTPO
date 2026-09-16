@@ -142,13 +142,18 @@ def build_samples(task, dial) -> list[dict]:
             continue
         # assistant 回合 → 一条样本（目标 = 本回合标签+话语）
         label = lab or UNLABELED
+        target = text
+        if task == "esconv":
+            # ESConv 提示要求 "assistant: <response>" 格式，香草基线输出带此
+            # 前缀并原样发模拟器——训练目标对齐（prefix 计入 loss，让模型学会）
+            target = "assistant: " + text
         samples.append({
             "messages": [{"role": "system", "content": system}] + history
                         + [{"role": "assistant",
-                            "content": label + LABEL_SEP + text}],
+                            "content": label + LABEL_SEP + target}],
             "label": label,
         })
-        history.append({"role": "assistant", "content": text})
+        history.append({"role": "assistant", "content": target})
     return samples
 
 
@@ -185,12 +190,16 @@ def build_vanilla_samples(task, dial) -> list[dict]:
             history.append({"role": "user", "content": t["text"]})
             continue
         label = t.get("label") or UNLABELED
+        target = t["text"]
+        if task == "esconv" and not target.startswith("assistant: "):
+            # 香草生成时 flash 输出已带 "assistant: " 前缀；兜底统一
+            target = "assistant: " + target
         samples.append({
             "messages": [{"role": "system", "content": system}] + history
-                        + [{"role": "assistant", "content": label + LABEL_SEP + t["text"]}],
+                        + [{"role": "assistant", "content": label + LABEL_SEP + target}],
             "label": label,
         })
-        history.append({"role": "assistant", "content": t["text"]})
+        history.append({"role": "assistant", "content": target})
     return samples
 
 

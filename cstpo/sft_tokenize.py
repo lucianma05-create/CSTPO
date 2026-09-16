@@ -52,13 +52,28 @@ def tokenize_sample(tk, sample: dict) -> dict:
     input_ids = prefix_ids + label_ids + utter_ids + tail
     labels = [IGNORE] * len(prefix_ids) + [IGNORE] * len(label_ids) \
         + utter_ids + [IGNORE] * len(tail)
-    return {"input_ids": input_ids, "labels": labels}
+    # system 段长度（截断时保留 system + 尾部——对话样本关键信息在后）
+    sys_ids = list(tk.apply_chat_template(
+        [{"role": "system", "content": messages[0]["content"]}],
+        tokenize=True, add_generation_prompt=False)["input_ids"])
+    return {"input_ids": input_ids, "labels": labels, "system_len": len(sys_ids)}
+
+
+def left_truncate(out: dict, max_len: int) -> dict:
+    """左截断：保留 system 段 + 序列尾部（对话样本关键信息在后）。"""
+    sys_len = out.get("system_len", 0)
+    ids, labs = out["input_ids"], out["labels"]
+    if len(ids) <= max_len:
+        return {"input_ids": ids, "labels": labs}
+    keep_tail = max_len - sys_len
+    return {"input_ids": ids[:sys_len] + ids[-keep_tail:],
+            "labels": labs[:sys_len] + labs[-keep_tail:]}
 
 
 def tokenize_and_pad(tk, sample: dict) -> dict:
     out = tokenize_sample(tk, sample)
-    ids = out["input_ids"][:MAX_SEQ_LEN]
-    labs = out["labels"][:MAX_SEQ_LEN]
+    out = left_truncate(out, MAX_SEQ_LEN)
+    ids, labs = out["input_ids"], out["labels"]
     pad = MAX_SEQ_LEN - len(ids)
     ids += [tk.pad_token_id] * pad
     labs += [IGNORE] * pad
