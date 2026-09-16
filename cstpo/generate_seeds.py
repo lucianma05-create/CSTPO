@@ -30,7 +30,7 @@ from simulator.llm import LLMClient, StructuredCallError
 from cstpo.seed_adapter import (CHECKLIST, DEFAULT_PROFILE, EMOTION_MAP_V1,
                                 sample_seeds)
 
-OUT = ROOT / "data" / "seeds_draft"
+OUT = ROOT / "data" / "seeds_draft"  # 默认冻结种子目录；--out-dir 可覆盖（香草 SFT 种子等）
 
 EXTRACT_SYSTEM = """You are an initialization annotator converting raw dialogue data into
 a draft user cognitive state for a simulator. Strict rules (revised after human
@@ -613,11 +613,16 @@ def main():
                      "craigslistbargain", "all"])
     ap.add_argument("--n", type=int, default=30)
     ap.add_argument("--seed", type=int, default=20260914)
+    ap.add_argument("--out-dir", default=None,
+                    help="产物目录（默认 data/seeds_draft）")
     ap.add_argument("--workers", type=int, default=1,
                     help="并发 worker 数（每 worker 独立 LLMClient）")
     ap.add_argument("--regen-review", action="store_true",
                     help="只重跑翻译并重建中文审阅 MD（不重跑提取）")
     args = ap.parse_args()
+    global OUT
+    if args.out_dir:
+        OUT = Path(args.out_dir)
     tasks = ["esconv", "p4g", "craigslistbargain"] if args.task == "all" else [args.task]
     if args.regen_review:
         for t in tasks:

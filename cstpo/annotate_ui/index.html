@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>校准对话人工标注</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; display: flex; height: 100vh; }
+  #sidebar { width: 300px; overflow-y: auto; border-right: 1px solid #ddd; padding: 8px; background: #f7f7f7; }
+  #main { flex: 1; overflow-y: auto; padding: 16px; }
+  .item { padding: 6px; margin: 2px 0; cursor: pointer; border-radius: 4px; font-size: 13px; }
+  .item.done { background: #d8f3dc; }
+  .item.sel { outline: 2px solid #4a90d9; }
+  .turn { margin: 6px 0; padding: 6px; border-radius: 6px; max-width: 85%; }
+  .turn.user { background: #e8f1fb; }
+  .turn.assistant { background: #f0f0f0; margin-left: auto; }
+  .en { color: #777; font-size: 12px; margin-top: 2px; }
+  .field { margin: 8px 0; }
+  label { display: inline-block; min-width: 120px; font-size: 14px; }
+  button { padding: 8px 16px; font-size: 14px; }
+  #status { margin-left: 8px; color: #2a7; }
+  h3 { margin: 4px 0; }
+  .filter { font-size: 13px; margin: 4px; }
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <h3>标注任务</h3>
+  <div class="filter">
+    <button id="btnAnno" onclick="setMode('anno')" style="font-weight:bold">标注</button>
+    <button id="btnArb" onclick="setMode('arb')">仲裁</button>
+  </div>
+  <div class="filter">
+    标注人: <input id="annotator" placeholder="姓名" style="width:90px" value="a1">
+    <label><input type="checkbox" id="hideDone" checked> 隐藏已标注</label>
+  </div>
+  <div id="list"></div>
+</div>
+<div id="main">
+  <div id="dialogue">← 左侧选择对话</div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+let tasks = [], current = null, mode = 'anno';
+
+async function setMode(m) {
+  mode = m;
+  $('#btnAnno').style.fontWeight = m === 'anno' ? 'bold' : 'normal';
+  $('#btnArb').style.fontWeight = m === 'arb' ? 'bold' : 'normal';
+  current = null;
+  if (m === 'anno') { loadList(); }
+  else { loadConflicts(); }
+}
+
+async function loadConflicts() {
+  const cs = await (await fetch('/api/conflicts')).json();
+  const el = $('#list'); el.innerHTML = '';
+  for (const c of cs) {
+    const div = document.createElement('div');
+    div.className = 'item' + (c.arbitrated ? ' done' : '');
+    div.textContent = `${c.split}/${c.task}/${c.id} [${c.annotator}] ${c.arbitrated ? '已仲裁✓' : '待仲裁'}`;
+    div.onclick = () => loadArbitration(c);
+    el.appendChild(div);
+  }
+  $('#main').innerHTML = $('#main').innerHTML =
+    cs.length ? '' : '暂无冲突对话（或标注尚未覆盖 judge 已评条目）';
+}
+
+async function loadArbitration(c) {
+  current = c;
+  const d = await (await fetch(`/api/dialogue/${c.split}/${c.task}/${c.id}`)).json();
+  const el = $('#main');
+  el.innerHTML = `<h2>仲裁：${c.id}（${c.task}，${c.n_turns} 轮）</h2>`;
+  el.innerHTML += `<div style="background:#fdeaea;padding:8px;border-radius:4px;margin:6px 0;font-size:13px">
+    <b>冲突</b>：标注人 <b>${c.annotator}</b> = ${JSON.stringify(c.human)}
+    ｜ judge = ${JSON.stringify(c.judge)}${c.feedback ? `<br>标注人反馈：${c.feedback}` : ''}</div>`;
+  const preN = d.prefix_n || 0;
+  if (preN > 0) {
+    el.innerHTML += `<div style="margin:8px 0;padding:6px;background:#fff3cd;border-radius:4px;font-size:12px">
+    以下为真实对话前缀（${preN} 条消息）</div>`;
+  } else {
+    el.innerHTML += `<div style="margin:8px 0;padding:6px;background:#e3f2fd;border-radius:4px;font-size:12px">
+    冷启动种子（02§6 空历史设计），无真实前缀</div>`;
+  }
+  for (let i = 0; i < d.turns.length; i++) {
+    const t2 = d.turns[i];
+    const zh = d.turns_zh[i] || '（待翻译）';
+    const preTag = i < preN ? '<span style="font-size:11px;color:#b58900">[前缀]</span> ' : '';
+    el.innerHTML += `<div class="turn ${t2.role}">${preTag}<b>${t2.role === 'user' ? '用户' : 'Agent'}</b>：${zh}` +
+      `<div class="en">${t2.text}</div></div>`;
+  }
+  const fields = fieldsFor(c.task);
+  el.innerHTML += `<h3>仲裁评分（最终口径）</h3>`;
+  for (const f of fields) {
+    if (f.type === 'bool') {
+      el.innerHTML += `<div class="field"><label>${f.label}</label>` +
+        `<select id="f_${f.k}"><option value="">—</option><option value="true">是</option><option value="false">否</option></select></div>`;
+    } else {
+      el.innerHTML += `<div class="field"><label>${f.label}</label>` +
+        `<input id="f_${f.k}" type="text" style="width:200px"></div>`;
+    }
+  }
+  el.innerHTML += `<div class="field"><label>仲裁人</label><input id="arbiter" value="仲裁1" style="width:120px"></div>`;
+  el.innerHTML += `<div class="field"><label>仲裁理由（可选）</label><br><textarea id="f_feedback" rows="2" style="width:90%"></textarea></div>`;
+  el.innerHTML += `<button onclick="saveArb()">保存仲裁</button><span id="status"></span>`;
+}
+
+async function saveArb() {
+  const c = current;
+  const scores = {};
+  for (const f of fieldsFor(c.task)) {
+    const v = $(`#f_${f.k}`).value;
+    if (v === '') continue;
+    if (f.type === 'num') scores[f.k] = Number(v);
+    else if (f.type === 'bool') scores[f.k] = v === 'true';
+    else scores[f.k] = v;
+  }
+  const arbiter = $('#arbiter').value.trim() || 'arbiter';
+  const feedback = ($('#f_feedback') || {}).value || '';
+  const r = await (await fetch(`/api/dialogue/${c.split}/${c.task}/${c.id}/arbitrate`, {
+    method: 'POST', body: JSON.stringify({arbiter, scores, feedback})})).json();
+  $('#status').textContent = r.ok ? `仲裁已保存（${r.saved} 份）` : '保存失败';
+  loadConflicts();
+}
+
+async function loadList() {
+  tasks = await (await fetch('/api/tasks')).json();
+  renderList();
+}
+function renderList() {
+  const hide = $('#hideDone').checked;
+  const el = $('#list'); el.innerHTML = '';
+  for (const t of tasks) {
+    if (hide && t.annotated) continue;
+    const div = document.createElement('div');
+    div.className = 'item' + (t.annotated ? ' done' : '') + (current && current.id === t.id ? ' sel' : '');
+    div.textContent = `${t.split}/${t.task}/${t.id} [${t.profile}] ${t.n_turns}轮${t.annotated ? ' ✓' : ''}`;
+    div.onclick = () => loadDialogue(t);
+    el.appendChild(div);
+  }
+}
+function fieldsFor(task) {
+  if (task === 'esconv') return [
+    {k: 'E', label: 'E 情绪/希望改善 (0-4)', type: 'num', min: 0, max: 4},
+    {k: 'A', label: 'A 可行行动计划 (0-4)', type: 'num', min: 0, max: 4},
+    {k: 'evidence_sufficient', label: '证据充分', type: 'bool'}];
+  if (task === 'p4g') return [
+    {k: 'commitment', label: '明确捐赠承诺', type: 'bool'},
+    {k: 'conditional', label: '有条件承诺', type: 'bool'},
+    {k: 'withdrawn', label: '承诺后撤回', type: 'bool'},
+    {k: 'amount', label: '金额（可空）', type: 'str'}];
+  return [
+    {k: 'deal', label: '成交', type: 'bool'},
+    {k: 'final_price', label: '成交价（可空）', type: 'str'},
+    {k: 'parse_error', label: '价格无法解析', type: 'bool'}];
+}
+async function loadDialogue(t) {
+  current = t;
+  renderList();
+  const d = await (await fetch(`/api/dialogue/${t.split}/${t.task}/${t.id}`)).json();
+  const el = $('#dialogue');
+  el.innerHTML = `<h2>${d.dialogue_id}（${d.profile}，${d.n_turns} 轮）</h2>` +
+    (d.situation ? `<p><b>情境</b>：${d.situation}</p>` : '');
+  const preN = d.prefix_n || 0;
+  if (preN > 0) {
+    el.innerHTML += `<div style="margin:8px 0;padding:6px;background:#fff3cd;border-radius:4px;font-size:12px">
+    以下为真实对话前缀（${preN} 条消息，不纳入本次标注的模拟行为评估起点）</div>`;
+  } else {
+    el.innerHTML += `<div style="margin:8px 0;padding:6px;background:#e3f2fd;border-radius:4px;font-size:12px">
+    该对话为冷启动种子（02§6 空历史设计），无真实前缀，从第一条消息起均为模拟对话</div>`;
+  }
+  for (let i = 0; i < d.turns.length; i++) {
+    const t2 = d.turns[i];
+    const zh = d.turns_zh[i] || '（待翻译）';
+    const preTag = i < preN ? '<span style="font-size:11px;color:#b58900">[前缀]</span> ' : '';
+    el.innerHTML += `<div class="turn ${t2.role}">${preTag}<b>${t2.role === 'user' ? '用户' : 'Agent'}</b>：${zh}` +
+      `<div class="en">${t2.text}</div></div>`;
+  }
+  const fields = fieldsFor(d.task);
+  el.innerHTML += `<h3>评分（04§19 协议）</h3>`;
+  for (const f of fields) {
+    if (f.type === 'bool') {
+      el.innerHTML += `<div class="field"><label>${f.label}</label>` +
+        `<select id="f_${f.k}"><option value="">—</option><option value="true">是</option><option value="false">否</option></select></div>`;
+    } else {
+      el.innerHTML += `<div class="field"><label>${f.label}</label>` +
+        `<input id="f_${f.k}" type="text" style="width:200px"></div>`;
+    }
+  }
+  el.innerHTML += `<div class="field"><label>自由反馈（可选）</label><br>
+    <textarea id="f_feedback" rows="3" style="width:90%;margin-top:4px"></textarea></div>`;
+  el.innerHTML += `<button onclick="save()">保存标注</button><span id="status"></span>`;
+}
+async function save() {
+  const d = current;
+  const scores = {};
+  for (const f of fieldsFor(d.task)) {
+    const v = $(`#f_${f.k}`).value;
+    if (v === '') continue;
+    if (f.type === 'num') scores[f.k] = Number(v);
+    else if (f.type === 'bool') scores[f.k] = v === 'true';
+    else scores[f.k] = v;
+  }
+  const feedback = ($('#f_feedback') || {}).value || '';
+  const annotator = $('#annotator').value.trim() || 'anonymous';
+  const r = await (await fetch(`/api/dialogue/${d.split}/${d.task}/${d.id}/annotate`, {
+    method: 'POST', body: JSON.stringify({annotator, scores, feedback})})).json();
+  $('#status').textContent = r.ok ? `已保存（${r.saved} 份标注）` : '保存失败';
+  loadList();
+}
+$('#hideDone').onchange = renderList;
+$('#annotator').onchange = renderList;
+loadList();
+</script>
+</body>
+</html>
