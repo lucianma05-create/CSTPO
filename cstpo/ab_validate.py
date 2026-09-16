@@ -157,7 +157,8 @@ def main():
     # 禁掉 Qwen3 的 masked 特殊 token（<|url|> 等）：训练数据中的 URL 被
     # 转成这些 token，模型学会吐 "URL URL..." 的退化循环
     bad_ids = []
-    for tok in ("<|url|>", "<|code|>", "<|audio|>", "<|video|>", "<|quote|>"):
+    for tok in ("<|url|>", "<|code|>", "<|audio|>", "<|video|>", "<|quote|>",
+                "<think>", "</think>"):
         t = tk.convert_tokens_to_ids(tok)
         if isinstance(t, int) and t >= 0:
             bad_ids.append(t)
@@ -166,14 +167,19 @@ def main():
 
     def pipe(msgs, max_new_tokens=150):
         text = tk.apply_chat_template(msgs, tokenize=False,
-                                      add_generation_prompt=True)
+                                      add_generation_prompt=True,
+                                      enable_thinking=False)
         ids = tk(text, return_tensors="pt").to(model.device)
-        out = model.generate(**ids, max_new_tokens=max_new_tokens,
+        out = model.generate(**ids, max_new_tokens=min(max_new_tokens, 128),
                              do_sample=False,
                              repetition_penalty=1.15,
+                             no_repeat_ngram_size=4,
                              suppress_tokens=bad_ids if bad_ids else None)
         gen = out[0][ids["input_ids"].shape[1]:]
-        return tk.decode(gen, skip_special_tokens=True)
+        text = tk.decode(gen, skip_special_tokens=True)
+        # 取第一个非空段落：防模型续写下一轮对话（多轮泄漏）
+        parts = [p.strip() for p in text.split("\n\n") if p.strip()]
+        return parts[0] if parts else text
 
     seeds = load_seeds(args.task)
     print(f"[{args.task}] 留出种子 {len(seeds)} 个，跑双侧对话...", flush=True)
