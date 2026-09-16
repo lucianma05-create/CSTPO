@@ -40,7 +40,8 @@ def tokenize_sample(tk, sample: dict) -> dict:
     prefix_msgs = messages[:-1] + [{"role": "assistant", "content": ""}]
     # 渲染到 "<|im_start|>assistant\n"（空内容后的换行含在 prefix 内）
     prefix_ids = list(tk.apply_chat_template(
-        prefix_msgs, tokenize=True, add_generation_prompt=False)["input_ids"])
+        prefix_msgs, tokenize=True, add_generation_prompt=False,
+        enable_thinking=False)["input_ids"])
 
     # 2) 目标回合内容：标签行（mask） + 话语（学习）
     label_ids = tk.encode(label + LABEL_SEP, add_special_tokens=False)
@@ -55,7 +56,8 @@ def tokenize_sample(tk, sample: dict) -> dict:
     # system 段长度（截断时保留 system + 尾部——对话样本关键信息在后）
     sys_ids = list(tk.apply_chat_template(
         [{"role": "system", "content": messages[0]["content"]}],
-        tokenize=True, add_generation_prompt=False)["input_ids"])
+        tokenize=True, add_generation_prompt=False,
+        enable_thinking=False)["input_ids"])
     return {"input_ids": input_ids, "labels": labels, "system_len": len(sys_ids)}
 
 
