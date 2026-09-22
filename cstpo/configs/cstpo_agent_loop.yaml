@@ -1,0 +1,5 @@
+# CSTPO 多轮 agent loop 注册（verl rollout.agent.agent_loop_config_path）
+# 用法：actor_rollout_ref.rollout.agent.agent_loop_config_path=cstpo/configs/cstpo_agent_loop.yaml
+#       actor_rollout_ref.rollout.agent.default_agent_loop=cstpo_agent
+- name: cstpo_agent
+  _target_: cstpo.rl.verl_cstpo_agent_loop.CstpoAgentLoop

@@ -34,10 +34,29 @@ venv/
 # Local raw datasets (organized under data/raw, not distributed)
 /data/
 
-# 实验结果：仅 RDVD 论文形式文档随仓库分发，其余报告本地保留
-/result/*
-!/result/RDVD_20260915.md
+# 实验结果发布通道：result/ 是唯一允许随仓库分发结果文档的位置，
+# 全部内容可提交（其余结果目录 /pre_result、/baseline/runs 等一律本地保留）
 # Versioned evaluation archives (local artifacts)
 /Cog-Sim/evaluation/results_v1_0_1_fix/
 /Cog-Sim/evaluation/failures_v1_0_1_fix/
 /Cog-Sim/evaluation/reports_v1_0_1_fix/
+
+# —— 2026-09-22：仓库只分发处理管线脚本，所有数据/结果/权重本地保留 ——
+# 训练产物目录（日志、checkpoint dump、rollout 轨迹）
+/logs/
+# 实验结果目录（图表、报告、loss dynamics）
+/pre_result/
+# baseline 运行结果与冻结评估集（runner 等脚本仍随仓库分发）
+/baseline/runs/
+/baseline/eval_set.json
+# 第三方 baseline 仓库本地 vendor 化（183MB，含权重；出处见 baseline/vendor/VENDOR.md）
+/baseline/vendor/
+# 数据与模型权重扩展名（全局）
+*.parquet
+*.jsonl
+*.pt
+*.safetensors
+*.ckpt
+*.bin
+*.npy
+*.npz
