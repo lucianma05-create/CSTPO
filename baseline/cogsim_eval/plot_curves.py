@@ -1,0 +1,118 @@
+"""态度-档位折线图：三任务 × 四模拟器（含 bootstrap CI 误差棒）。
+
+esconv/p4g 用证据梯度（dose_probe.json 态度分），cb 用价格让步梯度
+（dose_cb.json 让步分）。输出 baseline/runs/cogsim_eval/plots/dose_curves.png。
+"""
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+OUT_DIR = Path(__file__).resolve().parents[1] / "runs" / "cogsim_eval"
+SIMS = ["cogsim", "std_persona", "std_persona_resist", "std_bdi"]
+LABELS = {"cogsim": "Cog-Sim", "std_persona": "ESC-Eval persona",
+          "std_persona_resist": "TRIP resist", "std_bdi": "BDI no-transfer"}
+LEVELS = ["L0", "L1", "L2", "L3"]
+COLORS = {"cogsim": "#d62728", "std_persona": "#1f77b4",
+          "std_persona_resist": "#2ca02c", "std_bdi": "#9467bd"}
+RNG = np.random.default_rng(20260922)
+
+
+def seed_level_means(arms: dict, key_split, sim: str):
+    """arms 键按 '|' 拆分为 (…, sim, level)。返回 {seed: {level: mean}}。"""
+    out = {}
+    for key, recs in arms.items():
+        parts = key.split("|")
+        if parts[key_split] != sim:
+            continue
+        seed = parts[0]
+        lv = parts[-1]
+        vals = [r for r in recs if r is not None]
+        out.setdefault(seed, {})[lv] = vals
+    return out
+
+
+def level_stats(by_seed: dict) -> dict:
+    """{level: (mean, lo, hi)}，逐种子 bootstrap。"""
+    stats = {}
+    for lv in LEVELS:
+        vals = []
+        for seed, d in by_seed.items():
+            if lv in d and d[lv]:
+                vals.append(float(np.mean(d[lv])))
+        v = np.asarray(vals)
+        boots = np.array([v[RNG.integers(0, len(v), len(v))].mean()
+                          for _ in range(2000)])
+        stats[lv] = (float(v.mean()), float(np.percentile(boots, 2.5)),
+                     float(np.percentile(boots, 97.5)))
+    return stats
+
+
+def main() -> None:
+    dose = json.loads((OUT_DIR / "dose_probe.json").read_text())["arms"]
+    dose_cb = json.loads((OUT_DIR / "dose_cb.json").read_text())["arms"]
+    # 证据梯度：键 "task|seed|sim|level"，态度分
+    ev = {}
+    for key, recs in dose.items():
+        task, sid, sim, lv = key.split("|")
+        a = [r["attitude"] for r in recs if r["attitude"] >= 0]
+        if a:
+            ev.setdefault((task, sim), {}).setdefault(sid, {})[lv] = a
+    # cb 价格梯度：键 "seed|sim|level"，让步分
+    cb = {}
+    for key, recs in dose_cb.items():
+        sid, sim, lv = key.split("|")
+        a = [r["concession"] for r in recs if r.get("concession", -1) >= 0]
+        if a:
+            cb.setdefault(sim, {}).setdefault(sid, {})[lv] = a
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.6))
+    x = np.arange(len(LEVELS))
+    tasks = [("esconv", "ESConv (evidence gradient)",
+              "Attitude change (0-3)"),
+             ("p4g", "P4G (evidence gradient)", "Attitude change (0-3)"),
+             ("cb", "CraigslistBargain (price-concession gradient)",
+              "Seller concession (0-3)")]
+    for ax, (task, title, ylab) in zip(axes, tasks):
+        for sim in SIMS:
+            by_seed = ev.get((task, sim), {}) if task != "cb" else cb.get(sim, {})
+            if not by_seed:
+                continue
+            stats = level_stats(by_seed)
+            means = [stats[lv][0] for lv in LEVELS]
+            lo = [means[i] - stats[lv][1] for i, lv in enumerate(LEVELS)]
+            hi = [stats[lv][2] - means[i] for i, lv in enumerate(LEVELS)]
+            lw = 2.6 if sim == "cogsim" else 1.6
+            ax.errorbar(x, means, yerr=[lo, hi], label=LABELS[sim],
+                        color=COLORS[sim], linewidth=lw, marker="o",
+                        markersize=5, capsize=4)
+        ax.set_title(title, fontsize=12)
+        ax.set_xlabel("Dose level (L0 empty -> L3 strong)")
+        ax.set_ylabel(ylab)
+        ax.set_xticks(x)
+        ax.set_xticklabels(LEVELS)
+        ax.set_ylim(-0.3, 3.2)
+        ax.grid(alpha=0.3)
+        ax.legend(fontsize=9)
+    fig.suptitle("Attitude-concession dose-response curves (bootstrap 95% CI)",
+                 fontsize=13)
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    plots_dir = OUT_DIR / "plots"
+    plots_dir.mkdir(exist_ok=True)
+    out = plots_dir / "dose_curves.png"
+    fig.savefig(out, dpi=150)
+    print(f"saved {out}")
+
+
+if __name__ == "__main__":
+    main()

@@ -153,7 +153,7 @@ async function selectTask(t) {
   seeds = await api('/api/seeds?task=' + t);
   const tasks = await api('/api/tasks');
   const info = tasks.find(x => x.task === t);
-  $('progress').innerHTML = `共 <b>${info.total}</b> 个 · 已审 <b>${info.reviewed}</b> · low_info <b>${info.low_info}</b>`;
+  $('progress').innerHTML = `共 <b>${info.total}</b> 个 · 已审 <b>${info.reviewed}</b>`;
   renderList();
   if (seeds[0]) openSeed(seeds[0].seed_id);
 }
@@ -165,7 +165,7 @@ function renderList() {
     d.className = 'seed' + (current === s.seed_id ? ' active' : '');
     const cls = s.checklist_done === 0 ? 'none' : (s.checklist_done < s.checklist_total ? 'part' : 'full');
     d.innerHTML = `<div><span class="dot ${cls}"></span><span class="id">${esc(s.seed_id)}</span>` +
-      (s.low_info ? '<span class="tag low">low_info</span>' : '') + `</div>
+      `</div>
       <div class="meta">${esc(s.emotion)} · ${esc(s.cutoff_rule.split('-')[0])} · 检查 ${s.checklist_done}/${s.checklist_total}</div>`;
     d.onclick = () => openSeed(s.seed_id);
     el.appendChild(d);
@@ -185,8 +185,11 @@ function bdiBlock(kind, label) {
   return `<h3>${label}（${items.length} 项）</h3>` + items.map((it, i) => {
     const pol = it.polarity && kind !== 'beliefs' ? ` / ${it.polarity}` : '';
     const src = it.source_kind || '';
+    const badge = src === 'latent'
+      ? `<span style="background:var(--warn);color:#fff;border-radius:3px;padding:0 4px;margin-right:6px">潜在</span>`
+      : `<span style="background:#2a7de1;color:#fff;border-radius:3px;padding:0 4px;margin-right:6px">观测</span>`;
     return `<div class="bdi-item">
-      <div class="head">强度 <b>${it.strength}</b> · core=${it.core}${pol} · ${esc(src)} · 证据：${esc(it.evidence || '')}</div>
+      <div class="head">${badge}强度 <b>${it.strength}</b> · core=${it.core}${pol} · ${esc(src)} · 证据：${esc(it.evidence || '')}</div>
       <div class="zh">${esc((seed._zh?.[kind] || [])[i] || '')}</div>
       <div class="en">${esc(it.content_en)}</div>
     </div>`;
@@ -198,12 +201,13 @@ function renderDetail() {
   const c = seed.context;
   const factsZh = zh.persona_facts || [];
   const facts = seed.persona.facts || [];
-  const prefix = c.prefix || [];
+  const prefix = (c.full_conversation && c.full_conversation.length)
+    ? c.full_conversation : (c.prefix || []);
   const zhPrefix = {};
   (zh.prefix || []).forEach(p => zhPrefix[p.index] = p.text);
+  (zh.extraction_context || []).forEach(p => zhPrefix[p.index] = p.text);
   let html = `<h2>${esc(seed.seed_id)}</h2>
     <div class="meta-line">来源 ${esc(seed.provenance.source_id)} · 分组 ${esc(seed.provenance.group_id)}
-    · cutoff：${esc(c.cutoff.rule || '')}${c.low_info ? ' · <b style="color:var(--bad)">low_info</b>' : ''}
     · 情绪 ${esc(seed.initial_emotion.category)}
     · η_R=${seed.cognitive_profile.eta_R} τ_A=${seed.cognitive_profile.tau_A} τ_R=${seed.cognitive_profile.tau_R}</div>
     <div class="section"><h3>任务</h3><p>${esc(zh.task_description || seed.task.description)}</p></div>`;
@@ -218,14 +222,24 @@ function renderDetail() {
        <div class="en">${esc(f.fact_en)}</div>
        <div class="head">类别 ${esc(f.category || '')} · 证据：${esc(f.evidence || '')}</div></div>`).join('') + `</div>`;
   }
-  html += `<div class="section">${bdiBlock('beliefs', '信念 B')}</div>
+  html += `<div class="section"><h3>初始状态（模拟器可见输入；观测=前两轮已暴露 / 潜在=后续对话推断）</h3></div>
+    <div class="section">${bdiBlock('beliefs', '信念 B')}</div>
     <div class="section">${bdiBlock('desires', '愿望 D')}</div>
     <div class="section">${bdiBlock('intentions', '意图 I')}</div>`;
+
   if (prefix.length) {
-    html += `<div class="section"><h3>前缀对话（截止点前）</h3>` + prefix.map(p =>
+    const userRoles = ['user', 'seeker', 'seller', 'persuadee'];
+    let vis = 0, userCnt = 0;
+    for (const p of prefix) { if (userRoles.includes(p.role)) userCnt++; if (userCnt <= 2) vis++; }
+    const visMsgs = prefix.slice(0, vis).map(p =>
+      `<div class="msg" style="border-left:3px solid #2a7de1"><span class="who">[${p.original_index}] ${esc(p.role)}</span>
+       <span class="zh">${esc(zhPrefix[p.original_index] || '')}</span>
+       <span class="en">${esc(p.text_en)}</span></div>`).join('');
+    const restMsgs = prefix.slice(vis).map(p =>
       `<div class="msg"><span class="who">[${p.original_index}] ${esc(p.role)}</span>
        <span class="zh">${esc(zhPrefix[p.original_index] || '')}</span>
-       <span class="en">${esc(p.text_en)}</span></div>`).join('') + `</div>`;
+       <span class="en">${esc(p.text_en)}</span></div>`).join('');
+    html += `<div class="section"><h3>对话历史（全量）</h3>` + visMsgs + restMsgs + `</div>`;
   }
   if (task === 'craigslistbargain') {
     const av = seed.actor_task_view, uv = seed.user_task_view;
