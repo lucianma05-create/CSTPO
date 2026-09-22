@@ -42,10 +42,12 @@ venv/
 /Cog-Sim/evaluation/reports_v1_0_1_fix/
 
 # —— 2026-09-22：仓库只分发处理管线脚本，所有数据/结果/权重本地保留 ——
-# 唯一放行：result/0_SIM_REAL_LLM/
+# 放行目录：result/0_SIM_REAL_LLM/、result/1_MAIN/
 /result/*
 !/result/0_SIM_REAL_LLM/
 !/result/0_SIM_REAL_LLM/**
+!/result/1_MAIN/
+!/result/1_MAIN/**
 # 训练产物目录（日志、checkpoint dump、rollout 轨迹）
 /logs/
 # 实验结果目录（图表、报告、loss dynamics）
