@@ -17,6 +17,16 @@ sys.path.insert(0, str(ROOT))
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
+
+_TNR = ["Times New Roman", "TeX Gyre Termes", "Liberation Serif"]
+_font_dir = "/data/user21300120/mmh/texlive-local/2026/texmf-dist/fonts/opentype/public/tex-gyre"
+for _f in ("texgyretermes-regular.otf", "texgyretermes-bold.otf",
+           "texgyretermes-italic.otf", "texgyretermes-bolditalic.otf"):
+    font_manager.fontManager.addfont(f"{_font_dir}/{_f}")
+plt.rcParams["font.family"] = [f for f in _TNR if f in {x.name for x in font_manager.fontManager.ttflist}]
+plt.rcParams["mathtext.fontset"] = "stix"
+plt.rcParams["axes.unicode_minus"] = False
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "runs" / "cogsim_eval"
 SIMS = ["cogsim", "std_persona", "std_persona_resist", "std_bdi"]
@@ -76,13 +86,12 @@ def main() -> None:
         if a:
             cb.setdefault(sim, {}).setdefault(sid, {})[lv] = a
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.6))
+    fig, axes = plt.subplots(1, 3, figsize=(15, 3.4))
     x = np.arange(len(LEVELS))
-    tasks = [("esconv", "ESConv (evidence gradient)",
-              "Attitude change (0-3)"),
-             ("p4g", "P4G (evidence gradient)", "Attitude change (0-3)"),
-             ("cb", "CraigslistBargain (price-concession gradient)",
-              "Seller concession (0-3)")]
+    tasks = [("esconv", "ESConv", "Attitude change (0-3)"),
+             ("p4g", "P4G", "Attitude change (0-3)"),
+             ("cb", "CraigslistBargain", "Seller concession (0-3)")]
+    YMAX = {"esconv": 2.4, "p4g": 2.4, "cb": 3.0}
     for ax, (task, title, ylab) in zip(axes, tasks):
         for sim in SIMS:
             by_seed = ev.get((task, sim), {}) if task != "cb" else cb.get(sim, {})
@@ -96,17 +105,15 @@ def main() -> None:
             ax.errorbar(x, means, yerr=[lo, hi], label=LABELS[sim],
                         color=COLORS[sim], linewidth=lw, marker="o",
                         markersize=5, capsize=4)
-        ax.set_title(title, fontsize=12)
-        ax.set_xlabel("Dose level (L0 empty -> L3 strong)")
+        ax.set_title(title, fontsize=14, fontweight="bold")
+        ax.set_xlabel("Dose level")
         ax.set_ylabel(ylab)
         ax.set_xticks(x)
         ax.set_xticklabels(LEVELS)
-        ax.set_ylim(-0.3, 3.2)
+        ax.set_ylim(0, YMAX[task])
         ax.grid(alpha=0.3)
-        ax.legend(fontsize=9)
-    fig.suptitle("Attitude-concession dose-response curves (bootstrap 95% CI)",
-                 fontsize=13)
-    fig.tight_layout(rect=[0, 0, 1, 0.96])
+    axes[0].legend(fontsize=9, loc="upper left")
+    fig.tight_layout()
     plots_dir = OUT_DIR / "plots"
     plots_dir.mkdir(exist_ok=True)
     out = plots_dir / "dose_curves.png"
