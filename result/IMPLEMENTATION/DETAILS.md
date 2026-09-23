@@ -4,7 +4,7 @@
 
 我们在 ESConv、PersuasionForGood（P4G）和 CraigslistBargain 三个公开数据集上分别训练策略。ESConv 是 supporter 与 seeker 之间的情感支持任务，使用 8 类官方支持策略；P4G 是 persuader 与 persuadee 之间的慈善捐赠劝说任务，将原始细粒度标注归并为 13 类策略；CraigslistBargain 将 Actor 设为 buyer、Cog-Sim 设为 seller，使用 6 类对话策略，并将报价、接受和退出作为独立任务事件。三个数据集的 train/validation/test 规模分别为 1196/150/150、813/102/102 和 5247/597/838，三个任务独立训练，不共享策略标签或回报尺度。
 
-每个 rollout seed 包含来源与分组标识、双方角色、Actor 与用户各自可见的任务信息、截止点前的对话、用户 Persona、认知参数 \(\Theta_u\)、初始 BDI、初始 Emotion，以及随机流、轮数预算和组件版本等复现信息。ESConv seed 还包含问题情境和起始情绪证据；P4G seed 包含与任务相关的用户问卷特征；CraigslistBargain seed 分开保存商品知识库和买卖双方各自的目标价。Actor 只读取对话历史和自己的任务视图，用户私有信息只进入 Cog-Sim 和训练侧 critic；原始后续对话与终局结果不进入 rollout 初始化。
+每个 rollout seed 包含来源与分组标识、双方角色、Actor 与用户各自可见的任务信息、截止点前的对话、用户 Persona、认知参数 \(\Theta_u\)、初始 BDI、初始 Emotion，以及随机流、轮数预算和组件版本等复现信息。ESConv seed 还包含问题情境和起始情绪证据；P4G seed 包含与任务相关的用户问卷特征；CraigslistBargain seed 分开保存商品知识库和买卖双方各自的目标价。Actor 只读取对话历史和自己的任务视图；用户认知私有状态仅供 Cog-Sim 和训练侧认知 critic 使用，不进入 Actor 输入。终局 Judge 只读取任务 rubric 所需的白名单案例事实。原始后续对话与终局结果不进入 rollout 初始化。
 
 ### 5.2 SFT 与强化学习
 
@@ -15,3 +15,5 @@ RL 从各任务的 SFT checkpoint 初始化，使用多轮 PPO、Cog-critic 和�
 ### 5.3 用户模拟与终局评价
 
 Cog-Sim 的语义推理模块使用冻结的 GPT-5.5、固定提示词和确定性路线设置，训练期间不更新。终局 Judge 使用相同的冻结后端，对每条完整对话进行 3 次独立结构化评价并聚合结果；ESConv 返回情绪/希望改善与行动计划，P4G 返回承诺及撤回状态，CraigslistBargain 返回成交状态和最终价格。能够确定性计算的标量效用由程序完成。Judge 只读取对话和必要任务事实，不读取 Cog-Sim 隐状态或 critic 输出。
+
+评估采用 free100 协议：300 case 冻结评估集（t001–t100 × 3 任务）、Cog-Sim 用户模拟、judge rev4（n=3 聚合）、自由交互协议（13 轮起判冗余、每 2 轮一判、30 轮上限）、统一后处理；统计按 case 聚类 cluster bootstrap（2000 次，* = p<0.05），成对 diff 分两层（方法 − standard 同骨干内、跨骨干逐 case 配对）。

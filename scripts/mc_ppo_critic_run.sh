@@ -21,17 +21,25 @@ TRAJ_DIR="${TRAJ_DIR:-logs/rollout_traj_critic}"
 MODEL_PATH="${MODEL_PATH:-/publicdata/model/CSTPO_v3/esconv}"
 STEPS="${STEPS:-20}"
 TEST_FREQ="${TEST_FREQ:-5}"
-GAMMA="${GAMMA:-0.99}"
+GAMMA="${GAMMA:-1}"   # DETAILS §5.2：折扣因子 1
 LAM="${LAM:-0.95}"
 CRITIC_LR="${CRITIC_LR:-1e-4}"
 CRITIC_WARMUP="${CRITIC_WARMUP:-5}"
 LABEL_ADV_WEIGHT="${LABEL_ADV_WEIGHT:-1}"   # 默认关：先看纯 critic 的标签迁移
 CRITIC_DUMP_DIR="${CRITIC_DUMP_DIR:-$DUMP_DIR}"   # critic 权重落盘（warm-start 续跑用）
-VLLM_UTIL="${VLLM_UTIL:-0.25}"   # 共享卡上调低（同卡其他用户任务会游走）
-TRAIN_BATCH="${TRAIN_BATCH:-4}"
+# 树状分叉（DETAILS §5.2）：主干 1 条 + nodes 节点 × n=2 续演 → n = 1+2×nodes。
+# esconv 4 节点 → 9；cb/p4g 3 节点 → 7（按任务覆盖）
+VLLM_UTIL="${VLLM_UTIL:-0.25}"
+ROLLOUT_N="${ROLLOUT_N:-9}"   # esconv=9；cb/p4g 用 7
+# agent workers 数必须整除 TRAIN_BATCH×ROLLOUT_N（verl 等分 chunk 断言）：
+# 正式口径 10×9=90 与 10×7=70 的最小公共整除 worker 数为 5；smoke 用 3（2×9=18）
+NUM_WORKERS="${NUM_WORKERS:-5}"
+TRAIN_BATCH="${TRAIN_BATCH:-10}"   # DETAILS §5.2：每步 10 个种子
 MINI_BATCH="${MINI_BATCH:-$TRAIN_BATCH}"   # verl 校验：mini_batch ≤ train_batch_size
-MAX_MODEL_LEN="${MAX_MODEL_LEN:-8192}"   # prompt 1024 + response 4096 ≈ 5120，8192 封顶 KV
-ACTOR_LR="${ACTOR_LR:-1e-5}"   # v1c 续跑：3e-5（20 步无行为迁移 → 提步长）
+MAX_MODEL_LEN="${MAX_MODEL_LEN:-16384}"   # 30 回合口径：prompt 1024 + response 16k
+MAX_TURNS="${MAX_TURNS:-30}"   # DETAILS §5.2：30 回合；smoke 用 5
+MAX_RESPONSE="${MAX_RESPONSE:-16384}"
+ACTOR_LR="${ACTOR_LR:-1e-5}"   # DETAILS §5.2：actor 1e-5
 LORA_ADAPTER_PATH="${LORA_ADAPTER_PATH:-}"   # v1c 续跑：v1b 落盘 adapter 作 warm-start
 
 export PYTHONPATH="/data/user21300120/mmh/CSTPO:/data/user21300120/mmh/CSTPO/Cog-Sim${PYTHONPATH:+:$PYTHONPATH}"
@@ -59,7 +67,7 @@ nohup env CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES="$GPU_INDEX" \
   actor_rollout_ref.actor.optim.lr="$ACTOR_LR" \
   ${LORA_ADAPTER_PATH:+actor_rollout_ref.model.lora_adapter_path="$LORA_ADAPTER_PATH"} \
   data.max_prompt_length=1024 \
-  data.max_response_length=4096 \
+  data.max_response_length="$MAX_RESPONSE" \
   data.dataloader_num_workers=2 \
   actor_rollout_ref.model.path="$MODEL_PATH" \
   actor_rollout_ref.model.use_remove_padding=false \
@@ -75,16 +83,16 @@ nohup env CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES="$GPU_INDEX" \
   actor_rollout_ref.rollout.max_model_len="$MAX_MODEL_LEN" \
   actor_rollout_ref.rollout.enforce_eager=true \
   actor_rollout_ref.rollout.free_cache_engine=false \
-  actor_rollout_ref.rollout.temperature=0.2 \
-  actor_rollout_ref.rollout.top_p=0.95 \
-  actor_rollout_ref.rollout.n=4 \
+  actor_rollout_ref.rollout.temperature=1.0 \
+  actor_rollout_ref.rollout.top_p=1.0 \
+  actor_rollout_ref.rollout.n="$ROLLOUT_N" \
   actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=1 \
-  actor_rollout_ref.rollout.agent.num_workers=4 \
+  actor_rollout_ref.rollout.agent.num_workers="$NUM_WORKERS" \
   actor_rollout_ref.rollout.agent.agent_loop_config_path=cstpo/configs/cstpo_agent_loop.yaml \
   actor_rollout_ref.rollout.agent.default_agent_loop=cstpo_agent \
   actor_rollout_ref.rollout.multi_turn.enable=true \
-  actor_rollout_ref.rollout.multi_turn.max_assistant_turns=12 \
-  actor_rollout_ref.rollout.multi_turn.max_user_turns=12 \
+  actor_rollout_ref.rollout.multi_turn.max_assistant_turns="$MAX_TURNS" \
+  actor_rollout_ref.rollout.multi_turn.max_user_turns="$MAX_TURNS" \
   actor_rollout_ref.actor.ppo_mini_batch_size="$MINI_BATCH" \
   actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 \
   critic.model.path="$MODEL_PATH" \

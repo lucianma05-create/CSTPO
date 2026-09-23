@@ -43,7 +43,7 @@ venv/
 
 # —— 2026-09-22：仓库只分发处理管线脚本，所有数据/结果/权重本地保留 ——
 # 放行目录：result/0_SIM_REAL_LLM、1_MAIN、2_ABLATION、3_GENERAL、4_STRATEGY、
-#          IMPLEMENTATION
+#          IMPLEMENTATION、6_CASE_STUDY
 /result/*
 !/result/0_SIM_REAL_LLM/
 !/result/0_SIM_REAL_LLM/**
@@ -57,6 +57,8 @@ venv/
 !/result/4_STRATEGY/**
 !/result/IMPLEMENTATION/
 !/result/IMPLEMENTATION/**
+!/result/6_CASE_STUDY/
+!/result/6_CASE_STUDY/**
 # 训练产物目录（日志、checkpoint dump、rollout 轨迹）
 /logs/
 # 实验结果目录（图表、报告、loss dynamics）
@@ -75,3 +77,6 @@ venv/
 *.bin
 *.npy
 *.npz
+
+# 论文草稿（暂不上传）
+/paper/

@@ -66,6 +66,7 @@ def compute_score(data_source, solution_str, ground_truth=None, extra_info=None)
         "termination": extra_info.get("termination"),
         "global_step": extra_info.get("global_step", -1),
         "is_validate": extra_info.get("is_validate"),
+        "traj_kind": extra_info.get("traj_kind", "trunk"),
         "E": agg.get("E"), "A": agg.get("A"),
     }
     if task == "esconv":

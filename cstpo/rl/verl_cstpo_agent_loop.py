@@ -5,19 +5,26 @@ Cog-Sim simulator 生成用户回复 → 增量拼接（user token mask=0）→ 
 终止或 max_assistant_turns。完整对话经 extra_fields 传给 reward loop 做终局
 judge 聚合（异步，不阻塞生成循环）。
 
+树状分叉（DETAILS.md §5.2）：每个 seed 的首条 rollout 生成主干轨迹，并从
+主干中选 nodes 个"尚未结束的节点"（同一动作前状态）各独立采样 n=2 条续演
+（cb/p4g 3 节点、esconv 4 节点）→ rollout.n = 1 + 2×nodes。分叉轨迹共享
+主干前缀、独立采样后续；全部轨迹（主干 + 分支）都进 critic 回归与字段级
+优势估计。同 seed 的 n 条 rollout 由注册表协调：先到者生成主干，其余等待
+主干就绪后从快照续演。
+
 注册方式（verl rollout.agent）：
   agent_loop_config_path: cstpo/configs/cstpo_agent_loop.yaml
   default_agent_loop: cstpo_agent
-
-第一版简化（相对 verl_env_adapter.run_episode）：
-  - 不接 15 轮 judger（对话以 max_assistant_turns=12 硬顶）；
-  - trie 约束采样后续接入（vllm logits processor，见 trie_qwen）。
 """
 from __future__ import annotations
 
+import fcntl
 import json
+import os
+import pickle
 import re
 import sys
+import time
 from functools import partial
 from pathlib import Path
 from uuid import uuid4
@@ -104,9 +111,25 @@ def strip_embedded_labels(text: str, task: str) -> str:
     return "\n".join(kept).strip() or "(keep talking)"
 
 
+# 树状分叉注册表（跨进程文件协调）：rollout workers 是独立进程，内存态
+# 不共享（smoke 实测同 seed 轨迹零共享前缀）。协调协议：
+#   - {key}.lock  原子创建（O_EXCL）认领主干：创建成功者为主干，其余为分支
+#   - {key}.cnt   分支序号分配（flock 保护的自增计数文件）
+#   - {key}.pkl   主干快照（pickle，tmp 写入后原子 rename）
+# key = f"{global_step}_{seed_id}"，跨步不串线。
+
+
+def _trunk_dir() -> Path:
+    d = Path(os.environ.get("CSTPO_TRAJ_DIR",
+                            str(ROOT / "logs" / "rollout_traj"))) / "_branch_trunks"
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
 @register("cstpo_agent")
 class CstpoAgentLoop(AgentLoopBase):
-    """CSTPO 对话轨迹生成循环：agent 话语 ↔ Cog-Sim simulator 用户回复。"""
+    """CSTPO 对话轨迹生成循环：agent 话语 ↔ Cog-Sim simulator 用户回复。
+    主干 + 节点分叉续演（DETAILS.md §5.2）。"""
 
     # 每轮话语生成 token 上限（GEN_CONFIG.max_new_tokens 口径）
     TURN_MAX_TOKENS = 128
@@ -118,18 +141,34 @@ class CstpoAgentLoop(AgentLoopBase):
         self.max_assistant_turns = self.rollout_config.multi_turn.max_assistant_turns or 12
         self.response_length = self.rollout_config.response_length
 
+    # ---- 树状分叉参数（DETAILS.md §5.2）：cb/p4g 3 节点、esconv 4 节点，
+    # 每节点 n=2 条续演 → rollout.n = 1 + 2×nodes ----
+    @staticmethod
+    def branch_nodes(task: str) -> int:
+        return 4 if task == "esconv" else 3
+
     async def run(self, sampling_params: dict, **kwargs) -> AgentLoopOutput:
         seed = json.loads(kwargs["seed_json"])
         task = seed["task"]["task_id"]
         messages = list(kwargs["raw_prompt"])
         request_id = uuid4().hex
+        global_step = kwargs.get("__global_step__", -1)
+        seed_id = str(seed.get("seed_id", request_id))
+
+        # 分叉协调：认领主干 or 等待主干（val rollout 不分叉，全部独立主干）
+        nodes = self.branch_nodes(task)
+        is_validate = bool(kwargs.get("__is_validate__", False))
+        if is_validate:
+            is_trunk, branch_node = True, None
+        else:
+            is_trunk, branch_node = self._claim_trunk(global_step, seed_id, nodes)
+
         # 每轮 cap：vllm 默认 max_tokens=min(response_length, 剩余预算)，
-        # 不 cap 的话首轮就会吃光 12 轮的总预算（见 vllm_async_server.py:490）
+        # 不 cap 的话首轮就会吃光全部轮次的总预算（见 vllm_async_server.py:490）
         sampling_params = {**sampling_params, "max_tokens": self.TURN_MAX_TOKENS}
         # SFT 推理口径对齐：verl agent loop 硬编码 repetition_penalty=1.0
         # （experimental/agent_loop/agent_loop.py:500，rollout 配置传值无效）。
         # 1.15 是 SFT 三件套口径——判别实验证实其为跨轮固定回复循环的解药
-        # （HF-merge 权重 + rep=1.0 时 greedy 12/19 循环，rep=1.15 时 0/19）。
         sampling_params = {**sampling_params, "repetition_penalty": 1.15}
         # URL 退化硬禁（与 A/B/eval 的 bad_words 同口径；数据清洗治本，
         # 此处兜底残留/泛化）
@@ -141,31 +180,71 @@ class CstpoAgentLoop(AgentLoopBase):
         # 提前 500 token 刹车，保证最终 mask ≤ response_length。
         self._turn_budget = max(self.response_length - 500, 512)
 
-        # all_ids 累积一切 token（原始 prompt + 各轮生成 + user 回复）；
-        # 最终输出按 tool_agent 约定拆分：prompt_ids = 原始 prompt 部分，
-        # response_ids = 全部 mask 覆盖部分（含 user token，mask=0 区分）。
-        all_ids = await self.apply_chat_template(messages)
-        response_mask: list[int] = []
+        # 分支续演：从主干快照恢复"同一动作前状态"
+        if not is_trunk:
+            snap = self._get_snapshot(global_step, seed_id, branch_node)
+            if snap is None:
+                # 快照缺失（主干提前终止等）→ 退化为独立完整 rollout
+                is_trunk = True
+                branch_node = None
+            else:
+                all_ids = list(snap["all_ids"])
+                response_mask = list(snap["response_mask"])
+                turns = [dict(h) for h in snap["turns"]]
+                label_log = list(snap["label_log"])
+                label_offsets = list(snap["label_offsets"])
+                label_allowed = [list(a) for a in snap["label_allowed"]]
+                cp = snap["cp"]
+                num_turns = snap["num_turns"]
+                prompt_len = snap["prompt_len"]
 
-        # 环境：前缀轮次 + simulator（Cog-Sim，llm=None 内部默认 DeepSeek 客户端）
-        turns = prefix_turns(seed)
-        env = TaskEnv(max_turns=self.max_assistant_turns)
-        cp = env.reset(seed)["checkpoint"]
-        termination = None
-        num_turns = 0
-        label_log: list[str] = []  # 诊断：每轮标签段原文
+        if is_trunk:
+            # all_ids 累积一切 token（原始 prompt + 各轮生成 + user 回复）
+            all_ids = await self.apply_chat_template(messages)
+            response_mask: list[int] = []
+            # 环境：前缀轮次 + simulator（Cog-Sim，llm=None 内部默认 DeepSeek 客户端）
+            turns = prefix_turns(seed)
+            env = TaskEnv(max_turns=self.max_assistant_turns)
+            cp = env.reset(seed)["checkpoint"]
+            termination = None
+            num_turns = 0
+            label_log: list[str] = []  # 诊断：每轮标签段原文
+            label_offsets: list[int] = []      # 响应内偏移（从 0 起）
+            label_allowed: list[list[int]] = []  # 每位置对应的 trie 允许集
+            prompt_len = len(all_ids)
+            snapshots: list = []  # 节点快照（同一动作前状态）
+        else:
+            # 分支轨迹：从快照继续，环境用新实例从 cp 续演
+            env = TaskEnv(max_turns=self.max_assistant_turns)
+            termination = None
+            snapshots = []
+
         # 约束内 ratio（#8）：记录标签段的响应内偏移 + 每个位置的允许 token 集，
         # 供 actor 侧在 choice 掩码下重归一化 logprob
         label_trie = build_label_trie(self.tokenizer,
                                       sorted(KNOWN_STRATEGY_LABELS[task]))
-        label_offsets: list[int] = []      # 响应内偏移（从 0 起）
-        label_allowed: list[list[int]] = []  # 每位置对应的 trie 允许集
-        prompt_len = len(all_ids)  # 此刻 response_mask 为空，all_ids 即 prompt
 
-        for _ in range(self.max_assistant_turns):
+        for _ in range(self.max_assistant_turns - num_turns):
             if len(response_mask) >= self._turn_budget:
                 termination = "response_length_cap"
                 break
+            # 主干节点快照：同一动作前状态（第 k 轮标签生成前），供 n=2 续演。
+            # 增量落盘：快照一采即写节点文件，分支只等自己那个节点的快照
+            if is_trunk and len(snapshots) < nodes:
+                snapshots.append({
+                    "all_ids": list(all_ids),
+                    "response_mask": list(response_mask),
+                    "turns": [dict(h) for h in turns],
+                    "label_log": list(label_log),
+                    "label_offsets": list(label_offsets),
+                    "label_allowed": [list(a) for a in label_allowed],
+                    "cp": cp,
+                    "num_turns": num_turns,
+                    "prompt_len": prompt_len,
+                })
+                self._write_node_snapshot(global_step, seed_id,
+                                          len(snapshots) - 1,
+                                          snapshots[-1])
             # 1a. 策略标签段：choice 约束（vllm structured_outputs → xgrammar）
             label_params = {
                 **sampling_params,
@@ -184,16 +263,11 @@ class CstpoAgentLoop(AgentLoopBase):
                 # 否则垃圾 token 进 all_ids → 话语段从垃圾后级联乱码
                 label_text = sorted(KNOWN_STRATEGY_LABELS[task])[0]
             # 标签段 token 规范化：vllm choice 采样可能产出与 trie 规范编码
-            # 不同的 token 路径（前导空格/换行等变体，decode+strip 后仍是
-            # 合法标签所以上面的兜底不触发）——导致 actor 侧 choice 掩码的
-            # 允许集不含实际 token → logprob=-inf → -inf-(-inf)=NaN 污染
-            # ratio（正式 run actor 指标全 NaN 的根因，仪器实测每标签一个
-            # -inf）。统一按解码文本重编码为规范路径——与 build_label_trie
-            # 同源，掩码允许集必然包含实际 token。
+            # 不同的 token 路径——统一按解码文本重编码为规范路径，掩码允许集
+            # 必然包含实际 token（否则 ratio NaN，正式 run actor 指标全 NaN 根因）
             label_ids = self.tokenizer.encode(label_text, add_special_tokens=False)
             label_log.append(label_text)
-            # 约束内 ratio（#8）：记录位置与允许集（按最终 label_ids，兜底后
-            # 的标签字符串必在标签集内，每个位置的 token 必在 trie 允许集内）
+            # 约束内 ratio（#8）：记录位置与允许集
             seg_start = len(response_mask)
             for k in range(len(label_ids)):
                 allowed = label_trie.get(tuple(label_ids[:k]),
@@ -233,10 +307,7 @@ class CstpoAgentLoop(AgentLoopBase):
                 break
 
             # 3. 增量 token（user 回复 mask=0）
-            # 修复（2026-09-18 审计）：旧实现 append template([assistant:utter,
-            # user:reply]) 的 system 剥离块——该块含完整 assistant 回合，导致
-            # 模型上下文里自己的话语出现两次（token 级重复，跨轮循环的嫌疑
-            # 来源之一）。正确增量 = 关闭当前 assistant 回合 + 仅 user 回合 +
+            # 正确增量 = 关闭当前 assistant 回合 + 仅 user 回合 +
             # 下一轮生成提示，与 SFT 训练样本结构逐 token 对齐。
             close_ids = self.tokenizer.encode("<|im_end|>\n",
                                               add_special_tokens=False)
@@ -248,6 +319,10 @@ class CstpoAgentLoop(AgentLoopBase):
             if len(response_mask) >= self.response_length:
                 termination = "response_length_cap"
                 break
+
+        # 主干完成：注册快照供分支续演（快照数组本身即"节点列表"）
+        if is_trunk:
+            self._register_trunk(global_step, seed_id, snapshots)
 
         # 拆分：prompt_ids = 原始 prompt；response_ids = mask 覆盖的全部 token
         split = len(all_ids) - len(response_mask)
@@ -263,8 +338,10 @@ class CstpoAgentLoop(AgentLoopBase):
                 "termination": termination,
                 "labels": label_log,
                 # verl agent_loop worker patch 透传（诊断归因）
-                "global_step": kwargs.get("__global_step__", -1),
+                "global_step": global_step,
                 "is_validate": kwargs.get("__is_validate__", False),
+                # 树状分叉标记：trunk / branch@{node}
+                "traj_kind": "trunk" if is_trunk else f"branch@{branch_node}",
                 # 约束内 ratio（#8）：标签段位置与允许 token 集（actor 侧重归一化用）
                 "label_offsets": label_offsets,
                 "label_allowed": label_allowed,
@@ -272,3 +349,74 @@ class CstpoAgentLoop(AgentLoopBase):
             },
             metrics=AgentLoopMetrics(),
         )
+
+    # ---- 分叉注册表操作 ----
+
+    def _claim_trunk(self, step: int, seed_id: str, nodes: int) -> tuple:
+        """跨进程认领：原子创建锁文件者为主干（is_trunk=True）；
+        分支获得全局递增序号 idx（branch_node = idx//2，超界退化为 None）。"""
+        key = f"{step}_{seed_id}"
+        d = _trunk_dir()
+        lock_path = d / f"{key}.lock"
+        try:
+            fd = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+            os.close(fd)
+            return True, None
+        except FileExistsError:
+            pass
+        # 分支序号（flock 自增）
+        cnt_path = d / f"{key}.cnt"
+        idx = 0
+        try:
+            fd = os.open(cnt_path, os.O_CREAT | os.O_RDWR, 0o644)
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            os.lseek(fd, 0, 0)
+            idx = int((os.read(fd, 16) or b"0").strip() or 0)
+            os.lseek(fd, 0, 0)
+            os.truncate(fd, 0)
+            os.write(fd, str(idx + 1).encode())
+            fcntl.flock(fd, fcntl.LOCK_UN)
+            os.close(fd)
+        except Exception:
+            idx = 0
+        return False, idx
+
+    def _write_node_snapshot(self, step: int, seed_id: str, node: int,
+                             snap: dict) -> None:
+        key = f"{step}_{seed_id}"
+        d = _trunk_dir()
+        tmp = d / f"{key}.node{node}.pkl.tmp"
+        try:
+            with open(tmp, "wb") as f:
+                pickle.dump(snap, f)
+            os.replace(tmp, d / f"{key}.node{node}.pkl")
+        except Exception:
+            pass
+
+    def _get_snapshot(self, step: int, seed_id: str, node) -> dict | None:
+        if node is None:
+            return None
+        key = f"{step}_{seed_id}"
+        path = _trunk_dir() / f"{key}.node{node}.pkl"
+        t0 = time.time()
+        while time.time() - t0 < 600:
+            if path.exists():
+                try:
+                    with open(path, "rb") as f:
+                        return pickle.load(f)
+                except Exception:
+                    time.sleep(0.2)
+            else:
+                time.sleep(0.2)
+        return None  # 超时/快照缺失 → 退化为独立 rollout
+
+    def _register_trunk(self, step: int, seed_id: str, snapshots: list) -> None:
+        key = f"{step}_{seed_id}"
+        d = _trunk_dir()
+        tmp = d / f"{key}.pkl.tmp"
+        try:
+            with open(tmp, "wb") as f:
+                pickle.dump(snapshots, f)
+            os.replace(tmp, d / f"{key}.pkl")
+        except Exception:
+            pass  # 序列化失败 → 分支全部退化为独立 rollout，不影响主干
