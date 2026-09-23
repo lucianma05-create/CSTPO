@@ -33,8 +33,12 @@ SIMS = ["cogsim", "std_persona", "std_persona_resist", "std_bdi"]
 LABELS = {"cogsim": "Cog-Sim", "std_persona": "ESC-Eval persona",
           "std_persona_resist": "TRIP resist", "std_bdi": "BDI no-transfer"}
 LEVELS = ["L0", "L1", "L2", "L3"]
-COLORS = {"cogsim": "#d62728", "std_persona": "#1f77b4",
-          "std_persona_resist": "#2ca02c", "std_bdi": "#9467bd"}
+COLORS = {"cogsim": "#D55E00", "std_persona": "#0072B2",
+          "std_persona_resist": "#009E73", "std_bdi": "#CC79A7"}
+MARKERS = {"cogsim": "*", "std_persona": "^",
+           "std_persona_resist": "D", "std_bdi": "o"}
+MARKER_SIZES = {"cogsim": 10, "std_persona": 7,
+                "std_persona_resist": 6, "std_bdi": 6}
 RNG = np.random.default_rng(20260922)
 
 
@@ -88,9 +92,9 @@ def main() -> None:
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 3.4))
     x = np.arange(len(LEVELS))
-    tasks = [("esconv", "ESConv", "Attitude change (0-3)"),
-             ("p4g", "P4G", "Attitude change (0-3)"),
-             ("cb", "CraigslistBargain", "Seller concession (0-3)")]
+    tasks = [("esconv", "(a) ESConv", "Attitude change (0-3)"),
+             ("p4g", "(b) P4G", "Attitude change (0-3)"),
+             ("cb", "(c) CraigslistBargain", "Seller concession (0-3)")]
     YMAX = {"esconv": 2.4, "p4g": 2.4, "cb": 3.0}
     for ax, (task, title, ylab) in zip(axes, tasks):
         for sim in SIMS:
@@ -101,10 +105,12 @@ def main() -> None:
             means = [stats[lv][0] for lv in LEVELS]
             lo = [means[i] - stats[lv][1] for i, lv in enumerate(LEVELS)]
             hi = [stats[lv][2] - means[i] for i, lv in enumerate(LEVELS)]
-            lw = 2.6 if sim == "cogsim" else 1.6
-            ax.errorbar(x, means, yerr=[lo, hi], label=LABELS[sim],
-                        color=COLORS[sim], linewidth=lw, marker="o",
-                        markersize=5, capsize=4)
+            lw = 2.2 if sim == "cogsim" else 1.6
+            ax.errorbar(x, means, yerr=None, label=LABELS[sim],
+                        color=COLORS[sim], linewidth=lw, marker=MARKERS[sim],
+                        markersize=MARKER_SIZES[sim], markeredgecolor="white",
+                        markeredgewidth=0.7, capsize=3, capthick=1,
+                        elinewidth=1, zorder=4 if sim == "cogsim" else 3)
         ax.set_title(title, fontsize=14, fontweight="bold")
         ax.set_xlabel("Dose level")
         ax.set_ylabel(ylab)
@@ -112,7 +118,10 @@ def main() -> None:
         ax.set_xticklabels(LEVELS)
         ax.set_ylim(0, YMAX[task])
         ax.grid(alpha=0.3)
-    axes[0].legend(fontsize=9, loc="upper left")
+    axes[0].legend(loc="upper left", ncol=1, fontsize=9, frameon=True,
+                   edgecolor="#A0A0A0", facecolor="white", framealpha=1,
+                   fancybox=False, handlelength=1.1, handletextpad=0.4,
+                   labelspacing=0.25, borderpad=0.3, borderaxespad=0.4)
     fig.tight_layout()
     plots_dir = OUT_DIR / "plots"
     plots_dir.mkdir(exist_ok=True)

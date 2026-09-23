@@ -30,46 +30,48 @@
 
 ## 表 3：细粒度层前后比例（%，Δ = 后 − 前）
 
+图中缩写列为配套图 `strategy_distribution_3in1.png` 的横轴标签（单个词、首字母大写；全名以本节表为准）。
+
 ESConv：
 
-| 标签（元类） | 前 | 后 | Δ |
-|---|---|---|---|
-| Affirmation and Reassurance（Soften） | 30.2 | 39.7 | +9.5 |
-| Providing Suggestions（Advance） | 17.9 | 22.3 | +4.4 |
-| Reflection of feelings（Soften） | 8.6 | 10.6 | +2.0 |
-| Self-disclosure（Soften） | 4.4 | 4.1 | −0.3 |
-| Question（Probe） | 15.8 | 9.8 | −6.0 |
-| Information（Probe） | 6.1 | 4.4 | −1.7 |
-| Restatement or Paraphrasing（Probe） | 4.9 | 4.2 | −0.7 |
-| Others（Other） | 12.1 | 4.9 | −7.2 |
+| 标签（元类） | 图中缩写 | 前 | 后 | Δ |
+|---|---|---|---|---|
+| Affirmation and Reassurance（Soften） | Affirm | 30.2 | 39.7 | +9.5 |
+| Providing Suggestions（Advance） | Suggest | 17.9 | 22.3 | +4.4 |
+| Reflection of feelings（Soften） | Reflect | 8.6 | 10.6 | +2.0 |
+| Self-disclosure（Soften） | Disclosure | 4.4 | 4.1 | −0.3 |
+| Question（Probe） | Question | 15.8 | 9.8 | −6.0 |
+| Information（Probe） | Inform | 6.1 | 4.4 | −1.7 |
+| Restatement or Paraphrasing（Probe） | Restate | 4.9 | 4.2 | −0.7 |
+| Others（Other） | Others | 12.1 | 4.9 | −7.2 |
 
 CraigslistBargain：
 
-| 标签（元类） | 前 | 后 | Δ |
-|---|---|---|---|
-| propose_price（Advance） | 49.8 | 54.3 | +4.5 |
-| stance（Advance） | 2.3 | 0.6 | −1.7 |
-| social（Soften） | 28.3 | 22.7 | −5.6 |
-| inquire（Probe） | 10.9 | 13.4 | +2.5 |
-| inform（Probe） | 3.3 | 6.4 | +3.1 |
-| other（Other） | 5.4 | 2.6 | −2.8 |
+| 标签（元类） | 图中缩写 | 前 | 后 | Δ |
+|---|---|---|---|---|
+| propose_price（Advance） | Price | 49.8 | 54.3 | +4.5 |
+| stance（Advance） | Stance | 2.3 | 0.6 | −1.7 |
+| social（Soften） | Social | 28.3 | 22.7 | −5.6 |
+| inquire（Probe） | Inquire | 10.9 | 13.4 | +2.5 |
+| inform（Probe） | Inform | 3.3 | 6.4 | +3.1 |
+| other（Other） | Other | 5.4 | 2.6 | −2.8 |
 
 P4G：
 
-| 标签（元类） | 前 | 后 | Δ |
-|---|---|---|---|
-| donate_request（Advance） | 4.9 | 10.9 | +6.0 |
-| logical_appeal（Advance） | 5.1 | 5.2 | +0.1 |
-| credibility_appeal（Advance） | 13.7 | 13.9 | +0.2 |
-| foot_in_the_door（Advance） | 2.1 | 3.6 | +1.5 |
-| praise_user（Soften） | 14.3 | 16.1 | +1.8 |
-| social（Soften） | 9.8 | 7.9 | −1.9 |
-| emotion_appeal（Soften） | 3.8 | 1.4 | −2.4 |
-| self_modeling（Soften） | 1.7 | 0.6 | −1.1 |
-| personal_story（Soften） | 2.3 | 1.6 | −0.7 |
-| donation_information（Probe） | 20.3 | 18.4 | −1.9 |
-| inquiry_response（Probe） | 12.8 | 11.9 | −0.9 |
-| other（Other） | 9.2 | 8.5 | −0.7 |
+| 标签（元类） | 图中缩写 | 前 | 后 | Δ |
+|---|---|---|---|---|
+| donate_request（Advance） | Request | 4.9 | 10.9 | +6.0 |
+| logical_appeal（Advance） | Logic | 5.1 | 5.2 | +0.1 |
+| credibility_appeal（Advance） | Credibility | 13.7 | 13.9 | +0.2 |
+| foot_in_the_door（Advance） | Footdoor | 2.1 | 3.6 | +1.5 |
+| praise_user（Soften） | Praise | 14.3 | 16.1 | +1.8 |
+| social（Soften） | Social | 9.8 | 7.9 | −1.9 |
+| emotion_appeal（Soften） | Emotion | 3.8 | 1.4 | −2.4 |
+| self_modeling（Soften） | Modeling | 1.7 | 0.6 | −1.1 |
+| personal_story（Soften） | Story | 2.3 | 1.6 | −0.7 |
+| donation_information（Probe） | Donation | 20.3 | 18.4 | −1.9 |
+| inquiry_response（Probe） | Response | 12.8 | 11.9 | −0.9 |
+| other（Other） | Other | 9.2 | 8.5 | −0.7 |
 
 ## 简要分析：迁移趋势与对 policy 的影响
 
