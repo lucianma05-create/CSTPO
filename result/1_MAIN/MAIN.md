@@ -17,6 +17,16 @@
 
 注：proactive/procot/ane/mi_prompt 只把最终回应段送入对话（原仓库把完整 CoT 输出当回复），提取规则与适配偏差见 baseline/README.md。
 
+## 指标说明
+
+- **回报 G**：每场对话的终局回报（terminal return）在 100 个种子上的均值，是各任务的主指标。esconv 为 G=(E+A)/8；cb 为 G=clip(raw_sl, 0, 1)（未成交记 0）；p4g 为 G=1 当且仅当承诺成立且未被撤回，否则 0。各任务的 G 口径与训练回报严格一致。
+- **esconv E / A**：judge rev4（n=3 取均值）对对话后用户状态的 0–4 评分——E 为情绪改善程度，A 为采取积极行动的倾向。
+- **esconv E≥3且A≥3 率**：E 与 A 同时达到 3 分以上的对话占比（双达标率），衡量高质量对话的比例。
+- **平均轮数**：对话持续轮数的种子均值（自由交互协议：13 轮起判冗余、30 轮上限；cb/p4g 以成交/承诺或用户退出终止）。
+- **cb deal%**：judge 判定达成交易的对话占比。
+- **cb raw_sl**：分利比例的未裁剪均值，raw_SL=(成交价−卖家心理价)/(买家目标价−卖家心理价)，未成交记 0；>1 表示成交价优于买家目标价。与回报 G 的差即 clip 修正量。
+- **p4g comm%**：judge 判定说服对象做出捐款承诺的对话占比。回报 G ≤ comm%，两者之差为承诺后撤回的折扣。
+
 ## 表 1：gpt 骨干子指标明细（主表；standard/提示方法/ppdpp/dialogxpert 为 gpt 骨干，与表 3 gpt 列一致；cstpo-sft/cstpo-rl 为 Qwen3-14B 骨干，与表 2 一致）
 
 | 指标 | standard | proactive | procot | ane | mi_prompt | ppdpp | dialogxpert | cstpo-sft | cstpo-rl |
