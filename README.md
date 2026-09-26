@@ -24,8 +24,6 @@ cstpo/
   p0/         phase-A field-advantage and cost analyses
   configs/    agent loop registration (cstpo_agent_loop.yaml), RL hyperparameters
 scripts/      entry scripts (RL launch, SFT snapshot, data building, eval)
-baseline/     baseline runner: standard / proactive / procot / ane / mi_prompt /
-              ppdpp / dialogxpert policies + free100 evaluation protocol
 docs/         verl 0.8 patch inventory (VERL_PATCHES.md)
 Cog-Sim/      cognitive user simulator (BDI + emotion transition engine)
 result/       experiment documents (local-only, not distributed)
@@ -88,11 +86,8 @@ Training requires the verl 0.8 patches listed in `docs/VERL_PATCHES.md`.
 
 The free100 protocol evaluates 100 frozen cases per task against a Cog-Sim user
 simulator with judge rev4 (n=3 aggregation), cluster-bootstrap CIs, and two-level
-paired diffs. Run baselines with:
-
-```bash
-python baseline/runner.py --method standard --task esconv
-```
+paired diffs. The baseline runner lives in the local-only `baseline/` directory and
+is not distributed with the repository.
 
 ## Reproducibility
 
