@@ -46,11 +46,8 @@ venv/
 /pre_result/
 # 训练产物目录（日志、checkpoint dump、rollout 轨迹）
 /logs/
-# baseline 运行结果与冻结评估集（runner 等脚本仍随仓库分发）
-/baseline/runs/
-/baseline/eval_set.json
-# 第三方 baseline 仓库本地 vendor 化（183MB，含权重；出处见 baseline/vendor/VENDOR.md）
-/baseline/vendor/
+# baseline 全部本地保留（2026-09-26：脚本与结果均不随仓库分发）
+/baseline/
 # 数据与模型权重扩展名（全局）
 *.parquet
 *.jsonl
