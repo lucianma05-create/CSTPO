@@ -60,6 +60,9 @@ venv/
 *.bin
 *.npy
 *.npz
+*.csv
+*.tsv
+*.arrow
 
 # 论文草稿（暂不上传）
 /paper/
