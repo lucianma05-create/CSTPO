@@ -1,43 +1,106 @@
-# CSTPO
+# Proactive Dialogue Policy Optimization via Cognitive-State Transition
 
-认知状态转移驱动的主动对话策略优化（Proactive Dialogue Policy Optimization via Cognitive-State Transition）。
+**ICLR 2027 submission — OpenReview #39751** (anonymized repository)
 
-本项目围绕三个主动对话场景开展研究：P4G 劝说捐赠、CraigslistBargain 讨价还价和 ESConv 情感支持。
+CSTPO is a proactive dialogue policy optimization framework that couples a
+cognitive-state-driven user simulator (Cog-Sim) with a two-level policy trained by
+SFT + PPO. The policy emits a strategy label and an utterance at every turn; a
+dual-head Cog-critic estimates separate values for the strategy field and the
+utterance field, and a tree-branching rollout budget (trunk + node continuations)
+allocates exploration to unresolved dialogue states.
 
-研究包含两个方向：
+Tasks: **ESConv** (emotional support), **PersuasionForGood / P4G** (charity
+persuasion), and **CraigslistBargain** (price negotiation).
 
-- **Cog-Sim**：认知心理学启发的用户模拟器，显式建模用户信念、愿望、意图（BDI）及情绪变化。
-- **CSTPO**：利用训练侧认知信息辅助长期价值估计，探索策略标签与话语的分层优化，以及有限 rollout 预算的有效分配。
-
-Actor 仅使用对话历史及自身角色合法可见的任务信息；用户内部认知状态仅用于训练侧。终局任务奖励独立于内部认知变化幅度。
-
-## 目录
+## Repository Structure
 
 ```text
-Cog-Sim/            用户模拟器源码与示例
-experiments/        已有审计、先导实验脚本及结果
-shared_work_space/  算法设计、数据规范、实验协议与推进记录
+cstpo/
+  core/       task env, agent, judge, label maps, seed adapter, terminal rewards
+  rl/         verl agent loop (two-field generation + tree branching), reward bridge
+  sft/        SFT data building, training, tokenization, label trie samplers
+  seedgen/    seed extraction/annotation/review pipeline (LLM-assisted)
+  eval/       judge/diversity/sensitivity probes and calibration tools
+  p0/         phase-A field-advantage and cost analyses
+  configs/    agent loop registration (cstpo_agent_loop.yaml), RL hyperparameters
+scripts/      entry scripts (RL launch, SFT snapshot, data building, eval)
+baseline/     baseline runner: standard / proactive / procot / ane / mi_prompt /
+              ppdpp / dialogxpert policies + free100 evaluation protocol
+docs/         verl 0.8 patch inventory (VERL_PATCHES.md)
+Cog-Sim/      cognitive user simulator (BDI + emotion transition engine)
+result/       experiment documents (local-only, not distributed)
+data/         seeds and evaluation sets (local-only, not distributed)
 ```
 
-## 仓库管理
+## Quick Start
 
-`Cog-Sim/` 当前作为源码副本由本仓库统一管理，来源为 [Cog-Sim](https://github.com/lucianma05-create/Cog-Sim)，不是 Git submodule。直接克隆 CSTPO 即可获得模拟器源码，不需要递归初始化子仓库。后续如需两个仓库独立维护和发布，可迁移为固定 commit 的 submodule；不要直接在此目录中再次 `git init` 或嵌套克隆。
+### 1. Environment
 
-保留模拟器、评估代码和可复现的诊断脚本；生成的结果、评估报告、运行日志、模型产物及本地临时脚本不入库。`shared_work_space/` 延续本地研究文档的管理方式，不随仓库分发；下方研究文档链接供本地工作区使用。
+```bash
+conda create -n verl python=3.12 -y
+conda activate verl
+pip install verl==0.8 vllm torch
+pip install -e .
+```
 
-## 文档入口
+Source the environment exports before launching any verl job:
 
-先阅读 [UPDATEME：文档职责与推进顺序](shared_work_space/UPDATEME.md)，再按需查看：
+```bash
+source scripts/verl_env.sh
+```
 
-1. [算法概览](shared_work_space/01_CSTPO算法概览.md)
-2. [Rollout 数据与种子规范](shared_work_space/02_Rollout数据与种子规范.md)
-3. [实施规范](shared_work_space/03_CSTPO实施规范.md)：当前算法实现的主要依据。
-4. [任务评价与实验协议](shared_work_space/04_任务评价与实验协议.md)
-5. [CogSim 修复版提案](shared_work_space/05_CogSim修复版提案.md)：启动模拟器修复前逐条裁定。
-6. [历史审计与先导记录](shared_work_space/90_CogSim历史审计与先导记录.md)
+### 2. API keys
 
-模拟器使用说明见 [Cog-Sim README](Cog-Sim/README.md)；已有诊断脚本说明见 [experiments README](experiments/README.md)。
+Copy the placeholder env file and fill in your DeepSeek API key (used by the judge,
+the user simulator, and the annotation pipeline):
 
-## 当前状态
+```bash
+cp Cog-Sim/.env.example Cog-Sim/.env
+# edit Cog-Sim/.env: DEEPSEEK_API_KEY=sk-...
+```
 
-目前处于算法设计与验证准备阶段，已有模拟器审计及 36 个 demo 单轮分支的先导诊断，尚未完成正式 RL 训练与三任务实验。认知敏感度、采样效率和外部泛化收益均为待验证假设；具体前置条件与验收标准见实施规范和 UPDATEME。
+`Cog-Sim/.env` is git-ignored and never distributed.
+
+### 3. SFT
+
+Build the SFT training set from seeds (strategy label + utterance two-field format):
+
+```bash
+python -m cstpo.sft.build_sft --task esconv     # esconv | p4g | craigslistbargain
+python -m cstpo.sft.train_sft --task esconv
+```
+
+SFT hyperparameters live in `cstpo/sft/sft_config.py`.
+
+### 4. RL (PPO + dual-head Cog-critic)
+
+```bash
+bash scripts/mc_ppo_critic_run.sh
+```
+
+Hyperparameters are centrally managed in `cstpo/configs/rl_defaults.sh`
+(override via environment variables, e.g. `STEPS=40 bash scripts/mc_ppo_critic_run.sh`).
+Key settings: 10 seeds/step, trunk + 4/3 branch nodes × 2 continuations per seed
+(esconv 9 / cb-p4g 7 rollouts), 30-turn cap, γ = 1, actor LR 1e-5.
+Training requires the verl 0.8 patches listed in `docs/VERL_PATCHES.md`.
+
+### 5. Evaluation
+
+The free100 protocol evaluates 100 frozen cases per task against a Cog-Sim user
+simulator with judge rev4 (n=3 aggregation), cluster-bootstrap CIs, and two-level
+paired diffs. Run baselines with:
+
+```bash
+python baseline/runner.py --method standard --task esconv
+```
+
+## Reproducibility
+
+- `docs/VERL_PATCHES.md` lists every local patch applied to verl 0.8 (dual-head
+  value wrapper, two-level GAE, label choice-mask renormalization, critic resource
+  pool, health probes). Re-apply these patches before training on a new machine.
+- Datasets, seeds, experiment logs, and result documents are kept locally and are
+  not distributed with the repository (see `.gitignore`); only pipeline code is
+  version-controlled.
+- Cog-Sim is vendored as a source copy (not a git submodule); cloning this
+  repository includes the simulator source.
